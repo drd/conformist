@@ -1,0 +1,23 @@
+{
+  "name": "flatland-js",
+  "version": "0.0.1",
+  "description": "a port of flatland to javascript",
+  "main": "index.js",
+  "dependencies": {
+    "immutable": "^3.7.4",
+    "babel": "^5.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.3.7"
+    },
+  "scripts": {
+    "test": "babel-node test.js"
+  },
+  "keywords": [
+    "schema",
+    "validation",
+    "flatland"
+  ],
+  "author": "Eric O'Connell <eric.oconnell@idealist.org>",
+  "license": "BSD"
+}
