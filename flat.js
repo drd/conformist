@@ -14,7 +14,7 @@ class Type {
   constructor(value) {
     this.raw = null;
     this.valid = undefined;
-    value && this.set(value);
+    value !== undefined && this.set(value);
   }
 
   addError(error) {
@@ -28,12 +28,12 @@ class Type {
   }
 
   static named(name) {
-      return this.clone({name});
+    return this.clone({name});
   }
 
   static using(overrides) {
-      // maybe pre-process overrides?
-      return this.clone(overrides);
+    // maybe pre-process overrides?
+    return this.clone(overrides);
   }
 
   static validatedBy(...validators) {
@@ -121,6 +121,42 @@ class Int extends Scalar {
   }
 }
 
+class Enum extends Scalar {
+  constructor(value) {
+    super();
+    this.childSchema = new this.childType();
+    if (value !== undefined) {
+      this.set(value);
+    }
+  }
+
+  adapt(raw) {
+    let value = this.childSchema.adapt(raw);
+    if (!this.validValue(value)) {
+      throw new AdaptationError();
+    }
+    return value;
+  }
+
+  validValue(value) {
+    return this.validValues.indexOf(value) !== -1;
+  }
+
+  serialize(value) {
+    return this.childSchema.serialize(value);
+  }
+
+  static of(childType) {
+    return this.clone({childType});
+  }
+
+  static valued(validValues) {
+    return this.clone({validValues})
+  }
+}
+
+Enum.prototype.childType = Str;
+
 class Container extends Type {
   validate(state) {
     this.errors = [];
@@ -131,7 +167,7 @@ class Container extends Type {
 
 class List extends Container {
   get value() {
-      return this.members.map(m => m.value);
+    return this.members.map(m => m.value);
   }
 
   get members() {
@@ -150,9 +186,9 @@ class List extends Container {
     let success = true;
     let items = [];
     raw.forEach(mbr => {
-        let member = new this.memberType();
-        success = success & member.set(mbr);
-        items.push(member);
+      let member = new this.memberType();
+      success = success & member.set(mbr);
+      items.push(member);
     })
     this.members = success ? items : [];
   }
@@ -218,4 +254,4 @@ class Validator {
 }
 
 
-export default {Type, Validator, Scalar, Int, Str, Container, List, Map};
+export default {Type, Validator, Scalar, Int, Str, Enum, Container, List, Map};

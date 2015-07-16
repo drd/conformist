@@ -1,4 +1,4 @@
-import {Type, Validator, Scalar, Int, Str, Container, List, Map} from './flat.js';
+import {Type, Validator, Scalar, Int, Str, Enum, Container, List, Map} from './flat.js';
 
 function expect(thing) {
   return {
@@ -121,3 +121,16 @@ let pc = new PasswordConfirmation();
 pc.set({pass: '12345', conf: '12346'});
 expect(pc.validate()).toBe(false);
 expect(pc.errors[0]).toBe(pc.validators[0].mustMatch);
+
+let Fruit = Enum.of(Str).valued(['Apple', 'Banana', 'Carambola', 'Dragonfruit']);
+let fruit = new Fruit();
+expect(fruit.set('Spinach')).toBe(false);
+expect(fruit.value).toBe(null);
+expect(fruit.set('Banana')).toBe(true);
+expect(fruit.value).toBe('Banana');
+
+let Prime = Enum.of(Int).valued([2, 3, 5, 7, 11, 13, 17]);
+let prime = new Prime();
+expect(prime.set(1)).toBe(false);
+expect(prime.set(3)).toBe(true);
+expect(prime.value).toBe(3);
