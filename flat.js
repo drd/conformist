@@ -59,6 +59,10 @@ class Scalar extends Type {
     this.value = this.serialized = null;
   }
 
+  get allErrors() {
+    return this.errors;
+  }
+
   set(raw) {
     this.raw = raw;
     try {
@@ -86,7 +90,7 @@ class Scalar extends Type {
 
     this.valid = this.validators.reduce((valid, v) => {
       if (valid) {
-        valid = v.call ? v.call(this, state) : v.validate(this, state);
+        valid = v.call ? v(this, state) : v.validate(this, state);
       }
       return valid;
     }, true);
@@ -172,7 +176,10 @@ Enum.prototype.childType = Str;
 class Container extends Type {
   validate(state) {
     this.errors = [];
-    let success = !!this.members.reduce((valid, member) => valid &= member.validate(state), true);
+    let success = !!this.memberValues.reduce((valid, member) => {
+      var result = member.validate(state);
+      return valid && result;
+    }, true);
     return !!this.validators.reduce((valid, validator) => valid &= validator.validate(this, state), success);
   }
 }
@@ -186,8 +193,17 @@ class List extends Container {
     return this._members;
   }
 
+  // aliased for concordance with Container.prototype.validate()
+  get memberValues() {
+    return this._members;
+  }
+
   set members(members) {
     this._members = members;
+  }
+
+  get allErrors() {
+    return this.members.map(m => m.allErrors);
   }
 
   set(raw) {
@@ -218,12 +234,23 @@ class Map extends Container {
   }
 
   // member elements as list
+  get memberValues() {
+    return Object.values(this._members);
+  }
+
   get members() {
-    return Object.keys(this._members).map(m => this._members[m]);
+    return this._members;
   }
 
   set members(members) {
     this._members = members;
+  }
+
+  get allErrors() {
+    return Object.entries(this.members).reduce((errors, [k, v]) => {
+      errors[k] = v.allErrors;
+      return errors;
+    }, {});
   }
 
   set(raw) {

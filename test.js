@@ -1,82 +1,65 @@
+import {expect} from 'chai';
+
 import {Type, Validator, Scalar, Int, Str, Bool, Enum, Container, List, Map} from './flat.js';
 
-function expect(thing) {
-  return {
-    value: thing,
-    toBe(value) {
-      if (value !== this.value) {
-        console.log(`${this.value} was not ${value}`);
-        throw new Error(`${this.value} was not ${value}`);
-      } else {
-        //console.log(`${this.value} is ${value}`);
-      }
-    },
-    toEqual(value) {
-      if (! this.value.every((x, i) => value[i] === x)) {
-        console.log(`${this.value} did not equal ${value}`);
-        throw new Error(`${this.value} did not equal ${value}`);
-      }
-    }
-  }
-}
 
 var MyString = Str.named('string').using({default: 'default', optional: false});
 var s = new MyString();
-expect(s.name).toBe('string');
-expect(s.default).toBe('default');
-expect(s.optional).toBe(false);
+expect(s.name).to.equal('string');
+expect(s.default).to.equal('default');
+expect(s.optional).to.equal(false);
 
 // lifecycle
-expect(s.value).toBe(null);
-expect(s.valid).toBe(undefined);
-expect(s.serialized).toBe(null);
-expect(s.raw).toBe(null);
+expect(s.value).to.equal(null);
+expect(s.valid).to.equal(undefined);
+expect(s.serialized).to.equal(null);
+expect(s.raw).to.equal(null);
 
 s.validate();
-expect(s.valid).toBe(false);
+expect(s.valid).to.equal(false);
 
 s = MyString.fromDefaults();
-expect(s.value).toBe(s.default);
+expect(s.value).to.equal(s.default);
 
 s.validate();
-expect(s.valid).toBe(true);
+expect(s.valid).to.equal(true);
 
-expect(s.set(123)).toBe(true);
-expect(s.value).toBe('123');
-expect(s.raw).toBe(123);
-expect(s.serialized).toBe('123');
+expect(s.set(123)).to.equal(true);
+expect(s.value).to.equal('123');
+expect(s.raw).to.equal(123);
+expect(s.serialized).to.equal('123');
 
 s.validate();
-expect(s.valid).toBe(true);
+expect(s.valid).to.equal(true);
 
 
 // INTS
 let n = new Int();
 n.set('yr mom');
-expect(n.value).toBe(null)
+expect(n.value).to.equal(null)
 n.set('123');
-expect(n.value).toBe(123)
+expect(n.value).to.equal(123)
 
 
 // LISTS
 var Strings = List.of(Str);
 let ss = new Strings();
 ss.set(['yr', 'mom']);
-expect(ss.value).toEqual(['yr', 'mom'])
+expect(ss.value).to.eql(['yr', 'mom'])
 
 var DefaultedStrings = Strings.using({default: ['foo', 'bar']});
 let ds = new DefaultedStrings();
-expect(ds.value).toEqual([]);
+expect(ds.value).to.eql([]);
 let dds = DefaultedStrings.fromDefaults();
-expect(ds.value).toEqual(DefaultedStrings.defaults);
+expect(dds.value).to.eql(dds.default);
 
 
 // MAPS
 let ABMap = Map.of(Str.named('a'), Int.named('b'));
 let abMap = new ABMap();
 abMap.set({a: 'foo', b: 3})
-expect(abMap.value.a).toBe('foo');
-expect(abMap.value.b).toBe(3);
+expect(abMap.value.a).to.equal('foo');
+expect(abMap.value.b).to.equal(3);
 
 
 class IsPositive extends Validator {
@@ -98,18 +81,18 @@ class PositiveInt extends Int {
 let pos = new PositiveInt();
 pos.set(3);
 pos.validate();
-expect(pos.valid).toBe(true);
+expect(pos.valid).to.equal(true);
 pos.set(-3);
 pos.validate();
-expect(pos.valid).toBe(false);
-expect(pos.errors[0]).toBe(pos.validators[0].nonPositive);
+expect(pos.valid).to.equal(false);
+expect(pos.errors[0]).to.equal(pos.validators[0].nonPositive);
 
 
 class ConfirmationMatch extends Validator {
   mustMatch = 'Password and confirmation do not match'
 
   validate(element, state) {
-    if (element._members['pass'].value !== element._members['conf'].value) {
+    if (element.members['pass'].value !== element.members['conf'].value) {
       return this.noteError(element, state, {key: 'mustMatch'});
     }
     return true;
@@ -119,34 +102,57 @@ class ConfirmationMatch extends Validator {
 let PasswordConfirmation = Map.of(Str.named('pass'), Str.named('conf')).validatedBy(new ConfirmationMatch())
 let pc = new PasswordConfirmation();
 pc.set({pass: '12345', conf: '12346'});
-expect(pc.validate()).toBe(false);
-expect(pc.errors[0]).toBe(pc.validators[0].mustMatch);
+expect(pc.validate()).to.equal(false);
+expect(pc.errors[0]).to.equal(pc.validators[0].mustMatch);
 
+
+let Yadda = Map.of(
+  Str.named('a').validatedBy(x => {
+    if (!!x) {
+      x.addError('Truthy');
+      return false;
+    }
+    return true;
+  }),
+  Str.named('b').validatedBy(x => {
+    if (x.value !== '3') {
+      x.addError('Not 3');
+      return false;
+    }
+    return true;
+  })
+);
+let yadda = new Yadda();
+yadda.set({a: true, b: 2});
+yadda.validate();
+expect(yadda.allErrors).to.eql({a: ['Truthy'], b: ['Not 3']});
+
+// ENUMS
 let Fruit = Enum.of(Str).valued(['Apple', 'Banana', 'Carambola', 'Dragonfruit']);
 let fruit = new Fruit();
-expect(fruit.set('Spinach')).toBe(false);
-expect(fruit.value).toBe(null);
-expect(fruit.set('Banana')).toBe(true);
-expect(fruit.value).toBe('Banana');
+expect(fruit.set('Spinach')).to.equal(false);
+expect(fruit.value).to.equal(null);
+expect(fruit.set('Banana')).to.equal(true);
+expect(fruit.value).to.equal('Banana');
 
 let Prime = Enum.of(Int).valued([2, 3, 5, 7, 11, 13, 17]);
 let prime = new Prime();
-expect(prime.set(1)).toBe(false);
-expect(prime.set(3)).toBe(true);
-expect(prime.value).toBe(3);
+expect(prime.set(1)).to.equal(false);
+expect(prime.set(3)).to.equal(true);
+expect(prime.value).to.equal(3);
 
 
 // BOOLS
 let George = Bool.using({default: false});
 let george = George.fromDefaults();
-expect(george.value).toBe(false);
+expect(george.value).to.equal(false);
 george.set(undefined);
-expect(george.value).toBe(false);
+expect(george.value).to.equal(false);
 george.set('');
-expect(george.value).toBe(false);
+expect(george.value).to.equal(false);
 george.set(true);
-expect(george.value).toBe(true);
+expect(george.value).to.equal(true);
 george.set('hi');
-expect(george.value).toBe(true);
+expect(george.value).to.equal(true);
 george.set([1, 2, 3]);
-expect(george.value).toBe(true);
+expect(george.value).to.equal(true);
