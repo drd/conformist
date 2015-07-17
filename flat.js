@@ -123,7 +123,12 @@ class Str extends Scalar {
 }
 
 
-class Int extends Scalar {
+class Num extends Scalar {
+  // ?
+}
+
+
+class Int extends Num {
   adapt(raw) {
     let value = parseInt(raw, 10);
     if (isNaN(value)) {
@@ -208,7 +213,7 @@ class List extends Container {
 
   set(raw) {
     this.raw = raw;
-    if (!raw.forEach) {
+    if (!(raw && raw.forEach)) {
       return false;
     }
     let success = true;
@@ -220,6 +225,7 @@ class List extends Container {
       items.push(member);
     })
     this.members = success ? items : [];
+    return !!success;
   }
 
   static of(type) {
@@ -280,7 +286,7 @@ class Map extends Container {
       member.name = k;
       member.parent = this;
       members[k] = member;
-      return raw[k] === undefined ? success : success &= member.set(raw[k]);
+      return (raw[k] === undefined) ? success : (success &= member.set(raw[k]));
     }, true);
     if (success) {
       // should this.members only be defined here?
@@ -296,6 +302,21 @@ class Map extends Container {
       return ms;
     }, {});
     return this.clone({memberSchema});
+  }
+
+  static fromDefaults() {
+    let defaulted = new this();
+    Object.entries(defaulted.default).forEach(([k,v]) => defaulted.members[k].set(v));
+    return defaulted;
+  }
+
+  get default() {
+    return Object.entries(this.memberSchema).reduce((defaults, [k, v]) => {
+      if (v.prototype.default !== undefined) {
+        defaults[k] = v.prototype.default;
+      }
+      return defaults;
+    }, {});
   }
 }
 

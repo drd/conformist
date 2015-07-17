@@ -169,3 +169,173 @@ george.set('hi');
 expect(george.value).to.equal(true);
 george.set([1, 2, 3]);
 expect(george.value).to.equal(true);
+
+
+// COMPLEX SCHEMA
+function fallbackValidator(fallbackValue, message, test = (v) => v) {
+  return function (element, state) {
+    if (element.parent.members.fallback.value === fallbackValue) {
+      if (!test(element.value)) {
+        element.addError(message);
+        return false;
+      }
+    }
+    return true;
+  };
+}
+
+let regionCodeValidator = (element, state) => {
+  return fallbackValidator(true, 'Please choose a region', (v) => {
+    return v.Geo === 'NotApplicable' || v;
+  });
+}
+
+let optionalIfFallback = el => el.parent.members.fallback.value === true;
+let optionalIfAutocomplete = el => el.parent.members.fallback.value === false;
+
+let Location = Map.of(
+  Bool.named('fallback').using({default: false}),
+  Str.using({optional: optionalIfFallback}).named('location').validatedBy(fallbackValidator(false, 'Please choose a location')),
+  Int.using({optional: optionalIfFallback}).named('geoid').validatedBy(fallbackValidator(false, 'Please choose a location')),
+  Str.using({optional: optionalIfAutocomplete}).named('city').validatedBy(fallbackValidator(true, 'Please provide a city name')),
+  Str.using({optional: optionalIfAutocomplete}).named('regionCode').validatedBy(fallbackValidator(true, 'Please choose a region')),
+  Str.using({optional: optionalIfAutocomplete}).named('countryCode').validatedBy(fallbackValidator(true, 'Please choose a country'))
+)
+
+let location = new Location();
+expect(location.set({fallback: false, location: 'Boston', geoid: 3})).to.eql(true);
+expect(location.validate()).to.eql(true);
+expect(location.set({fallback: true, city: 'Boston', regionCode: 'US_MA', countryCode: 'US'})).to.eql(true);
+expect(location.validate()).to.eql(true);
+expect(location.set({fallback: true, city: 'Boston', regionCode: {Geo: 'NotApplicable'}, countryCode: 'US'})).to.eql(true);
+expect(location.validate()).to.eql(true);
+
+expect(location.set({fallback: false, location: '', geoid: 3})).to.eql(true);
+expect(location.validate()).to.eql(false);
+expect(location.allErrors.location.length).to.eql(1);
+expect(location.allErrors.location[0]).to.eql('Please choose a location');
+expect(location.set({fallback: false, location: 'Boston'})).to.eql(true);
+expect(location.validate()).to.eql(false);
+expect(location.set({fallback: true, countryCode: 'US'})).to.eql(true);
+expect(location.validate()).to.eql(false);
+
+
+// ORG SCHEMA
+const CAPITALIZED_TYPES = {
+    'nonprofit': 'Nonprofit',
+    'government': 'Government',
+    'socialenterprise': 'SocialEnterprise',
+    'recruiter': 'Recruiter',
+    'consultant': 'Consultant'
+};
+
+
+class Min extends Validator {
+  invalidNum = '{name} must be greater than or equal to {min}'
+  invalidList = '{name} must contain {min} or more elements'
+  invalidString = '{name} must be at least {min} characters long'
+
+  constructor(min) {
+    super();
+    this.min = min;
+  }
+
+  validate(element, state) {
+    if (element instanceof Str) {
+      if (element.value.length < this.min) {
+        return this.noteError(element, state, {key: 'invalidString'});
+      }
+    } else if (element instanceof List) {
+      if (element.value.length < this.min) {
+        return this.noteError(element, state, {key: 'invalidList'});
+      }
+    } else if (element instanceof Num) {
+      if (element.value < this.min) {
+        return this.noteError(element, state, {key: 'invalidNum'});
+      }
+    } else {
+      throw new Error('Min cannot be used on this type', element);
+    }
+    return true;
+  }
+}
+
+
+class Max extends Validator {
+  invalidNum = '{name} must be less than or equal to {max}'
+  invalidList = '{name} must contain {max} or fewer elements'
+  invalidString = '{name} must be shorter than {max} characters long'
+
+  constructor(max) {
+    super();
+    this.max = max;
+  }
+
+  validate(element, state) {
+    if (element instanceof Str) {
+      if (element.value.length > this.max) {
+        return this.noteError(element, state, {key: 'invalidString'});
+      }
+    } else if (element instanceof List) {
+      if (element.value.length > this.max) {
+        return this.noteError(element, state, {key: 'invalidList'});
+      }
+    } else if (element instanceof Num) {
+      if (element.value > this.max) {
+        return this.noteError(element, state, {key: 'invalidNum'});
+      }
+    } else {
+      throw new Error('Max cannot be used on this type', element);
+    }
+    return true;
+  }
+}
+
+
+let Org = Map.of(
+  Enum.of(Str).named('type').valued(Object.keys(CAPITALIZED_TYPES)).using({default: 'nonprofit'}),
+  List.of(Location).named('addresses').validatedBy(new Min(1)),
+  Str.named('fullName'),
+  Str.named('shortName').validatedBy(new Max(25)),
+  Str.named('streetAddress').using({optional: true}),
+  Str.named('deliveryDetails').using({optional: true}),
+  Str.named('ein').using({optional: true}),
+  Str.named('website').using({optional: true}),
+  Str.named('description').using({default: ''}),
+  List.named('keywords').of(Str).validatedBy(new Min(1)),
+  Str.named('image').using({optional: true})
+);
+
+let org = Org.fromDefaults();
+expect(org.members.type.value).to.eql('nonprofit');
+expect(org.members.description.value).to.eql('');
+expect(org.validate()).to.be.false;
+expect(org.members.addresses.errors.length).to.eql(1);
+expect(org.members.keywords.errors.length).to.eql(1);
+
+org.set({shortName: 'The floppiness is hard to control.... but...'});
+expect(org.validate()).to.be.false;
+expect(org.members.shortName.errors.length).to.eql(1);
+
+org.set({keywords: ['arts', 'hot sauce']});
+expect(org.validate()).to.be.false;
+expect(org.members.keywords.errors.length).to.eql(0);
+
+let success = org.set({
+  type: 'socialenterprise',
+  addresses: [{
+    location: 'Portlandio',
+    geoid: 136777374339,
+    fallback: false
+  }],
+  fullName: 'Conscious Widgets',
+  shortName: 'ConWid',
+  streetAddress: '12 SW Alder St',
+  ein: 'Data dog',
+  website: 'https://conwid.net',
+  description: 'We produce widgets, responsibly.',
+  keywords: ['Socially', 'Conscious', 'Widgets'],
+  image: 'http://socially.conscious.jpg.to'
+});
+expect(success).to.be.true;
+expect(org.validate()).to.be.true;
