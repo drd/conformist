@@ -127,6 +127,19 @@ yadda.set({a: true, b: 2});
 yadda.validate();
 expect(yadda.allErrors).to.eql({a: ['Truthy'], b: ['Not 3']});
 
+
+// OPTION AS A FUNCTION
+let Optionally = Map.of(
+  Bool.using({name: 'isRequired'}),
+  Str.using({name: 'name', optional: x => !x.parent.members.isRequired.value})
+);
+let optionally = new Optionally();
+expect(optionally.members.name.optional(optionally.members.name)).to.be.true;
+optionally.set({isRequired: true});
+expect(optionally.members.name.optional(optionally.members.name)).to.be.false;
+
+
+
 // ENUMS
 let Fruit = Enum.of(Str).valued(['Apple', 'Banana', 'Carambola', 'Dragonfruit']);
 let fruit = new Fruit();

@@ -84,7 +84,7 @@ class Scalar extends Type {
     this.errors = [];
 
     if (this.value === null) {
-      this.valid = this.optional;
+      this.valid = this.optional.call ? this.optional(this) : this.optional;
       return this.valid;
     }
 
@@ -215,6 +215,7 @@ class List extends Container {
     let items = [];
     raw.forEach(mbr => {
       let member = new this.memberType();
+      member.parent = this;
       success = success & member.set(mbr);
       items.push(member);
     })
@@ -229,8 +230,21 @@ class List extends Container {
 List.prototype.members = [];
 
 class Map extends Container {
+  constructor(value) {
+    super(value);
+    // construct an empty schema
+    if (this.value === null) {
+      this.set({});
+    }
+  }
   get value() {
-    return Object.keys(this._members).reduce((v, m) => { v[m] = this._members[m].value; return v; }, {});
+    if (!this._members) {
+      return null;
+    }
+    return Object.keys(this._members).reduce((v, m) => {
+      v[m] = this._members[m].value;
+      return v;
+    }, {});
   }
 
   // member elements as list
@@ -259,12 +273,14 @@ class Map extends Container {
       return false;
     }
     let get = (o, k)  => o.keys ? o = o.get(k) : o[k];
-    let keys = consume(raw.keys) || Object.keys(raw);
+    let keys = Object.keys(this.memberSchema);
     let members = {}
-    let success = keys.reduce((success, k) => {
+    let success = !!keys.reduce((success, k) => {
       let member = new this.memberSchema[k]();
+      member.name = k;
+      member.parent = this;
       members[k] = member;
-      return success &= member.set(raw[k]);
+      return raw[k] === undefined ? success : success &= member.set(raw[k]);
     }, true);
     if (success) {
       // should this.members only be defined here?
