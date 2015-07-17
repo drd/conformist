@@ -1,10 +1,9 @@
 {
-  "name": "flatland-js",
+  "name": "conformist",
   "version": "0.0.1",
-  "description": "a port of flatland to javascript",
+  "description": "a flatland inspired schema library for javascript",
   "main": "index.js",
   "dependencies": {
-    "immutable": "^3.7.4",
     "babel": "^5.6.1"
   },
   "devDependencies": {
@@ -19,6 +18,7 @@
   "keywords": [
     "schema",
     "validation",
+    "forms",
     "flatland"
   ],
   "author": "Eric O'Connell <eric.oconnell@idealist.org>",
