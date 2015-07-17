@@ -1,4 +1,4 @@
-import {Type, Validator, Scalar, Int, Str, Enum, Container, List, Map} from './flat.js';
+import {Type, Validator, Scalar, Int, Str, Bool, Enum, Container, List, Map} from './flat.js';
 
 function expect(thing) {
   return {
@@ -134,3 +134,19 @@ let prime = new Prime();
 expect(prime.set(1)).toBe(false);
 expect(prime.set(3)).toBe(true);
 expect(prime.value).toBe(3);
+
+
+// BOOLS
+let George = Bool.using({default: false});
+let george = George.fromDefaults();
+expect(george.value).toBe(false);
+george.set(undefined);
+expect(george.value).toBe(false);
+george.set('');
+expect(george.value).toBe(false);
+george.set(true);
+expect(george.value).toBe(true);
+george.set('hi');
+expect(george.value).toBe(true);
+george.set([1, 2, 3]);
+expect(george.value).toBe(true);

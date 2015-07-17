@@ -96,6 +96,18 @@ class Scalar extends Type {
 }
 
 
+class Bool extends Scalar {
+  adapt(raw) {
+    // TODO: more restrictive?
+    return !!raw;
+  }
+
+  serialize(value) {
+    return value.toString();
+  }
+}
+
+
 class Str extends Scalar {
   adapt(raw) {
     return raw.toString();
@@ -254,4 +266,4 @@ class Validator {
 }
 
 
-export default {Type, Validator, Scalar, Int, Str, Enum, Container, List, Map};
+export default {Type, Validator, Scalar, Int, Str, Bool, Enum, Container, List, Map};
