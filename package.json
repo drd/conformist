@@ -25,6 +25,8 @@
     "webpack": "^1.10.1"
   },
   "scripts": {
+    "build": "webpack",
+    "prepublish": "webpack",
     "test": "babel-node test.js"
   },
   "keywords": [

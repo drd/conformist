@@ -93,6 +93,11 @@
 	    value: function addError(error) {
 	      this.errors.push(error);
 	    }
+	  }, {
+	    key: 'setDefault',
+	    value: function setDefault() {
+	      this.set(this['default']);
+	    }
 	  }], [{
 	    key: 'clone',
 	    value: function clone(overrides) {
@@ -192,7 +197,7 @@
 	    }
 	  }, {
 	    key: 'validate',
-	    value: function validate(state) {
+	    value: function validate(context) {
 	      var _this = this;
 	
 	      this.errors = [];
@@ -204,7 +209,7 @@
 	
 	      this.valid = this.validators.reduce(function (valid, v) {
 	        if (valid) {
-	          valid = v.call ? v(_this, state) : v.validate(_this, state);
+	          valid = v.call ? v(_this, context) : v.validate(_this, context);
 	        }
 	        return valid;
 	      }, true);
@@ -370,16 +375,16 @@
 	
 	  _createClass(Container, [{
 	    key: 'validate',
-	    value: function validate(state) {
+	    value: function validate(context) {
 	      var _this2 = this;
 	
 	      this.errors = [];
 	      var success = !!this.memberValues.reduce(function (valid, member) {
-	        var result = member.validate(state);
+	        var result = member.validate(context);
 	        return valid && result;
 	      }, true);
 	      return !!this.validators.reduce(function (valid, validator) {
-	        return valid &= validator.validate(_this2, state);
+	        return valid &= validator.validate(_this2, context);
 	      }, success);
 	    }
 	  }]);
@@ -529,15 +534,18 @@
 	  }, {
 	    key: 'allErrors',
 	    get: function get() {
-	      return _Object$entries(this.members).reduce(function (errors, _ref2) {
-	        var _ref22 = _slicedToArray(_ref2, 2);
+	      return {
+	        self: this.errors,
+	        children: _Object$entries(this.members).reduce(function (errors, _ref2) {
+	          var _ref22 = _slicedToArray(_ref2, 2);
 	
-	        var k = _ref22[0];
-	        var v = _ref22[1];
+	          var k = _ref22[0];
+	          var v = _ref22[1];
 	
-	        errors[k] = v.allErrors;
-	        return errors;
-	      }, {});
+	          errors[k] = v.allErrors;
+	          return errors;
+	        }, {})
+	      };
 	    }
 	  }, {
 	    key: 'default',
@@ -592,7 +600,7 @@
 	
 	  _createClass(Validator, [{
 	    key: 'noteError',
-	    value: function noteError(element, state, options) {
+	    value: function noteError(element, context, options) {
 	      var message = options.message || this[options.key];
 	      element.addError(message);
 	      return false;
