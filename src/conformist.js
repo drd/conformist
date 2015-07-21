@@ -21,6 +21,10 @@ class Type {
     this.errors.push(error);
   }
 
+  setDefault() {
+    this.set(this.default);
+  }
+
   static clone(overrides) {
     class cloned extends this {};
     Object.assign(cloned.prototype, overrides);

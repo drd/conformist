@@ -50,6 +50,10 @@ expect(ss.value).to.eql(['yr', 'mom'])
 var DefaultedStrings = Strings.using({default: ['foo', 'bar']});
 let ds = new DefaultedStrings();
 expect(ds.value).to.eql([]);
+// on an instance
+ds.setDefault();
+expect(ds.value).to.eql(ds.default);
+// on a class
 let dds = DefaultedStrings.fromDefaults();
 expect(dds.value).to.eql(dds.default);
 

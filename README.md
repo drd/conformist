@@ -1,10 +1,11 @@
 # conformist
 
-A [flatland](http://discorporate.us/projects/flatland/)-inspired validation library for javascript.
+A [flatland](http://discorporate.us/projects/flatland/)-inspired schema definition and validation library for javascript.
+
 
 ## Types
 
-conformist manages to be quite OO, bucking the trend of FP mania. Here's some ASCII art:
+conformist ships with the following built-in type hierarchy:
 
 ```
 Type
@@ -21,10 +22,33 @@ Scalar      Container
  |     |      |      |
 Num   Str    Bool  Enum
  |
- +------+
- |      |
- Int   (TODO: Float)
+ +
+ |
+ Int (TODO: Float)
 ```
+
+Only the leaf nodes are concrete.
+
+### Scalars
+
+Scalars are single-valued types.
+
+Str is a string.
+
+Bool is a boolean.
+
+Int is an integer.
+
+Enum is an enumerated set of Scalars: `Enum.of(Str).valued(['a', 'b', 'c'])`.
+
+### Containers
+
+Containers have multiple children.
+
+List represents an array.
+
+Map represents an object.
+
 
 ## Schema
 
@@ -39,7 +63,43 @@ let NumberOddity = Map.of(
     : true)
 ```
 
-Contrived? Sure. But it does demonstrate how to make a Map with two fields, one which is optional, and validate the state of the entire dict based on the values of its children.
+### Class cloning
+
+Each `Schema` type has several class-cloning static methods on it. Ultimately, each of these calls `Schema.clone` in order to return a new, composed class with a modified prototype. These are:
+
+#### Schema.named(name)
+
+This assigns a name to the element
+
+#### Schema.validatedBy(...validators)
+
+This assigns 1 or more validators to the element.
+
+#### Schema.using(overrides)
+
+This assigns any number of overrides to the new prototype.
+
+`Schema.using({name})` is equivalent to `Schema.named(name)`.
+
+
+## Elements
+
+Elements are just instances of Schema types. `let element = new Schema()`. Elements have a few useful properties. Consider:
+
+```js
+let element = new Str();
+element.value
+// undefined
+element.set(3)
+// true
+element.value
+// '3'
+element.raw
+// 3
+```
+
+
+
 
 ## Validators
 
@@ -96,11 +156,14 @@ Each element in a schema contains a list of `errors`, which starts out as `undef
 
 ## TODO
 
+- drastically improve the quality of this README.
 - organize code into separate files
 - organize tests into suites
 - integrate i18n with validation messages
 - handle string interpolation with error messages ('{name} must be at most {max} characters long')
 - make a decision about how to integrate with [immutable](https://github.com/facebook/immutable-js)
+- should `optional` be a thing, or should there be a Required Validator?
+-- how to get useful "this element is required" messages, essentially.
 
 ## Contributing
 
