@@ -6,6 +6,15 @@ class Type {
     this.raw = null;
     this.valid = undefined;
     value !== undefined && this.set(value);
+    this._watchers = [];
+  }
+
+  observe(watcher) {
+    this._watchers.push(watcher);
+  }
+
+  notifyWatchers(...args) {
+    this._watchers.forEach(watcher => watcher(...args));
   }
 
   addError(error) {
@@ -51,6 +60,7 @@ class AdaptationError extends Error {};
 class Scalar extends Type {
   constructor() {
     super();
+    this._watchers = [];
     this.value = this.serialized = null;
   }
 
@@ -69,9 +79,12 @@ class Scalar extends Type {
         this.serialized = '';
       }
       this.value = null;
+      this.notifyWatchers(false, this);
       return false;
     }
     this.serialized = this.serialize(this.value);
+    this.notifyWatchers(true, this);
+
     return true;
   }
 
@@ -217,9 +230,11 @@ class List extends Container {
       let member = new this.memberType();
       member.parent = this;
       success = success & member.set(mbr);
+      member.observe(this.notifyWatchers.bind(this));
       items.push(member);
     })
     this.members = success ? items : [];
+    this.notifyWatchers();
     return !!success;
   }
 
@@ -238,6 +253,7 @@ class Map extends Container {
       this.set({});
     }
   }
+
   get value() {
     if (!this._members) {
       return null;
@@ -271,7 +287,7 @@ class Map extends Container {
     };
   }
 
-  set(raw) {
+  set(raw, {notify = true} = {}) {
     this.raw = raw;
     if (!(raw.keys || isObject(raw))) {
       return false;
@@ -284,13 +300,20 @@ class Map extends Container {
       member.name = k;
       member.parent = this;
       members[k] = member;
-      return (raw[k] === undefined) ? success : (success &= member.set(raw[k]));
+      if (raw[k] !== undefined) {
+        success &= member.set(raw[k]);
+      }
+      member.observe(this.notifyWatchers.bind(this));
+      return success;
     }, true);
     if (success) {
       // should this.members only be defined here?
       // or in constructor?
       this.members = members;
+    } else {
+      this.set({}, {notify: false})
     }
+    if (notify) this.notifyWatchers(success, this);
     return success;
   }
 

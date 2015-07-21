@@ -114,9 +114,26 @@
 	    this.raw = null;
 	    this.valid = undefined;
 	    value !== undefined && this.set(value);
+	    this._watchers = [];
 	  }
 	
 	  _createClass(Type, [{
+	    key: 'observe',
+	    value: function observe(watcher) {
+	      this._watchers.push(watcher);
+	    }
+	  }, {
+	    key: 'notifyWatchers',
+	    value: function notifyWatchers() {
+	      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	        args[_key] = arguments[_key];
+	      }
+	
+	      this._watchers.forEach(function (watcher) {
+	        return watcher.apply(undefined, args);
+	      });
+	    }
+	  }, {
 	    key: 'addError',
 	    value: function addError(error) {
 	      this.errors.push(error);
@@ -159,8 +176,8 @@
 	  }, {
 	    key: 'validatedBy',
 	    value: function validatedBy() {
-	      for (var _len = arguments.length, validators = Array(_len), _key = 0; _key < _len; _key++) {
-	        validators[_key] = arguments[_key];
+	      for (var _len2 = arguments.length, validators = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	        validators[_key2] = arguments[_key2];
 	      }
 	
 	      return this.clone({ validators: validators });
@@ -202,6 +219,7 @@
 	    _classCallCheck(this, Scalar);
 	
 	    _get(Object.getPrototypeOf(Scalar.prototype), 'constructor', this).call(this);
+	    this._watchers = [];
 	    this.value = this.serialized = null;
 	  }
 	
@@ -218,9 +236,12 @@
 	          this.serialized = '';
 	        }
 	        this.value = null;
+	        this.notifyWatchers(false, this);
 	        return false;
 	      }
 	      this.serialized = this.serialize(this.value);
+	      this.notifyWatchers(true, this);
+	
 	      return true;
 	    }
 	  }, {
@@ -444,9 +465,11 @@
 	        var member = new _this3.memberType();
 	        member.parent = _this3;
 	        success = success & member.set(mbr);
+	        member.observe(_this3.notifyWatchers.bind(_this3));
 	        items.push(member);
 	      });
 	      this.members = success ? items : [];
+	      this.notifyWatchers();
 	      return !!success;
 	    }
 	  }, {
@@ -508,6 +531,11 @@
 	    value: function set(raw) {
 	      var _this4 = this;
 	
+	      var _ref2 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	
+	      var _ref2$notify = _ref2.notify;
+	      var notify = _ref2$notify === undefined ? true : _ref2$notify;
+	
 	      this.raw = raw;
 	      if (!(raw.keys || (0, _util.isObject)(raw))) {
 	        return false;
@@ -522,13 +550,20 @@
 	        member.name = k;
 	        member.parent = _this4;
 	        members[k] = member;
-	        return raw[k] === undefined ? success : success &= member.set(raw[k]);
+	        if (raw[k] !== undefined) {
+	          success &= member.set(raw[k]);
+	        }
+	        member.observe(_this4.notifyWatchers.bind(_this4));
+	        return success;
 	      }, true);
 	      if (success) {
 	        // should this.members only be defined here?
 	        // or in constructor?
 	        this.members = members;
+	      } else {
+	        this.set({}, { notify: false });
 	      }
+	      if (notify) this.notifyWatchers(success, this);
 	      return success;
 	    }
 	  }, {
@@ -564,11 +599,11 @@
 	    get: function get() {
 	      return {
 	        self: this.errors,
-	        children: _Object$entries(this.members).reduce(function (errors, _ref2) {
-	          var _ref22 = _slicedToArray(_ref2, 2);
+	        children: _Object$entries(this.members).reduce(function (errors, _ref3) {
+	          var _ref32 = _slicedToArray(_ref3, 2);
 	
-	          var k = _ref22[0];
-	          var v = _ref22[1];
+	          var k = _ref32[0];
+	          var v = _ref32[1];
 	
 	          errors[k] = v.allErrors;
 	          return errors;
@@ -578,11 +613,11 @@
 	  }, {
 	    key: 'default',
 	    get: function get() {
-	      return _Object$entries(this.memberSchema).reduce(function (defaults, _ref3) {
-	        var _ref32 = _slicedToArray(_ref3, 2);
+	      return _Object$entries(this.memberSchema).reduce(function (defaults, _ref4) {
+	        var _ref42 = _slicedToArray(_ref4, 2);
 	
-	        var k = _ref32[0];
-	        var v = _ref32[1];
+	        var k = _ref42[0];
+	        var v = _ref42[1];
 	
 	        if (v.prototype['default'] !== undefined) {
 	          defaults[k] = v.prototype['default'];
@@ -593,8 +628,8 @@
 	  }], [{
 	    key: 'of',
 	    value: function of() {
-	      for (var _len2 = arguments.length, members = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	        members[_key2] = arguments[_key2];
+	      for (var _len3 = arguments.length, members = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	        members[_key3] = arguments[_key3];
 	      }
 	
 	      var memberSchema = members.reduce(function (ms, m) {
@@ -607,11 +642,11 @@
 	    key: 'fromDefaults',
 	    value: function fromDefaults() {
 	      var defaulted = new this();
-	      _Object$entries(defaulted['default']).forEach(function (_ref4) {
-	        var _ref42 = _slicedToArray(_ref4, 2);
+	      _Object$entries(defaulted['default']).forEach(function (_ref5) {
+	        var _ref52 = _slicedToArray(_ref5, 2);
 	
-	        var k = _ref42[0];
-	        var v = _ref42[1];
+	        var k = _ref52[0];
+	        var v = _ref52[1];
 	        return defaulted.members[k].set(v);
 	      });
 	      return defaulted;

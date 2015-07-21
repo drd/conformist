@@ -1,4 +1,5 @@
 import {expect} from 'chai';
+import sinon from 'sinon';
 
 import {Schema, Validation} from './build/index';
 let {Int, Str, Bool, Enum, Map, List} = Schema;
@@ -63,9 +64,21 @@ expect(dds.value).to.eql(dds.default);
 // MAPS
 let ABMap = Map.of(Str.named('a'), Int.named('b'));
 let abMap = new ABMap();
+let spy = sinon.spy();
+abMap.observe(spy);
 abMap.set({a: 'foo', b: 3})
 expect(abMap.value.a).to.equal('foo');
 expect(abMap.value.b).to.equal(3);
+expect(spy.callCount).to.equal(1);
+expect(spy.firstCall.args[0]).to.be.true;
+expect(spy.firstCall.args[1]).to.equal(abMap);
+abMap.members.b.set(42);
+expect(spy.callCount).to.equal(2);
+expect(spy.secondCall.args[0]).to.be.true;
+expect(spy.secondCall.args[1]).to.equal(abMap.members.b);
+spy.reset();
+abMap.set({a: null, b: null});
+expect(spy.callCount).to.equal(1);
 
 
 class IsPositive extends Validator {
