@@ -1,0 +1,27 @@
+var path = require('path');
+var webpack = require('webpack');
+
+module.exports = {
+    devtool: 'sourcemap',
+
+    entry: './src/conformist.js',
+
+    output: {
+        filename: 'index.js',
+        path: path.resolve('./build')
+    },
+
+    module: {
+        loaders: [
+            {
+                test: /\.js$/,
+                loaders: ['babel?optional=runtime'],
+                include: path.resolve('./src')
+            }
+        ]
+    },
+
+    stats: {
+        colors: true
+    }
+}
