@@ -108,7 +108,7 @@ Please fork and send pull requests. If you add a feature, add a test. If you fix
 
 ## Authors
 
-- Eric O'Connell <eric.oconnell@idealist.org>
+- Eric O'Connell <eric@compassing.net>
 
 ## License
 
