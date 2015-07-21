@@ -80,7 +80,7 @@ class Scalar extends Type {
     return true;
   }
 
-  validate(state) {
+  validate(context) {
     this.errors = [];
 
     if (this.value === null) {
@@ -90,7 +90,7 @@ class Scalar extends Type {
 
     this.valid = this.validators.reduce((valid, v) => {
       if (valid) {
-        valid = v.call ? v(this, state) : v.validate(this, state);
+        valid = v.call ? v(this, context) : v.validate(this, context);
       }
       return valid;
     }, true);
@@ -179,13 +179,13 @@ class Enum extends Scalar {
 Enum.prototype.childType = Str;
 
 class Container extends Type {
-  validate(state) {
+  validate(context) {
     this.errors = [];
     let success = !!this.memberValues.reduce((valid, member) => {
-      var result = member.validate(state);
+      var result = member.validate(context);
       return valid && result;
     }, true);
-    return !!this.validators.reduce((valid, validator) => valid &= validator.validate(this, state), success);
+    return !!this.validators.reduce((valid, validator) => valid &= validator.validate(this, context), success);
   }
 }
 
@@ -267,10 +267,13 @@ class Map extends Container {
   }
 
   get allErrors() {
-    return Object.entries(this.members).reduce((errors, [k, v]) => {
-      errors[k] = v.allErrors;
-      return errors;
-    }, {});
+    return {
+      self: this.errors,
+      children: Object.entries(this.members).reduce((errors, [k, v]) => {
+        errors[k] = v.allErrors;
+        return errors;
+      }, {})
+    };
   }
 
   set(raw) {
@@ -322,7 +325,7 @@ class Map extends Container {
 
 
 class Validator {
-  noteError(element, state, options) {
+  noteError(element, context, options) {
     let message = options.message || this[options.key];
     element.addError(message);
     return false;

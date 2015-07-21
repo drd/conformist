@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import {Type, Validator, Scalar, Int, Str, Bool, Enum, Container, List, Map} from './flat.js';
+import {Type, Validator, Scalar, Int, Str, Bool, Enum, Container, List, Map} from './src/conformist.js';
 
 
 var MyString = Str.named('string').using({default: 'default', optional: false});
@@ -125,7 +125,7 @@ let Yadda = Map.of(
 let yadda = new Yadda();
 yadda.set({a: true, b: 2});
 yadda.validate();
-expect(yadda.allErrors).to.eql({a: ['Truthy'], b: ['Not 3']});
+expect(yadda.allErrors).to.eql({self: [], children: {a: ['Truthy'], b: ['Not 3']}});
 
 
 // OPTION AS A FUNCTION
@@ -212,8 +212,8 @@ expect(location.validate()).to.eql(true);
 
 expect(location.set({fallback: false, location: '', geoid: 3})).to.eql(true);
 expect(location.validate()).to.eql(false);
-expect(location.allErrors.location.length).to.eql(1);
-expect(location.allErrors.location[0]).to.eql('Please choose a location');
+expect(location.allErrors.children.location.length).to.eql(1);
+expect(location.allErrors.children.location[0]).to.eql('Please choose a location');
 expect(location.set({fallback: false, location: 'Boston'})).to.eql(true);
 expect(location.validate()).to.eql(false);
 expect(location.set({fallback: true, countryCode: 'US'})).to.eql(true);
