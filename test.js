@@ -1,6 +1,8 @@
 import {expect} from 'chai';
 
-import {Type, Validator, Scalar, Int, Str, Bool, Enum, Container, List, Map} from './src/conformist.js';
+import {Schema, Validation} from './build/index';
+let {Int, Str, Bool, Enum, Map, List} = Schema;
+let {Validator, Min, Max} = Validation;
 
 
 var MyString = Str.named('string').using({default: 'default', optional: false});
@@ -232,68 +234,6 @@ const CAPITALIZED_TYPES = {
     'recruiter': 'Recruiter',
     'consultant': 'Consultant'
 };
-
-
-class Min extends Validator {
-  invalidNum = '{name} must be greater than or equal to {min}'
-  invalidList = '{name} must contain {min} or more elements'
-  invalidString = '{name} must be at least {min} characters long'
-
-  constructor(min) {
-    super();
-    this.min = min;
-  }
-
-  validate(element, state) {
-    if (element instanceof Str) {
-      if (element.value.length < this.min) {
-        return this.noteError(element, state, {key: 'invalidString'});
-      }
-    } else if (element instanceof List) {
-      if (element.value.length < this.min) {
-        return this.noteError(element, state, {key: 'invalidList'});
-      }
-    } else if (element instanceof Num) {
-      if (element.value < this.min) {
-        return this.noteError(element, state, {key: 'invalidNum'});
-      }
-    } else {
-      throw new Error('Min cannot be used on this type', element);
-    }
-    return true;
-  }
-}
-
-
-class Max extends Validator {
-  invalidNum = '{name} must be less than or equal to {max}'
-  invalidList = '{name} must contain {max} or fewer elements'
-  invalidString = '{name} must be shorter than {max} characters long'
-
-  constructor(max) {
-    super();
-    this.max = max;
-  }
-
-  validate(element, state) {
-    if (element instanceof Str) {
-      if (element.value.length > this.max) {
-        return this.noteError(element, state, {key: 'invalidString'});
-      }
-    } else if (element instanceof List) {
-      if (element.value.length > this.max) {
-        return this.noteError(element, state, {key: 'invalidList'});
-      }
-    } else if (element instanceof Num) {
-      if (element.value > this.max) {
-        return this.noteError(element, state, {key: 'invalidNum'});
-      }
-    } else {
-      throw new Error('Max cannot be used on this type', element);
-    }
-    return true;
-  }
-}
 
 
 let Org = Map.of(
