@@ -1,6 +1,6 @@
 {
   "name": "conformist",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "a flatland inspired schema library for javascript",
   "homepage": "https://www.github.com/drd/conformist",
   "bugs": {
