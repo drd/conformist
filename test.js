@@ -47,8 +47,13 @@ expect(n.value).to.equal(123)
 // LISTS
 var Strings = List.of(Str);
 let ss = new Strings();
-ss.set(['yr', 'mom']);
-expect(ss.value).to.eql(['yr', 'mom'])
+let spy = sinon.spy();
+ss.observe(spy);
+ss.set(['yoghurt', 'pops']);
+expect(ss.value).to.eql(['yoghurt', 'pops'])
+expect(spy.callCount).to.equal(1);
+expect(spy.firstCall.args[0]).to.be.true;
+expect(spy.firstCall.args[1]).to.equal(ss);
 
 var DefaultedStrings = Strings.using({default: ['foo', 'bar']});
 let ds = new DefaultedStrings();
@@ -64,7 +69,7 @@ expect(dds.value).to.eql(dds.default);
 // MAPS
 let ABMap = Map.of(Str.named('a'), Int.named('b'));
 let abMap = new ABMap();
-let spy = sinon.spy();
+spy = sinon.spy();
 abMap.observe(spy);
 abMap.set({a: 'foo', b: 3})
 expect(abMap.value.a).to.equal('foo');

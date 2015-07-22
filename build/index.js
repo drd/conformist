@@ -469,7 +469,7 @@
 	        items.push(member);
 	      });
 	      this.members = success ? items : [];
-	      this.notifyWatchers();
+	      this.notifyWatchers(!!success, this);
 	      return !!success;
 	    }
 	  }, {
