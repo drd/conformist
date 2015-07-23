@@ -4,6 +4,7 @@ import {isObject, consume} from './util';
 class Type {
   constructor(value) {
     this.raw = null;
+    this.serialized = '';
     this.valid = undefined;
     value !== undefined && this.set(value);
     this._watchers = [];
@@ -60,7 +61,7 @@ class Scalar extends Type {
   constructor() {
     super();
     this._watchers = [];
-    this.value = this.serialized = null;
+    this.value = null;
   }
 
   get allErrors() {
@@ -72,11 +73,8 @@ class Scalar extends Type {
     try {
       this.value = this.adapt(raw);
     } catch (e) {
-      try {
-        this.serialized = this.serialize(raw);
-      } catch (e) {
-        this.serialized = '';
-      }
+      // serialize must not throw an error!
+      this.serialized = this.serialize(raw);
       this.value = null;
       this.notifyWatchers(false, this);
       return false;
@@ -96,6 +94,14 @@ class Scalar extends Type {
 
     return this.valid;
   }
+
+  serialize(value) {
+    try {
+      return value.toString();
+    } catch(e) {
+      return '';
+    }
+  }
 }
 
 
@@ -104,20 +110,12 @@ class Bool extends Scalar {
     // TODO: more restrictive?
     return !!raw;
   }
-
-  serialize(value) {
-    return value.toString();
-  }
 }
 
 
 class Str extends Scalar {
   adapt(raw) {
     return raw.toString();
-  }
-
-  serialize(value) {
-    return value;
   }
 }
 
@@ -134,10 +132,6 @@ class Int extends Num {
       throw new AdaptationError(`${value} is not a number`);
     }
     return value;
-  }
-
-  serialize(value) {
-    return value.toString();
   }
 }
 
@@ -163,7 +157,11 @@ class Enum extends Scalar {
   }
 
   serialize(value) {
-    return this.childSchema.serialize(value);
+    try {
+      return this.childSchema.prototype.serialize(value);
+    } catch(e) {
+      return '';
+    }
   }
 
   static of(childType) {
@@ -226,10 +224,17 @@ class List extends Container {
       success = success & member.set(mbr);
       member.observe(this.notifyWatchers.bind(this));
       items.push(member);
-    })
+    });
+    this.serialized = this.serialize(raw);
     this.members = success ? items : [];
     this.notifyWatchers(!!success, this);
     return !!success;
+  }
+
+  serialize(value = []) {
+    return '[' +
+      value.map(v => `"${this.memberType.prototype.serialize(v)}"`).join(", ") +
+    ']';
   }
 
   static of(type) {
@@ -255,6 +260,15 @@ class Map extends Container {
     return Object.keys(this._members).reduce((v, m) => {
       v[m] = this._members[m].value;
       return v;
+    }, {});
+  }
+
+  get default() {
+    return Object.entries(this.memberSchema).reduce((defaults, [k, v]) => {
+      if (v.prototype.default !== undefined) {
+        defaults[k] = v.prototype.default;
+      }
+      return defaults;
     }, {});
   }
 
@@ -300,6 +314,13 @@ class Map extends Container {
       member.observe(this.notifyWatchers.bind(this));
       return success;
     }, true);
+
+    try {
+      this.serialized = this.serialize(raw);
+    } catch(e) {
+      this.serialized = this.serialize({});
+    }
+
     if (success) {
       // should this.members only be defined here?
       // or in constructor?
@@ -309,6 +330,12 @@ class Map extends Container {
     }
     if (notify) this.notifyWatchers(success, this);
     return success;
+  }
+
+  serialize(value) {
+    return '{' + Object.entries(this.memberSchema).reduce((serialized, [key, memberSchema]) => {
+      return serialized.concat([`${key}: "${memberSchema.prototype.serialize(value[key])}"`]);
+    }, []).join(', ') + '}';
   }
 
   static of(...members) {
@@ -323,15 +350,6 @@ class Map extends Container {
     let defaulted = new this();
     Object.entries(defaulted.default).forEach(([k,v]) => defaulted.members[k].set(v));
     return defaulted;
-  }
-
-  get default() {
-    return Object.entries(this.memberSchema).reduce((defaults, [k, v]) => {
-      if (v.prototype.default !== undefined) {
-        defaults[k] = v.prototype.default;
-      }
-      return defaults;
-    }, {});
   }
 }
 

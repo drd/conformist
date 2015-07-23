@@ -97,9 +97,9 @@
 	
 	var _Object$keys = __webpack_require__(42)['default'];
 	
-	var _Object$values = __webpack_require__(44)['default'];
+	var _Object$entries = __webpack_require__(44)['default'];
 	
-	var _Object$entries = __webpack_require__(47)['default'];
+	var _Object$values = __webpack_require__(47)['default'];
 	
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -112,6 +112,7 @@
 	    _classCallCheck(this, Type);
 	
 	    this.raw = null;
+	    this.serialized = '';
 	    this.valid = undefined;
 	    value !== undefined && this.set(value);
 	    this._watchers = [];
@@ -219,7 +220,7 @@
 	
 	    _get(Object.getPrototypeOf(Scalar.prototype), 'constructor', this).call(this);
 	    this._watchers = [];
-	    this.value = this.serialized = null;
+	    this.value = null;
 	  }
 	
 	  _createClass(Scalar, [{
@@ -229,11 +230,8 @@
 	      try {
 	        this.value = this.adapt(raw);
 	      } catch (e) {
-	        try {
-	          this.serialized = this.serialize(raw);
-	        } catch (e) {
-	          this.serialized = '';
-	        }
+	        // serialize must not throw an error!
+	        this.serialized = this.serialize(raw);
 	        this.value = null;
 	        this.notifyWatchers(false, this);
 	        return false;
@@ -255,6 +253,15 @@
 	      }, true);
 	
 	      return this.valid;
+	    }
+	  }, {
+	    key: 'serialize',
+	    value: function serialize(value) {
+	      try {
+	        return value.toString();
+	      } catch (e) {
+	        return '';
+	      }
 	    }
 	  }, {
 	    key: 'allErrors',
@@ -281,11 +288,6 @@
 	      // TODO: more restrictive?
 	      return !!raw;
 	    }
-	  }, {
-	    key: 'serialize',
-	    value: function serialize(value) {
-	      return value.toString();
-	    }
 	  }]);
 	
 	  return Bool;
@@ -304,11 +306,6 @@
 	    key: 'adapt',
 	    value: function adapt(raw) {
 	      return raw.toString();
-	    }
-	  }, {
-	    key: 'serialize',
-	    value: function serialize(value) {
-	      return value;
 	    }
 	  }]);
 	
@@ -345,11 +342,6 @@
 	      }
 	      return value;
 	    }
-	  }, {
-	    key: 'serialize',
-	    value: function serialize(value) {
-	      return value.toString();
-	    }
 	  }]);
 	
 	  return Int;
@@ -385,7 +377,11 @@
 	  }, {
 	    key: 'serialize',
 	    value: function serialize(value) {
-	      return this.childSchema.serialize(value);
+	      try {
+	        return this.childSchema.prototype.serialize(value);
+	      } catch (e) {
+	        return '';
+	      }
 	    }
 	  }], [{
 	    key: 'of',
@@ -459,9 +455,21 @@
 	        member.observe(_this3.notifyWatchers.bind(_this3));
 	        items.push(member);
 	      });
+	      this.serialized = this.serialize(raw);
 	      this.members = success ? items : [];
 	      this.notifyWatchers(!!success, this);
 	      return !!success;
+	    }
+	  }, {
+	    key: 'serialize',
+	    value: function serialize() {
+	      var _this4 = this;
+	
+	      var value = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+	
+	      return '[' + value.map(function (v) {
+	        return '"' + _this4.memberType.prototype.serialize(v) + '"';
+	      }).join(', ') + ']';
 	    }
 	  }, {
 	    key: 'value',
@@ -523,7 +531,7 @@
 	  _createClass(Map, [{
 	    key: 'set',
 	    value: function set(raw) {
-	      var _this4 = this;
+	      var _this5 = this;
 	
 	      var _ref2 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 	
@@ -540,16 +548,23 @@
 	      var keys = _Object$keys(this.memberSchema);
 	      var members = {};
 	      var success = !!keys.reduce(function (success, k) {
-	        var member = new _this4.memberSchema[k]();
+	        var member = new _this5.memberSchema[k]();
 	        member.name = k;
-	        member.parent = _this4;
+	        member.parent = _this5;
 	        members[k] = member;
 	        if (raw[k] !== undefined) {
 	          success &= member.set(raw[k]);
 	        }
-	        member.observe(_this4.notifyWatchers.bind(_this4));
+	        member.observe(_this5.notifyWatchers.bind(_this5));
 	        return success;
 	      }, true);
+	
+	      try {
+	        this.serialized = this.serialize(raw);
+	      } catch (e) {
+	        this.serialized = this.serialize({});
+	      }
+	
 	      if (success) {
 	        // should this.members only be defined here?
 	        // or in constructor?
@@ -561,16 +576,43 @@
 	      return success;
 	    }
 	  }, {
+	    key: 'serialize',
+	    value: function serialize(value) {
+	      return '{' + _Object$entries(this.memberSchema).reduce(function (serialized, _ref3) {
+	        var _ref32 = _slicedToArray(_ref3, 2);
+	
+	        var key = _ref32[0];
+	        var memberSchema = _ref32[1];
+	
+	        return serialized.concat([key + ': "' + memberSchema.prototype.serialize(value[key]) + '"']);
+	      }, []).join(', ') + '}';
+	    }
+	  }, {
 	    key: 'value',
 	    get: function get() {
-	      var _this5 = this;
+	      var _this6 = this;
 	
 	      if (!this._members) {
 	        return null;
 	      }
 	      return _Object$keys(this._members).reduce(function (v, m) {
-	        v[m] = _this5._members[m].value;
+	        v[m] = _this6._members[m].value;
 	        return v;
+	      }, {});
+	    }
+	  }, {
+	    key: 'default',
+	    get: function get() {
+	      return _Object$entries(this.memberSchema).reduce(function (defaults, _ref4) {
+	        var _ref42 = _slicedToArray(_ref4, 2);
+	
+	        var k = _ref42[0];
+	        var v = _ref42[1];
+	
+	        if (v.prototype['default'] !== undefined) {
+	          defaults[k] = v.prototype['default'];
+	        }
+	        return defaults;
 	      }, {});
 	    }
 	  }, {
@@ -593,31 +635,16 @@
 	    get: function get() {
 	      return {
 	        self: this.errors,
-	        children: _Object$entries(this.members).reduce(function (errors, _ref3) {
-	          var _ref32 = _slicedToArray(_ref3, 2);
+	        children: _Object$entries(this.members).reduce(function (errors, _ref5) {
+	          var _ref52 = _slicedToArray(_ref5, 2);
 	
-	          var k = _ref32[0];
-	          var v = _ref32[1];
+	          var k = _ref52[0];
+	          var v = _ref52[1];
 	
 	          errors[k] = v.allErrors;
 	          return errors;
 	        }, {})
 	      };
-	    }
-	  }, {
-	    key: 'default',
-	    get: function get() {
-	      return _Object$entries(this.memberSchema).reduce(function (defaults, _ref4) {
-	        var _ref42 = _slicedToArray(_ref4, 2);
-	
-	        var k = _ref42[0];
-	        var v = _ref42[1];
-	
-	        if (v.prototype['default'] !== undefined) {
-	          defaults[k] = v.prototype['default'];
-	        }
-	        return defaults;
-	      }, {});
 	    }
 	  }], [{
 	    key: 'of',
@@ -636,11 +663,11 @@
 	    key: 'fromDefaults',
 	    value: function fromDefaults() {
 	      var defaulted = new this();
-	      _Object$entries(defaulted['default']).forEach(function (_ref5) {
-	        var _ref52 = _slicedToArray(_ref5, 2);
+	      _Object$entries(defaulted['default']).forEach(function (_ref6) {
+	        var _ref62 = _slicedToArray(_ref6, 2);
 	
-	        var k = _ref52[0];
-	        var v = _ref52[1];
+	        var k = _ref62[0];
+	        var v = _ref62[1];
 	        return defaulted.members[k].set(v);
 	      });
 	      return defaulted;
@@ -1524,7 +1551,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(46);
-	module.exports = __webpack_require__(7).core.Object.values;
+	module.exports = __webpack_require__(7).core.Object.entries;
 
 /***/ },
 /* 46 */
@@ -1562,7 +1589,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(46);
-	module.exports = __webpack_require__(7).core.Object.entries;
+	module.exports = __webpack_require__(7).core.Object.values;
 
 /***/ },
 /* 49 */
@@ -1592,9 +1619,9 @@
 /* 50 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	function _Restriction(valueTransformer) {
@@ -1613,11 +1640,16 @@
 	var _ValueRestriction = _Restriction(function (e) {
 	  return e.value;
 	});
+	var _SerializedRestriction = _Restriction(function (e) {
+	  return e.serialized;
+	});
 	
 	var Value = {
+	  // Ok, Present *is* in terms of the serialized property but it's really
+	  // all about the value. You got me.
 	  Present: function Present(msg) {
-	    return _ValueRestriction(msg, function (v) {
-	      return v === null;
+	    return _SerializedRestriction(msg, function (v) {
+	      return v === '';
 	    });
 	  },
 	  AtLeast: function AtLeast(min, msg) {
@@ -1665,8 +1697,8 @@
 	  }
 	};
 	
-	exports["default"] = { Value: Value, Length: Length };
-	module.exports = exports["default"];
+	exports['default'] = { Value: Value, Length: Length };
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ])));

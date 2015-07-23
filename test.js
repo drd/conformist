@@ -14,7 +14,7 @@ expect(s.default).to.equal('default');
 // lifecycle
 expect(s.value).to.equal(null);
 expect(s.valid).to.equal(undefined);
-expect(s.serialized).to.equal(null);
+expect(s.serialized).to.equal('');
 expect(s.raw).to.equal(null);
 
 s.validate();
@@ -50,6 +50,7 @@ let spy = sinon.spy();
 ss.observe(spy);
 ss.set(['yoghurt', 'pops']);
 expect(ss.value).to.eql(['yoghurt', 'pops'])
+expect(ss.serialized).to.equal('["yoghurt", "pops"]');
 expect(spy.callCount).to.equal(1);
 expect(spy.firstCall.args[0]).to.be.true;
 expect(spy.firstCall.args[1]).to.equal(ss);
@@ -146,6 +147,7 @@ let yadda = new Yadda();
 yadda.set({a: true, b: 2});
 yadda.validate();
 expect(yadda.allErrors).to.eql({self: [], children: {a: ['Truthy'], b: ['Not 3']}});
+expect(yadda.serialized).to.equal('{a: "true", b: "2"}');
 
 let ListOfAtLeastThree = List
   .of(Str
