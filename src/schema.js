@@ -97,10 +97,7 @@ class Scalar extends Type {
     }
 
     this.valid = this.validators.reduce((valid, v) => {
-      if (valid) {
-        valid = v.call ? v(this, context) : v.validate(this, context);
-      }
-      return valid;
+      return valid && v(this, context);
     }, true);
 
     return this.valid;
@@ -193,7 +190,7 @@ class Container extends Type {
       var result = member.validate(context);
       return valid && result;
     }, true);
-    return !!this.validators.reduce((valid, validator) => valid &= validator.validate(this, context), success);
+    return !!this.validators.reduce((valid, validator) => valid &= validator(this, context), success);
   }
 }
 

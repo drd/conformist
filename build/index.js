@@ -257,10 +257,7 @@
 	      }
 	
 	      this.valid = this.validators.reduce(function (valid, v) {
-	        if (valid) {
-	          valid = v.call ? v(_this, context) : v.validate(_this, context);
-	        }
-	        return valid;
+	        return valid && v(_this, context);
 	      }, true);
 	
 	      return this.valid;
@@ -433,7 +430,7 @@
 	        return valid && result;
 	      }, true);
 	      return !!this.validators.reduce(function (valid, validator) {
-	        return valid &= validator.validate(_this2, context);
+	        return valid &= validator(_this2, context);
 	      }, success);
 	    }
 	  }]);
@@ -1599,152 +1596,78 @@
 
 /***/ },
 /* 50 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 	
-	var _createClass = __webpack_require__(11)['default'];
-	
-	var _classCallCheck = __webpack_require__(14)['default'];
-	
-	var _get = __webpack_require__(15)['default'];
-	
-	var _inherits = __webpack_require__(20)['default'];
-	
-	var _slicedToArray = __webpack_require__(23)['default'];
-	
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	
-	var _schema = __webpack_require__(2);
-	
-	var Validator = (function () {
-	  function Validator() {
-	    _classCallCheck(this, Validator);
-	  }
-	
-	  _createClass(Validator, [{
-	    key: 'processTemplate',
-	    value: function processTemplate(template, element, context) {
-	      var _this = this;
-	
-	      var tokens = (template.match(/({[^}].+?)\}/gm) || []).map(function (t) {
-	        return [new RegExp(t, 'g'), t.slice(1, -1)];
-	      });
-	      return tokens.reduce(function (processed, _ref, i) {
-	        var _ref2 = _slicedToArray(_ref, 2);
-	
-	        var token = _ref2[0];
-	        var key = _ref2[1];
-	
-	        var substitution = _this[key] || element[key];
-	        return processed.replace(token, substitution);
-	      }, template);
-	    }
-	  }, {
-	    key: 'noteError',
-	    value: function noteError(element, context, options) {
-	      var messageTemplate = options.message || this[options.key];
-	      var message = this.processTemplate(messageTemplate, element, context);
-	      element.addError(message);
-	      return false;
-	    }
-	  }]);
-	
-	  return Validator;
-	})();
-	
-	var Constrained = (function (_Validator) {
-	  _inherits(Constrained, _Validator);
-	
-	  _createClass(Constrained, [{
-	    key: 'constraint',
-	    value: function constraint() {
-	      throw new Error('Unimplmented');
-	    }
-	  }]);
-	
-	  function Constrained(extreme) {
-	    _classCallCheck(this, Constrained);
-	
-	    _get(Object.getPrototypeOf(Constrained.prototype), 'constructor', this).call(this);
-	    this.extreme = extreme;
-	  }
-	
-	  _createClass(Constrained, [{
-	    key: 'validate',
-	    value: function validate(element, state) {
-	      if (element instanceof _schema.Str) {
-	        if (this.constraint(element.value.length, this.extreme)) {
-	          return this.noteError(element, state, { key: 'invalidString' });
-	        }
-	      } else if (element instanceof _schema.List) {
-	        if (this.constraint(element.value.length, this.extreme)) {
-	          return this.noteError(element, state, { key: 'invalidList' });
-	        }
-	      } else if (element instanceof _schema.Num) {
-	        if (this.constraint(element.value, this.extreme)) {
-	          return this.noteError(element, state, { key: 'invalidNum' });
-	        }
-	      } else {
-	        throw new Error('Min cannot be used on this type: ' + element);
+	function _Restriction(valueTransformer) {
+	  return function (msg, isFailure) {
+	    return function (element, context) {
+	      if (isFailure(valueTransformer(element))) {
+	        element.addError(msg);
+	        return false;
 	      }
 	      return true;
-	    }
-	  }]);
+	    };
+	  };
+	}
 	
-	  return Constrained;
-	})(Validator);
+	// Nums
+	var _ValueRestriction = _Restriction(function (e) {
+	  return e.value;
+	});
 	
-	var Min = (function (_Constrained) {
-	  _inherits(Min, _Constrained);
-	
-	  function Min() {
-	    _classCallCheck(this, Min);
-	
-	    _get(Object.getPrototypeOf(Min.prototype), 'constructor', this).apply(this, arguments);
-	
-	    this.invalidNum = '{name} must be greater than or equal to {extreme}';
-	    this.invalidList = '{name} must contain {extreme} or more elements';
-	    this.invalidString = '{name} must be at least {extreme} characters long';
+	var Value = {
+	  AtLeast: function AtLeast(msg, min) {
+	    return _ValueRestriction(msg, function (v) {
+	      return v < min;
+	    });
+	  },
+	  AtMost: function AtMost(msg, max) {
+	    return _ValueRestriction(msg, function (v) {
+	      return v > max;
+	    });
+	  },
+	  Between: function Between(msg, min, max) {
+	    return _ValueRestriction(msg, function (v) {
+	      return v < min || v > max;
+	    });
 	  }
+	};
 	
-	  _createClass(Min, [{
-	    key: 'constraint',
-	    value: function constraint(value, min) {
-	      return value < min;
-	    }
-	  }]);
+	// Strings & Lists
+	var _LengthRestriction = _Restriction(function (e) {
+	  return e.value.length;
+	});
 	
-	  return Min;
-	})(Constrained);
-	
-	var Max = (function (_Constrained2) {
-	  _inherits(Max, _Constrained2);
-	
-	  function Max() {
-	    _classCallCheck(this, Max);
-	
-	    _get(Object.getPrototypeOf(Max.prototype), 'constructor', this).apply(this, arguments);
-	
-	    this.invalidNum = '{name} must be less than or equal to {extreme}';
-	    this.invalidList = '{name} must contain {extreme} or fewer elements';
-	    this.invalidString = '{name} must be shorter than {extreme} characters long';
+	var Length = {
+	  AtLeast: function AtLeast(msg, min) {
+	    return _LengthRestriction(msg, function (v) {
+	      return v < min;
+	    });
+	  },
+	  AtMost: function AtMost(msg, max) {
+	    return _LengthRestriction(msg, function (v) {
+	      return v > max;
+	    });
+	  },
+	  Between: function Between(msg, min, max) {
+	    return _LengthRestriction(msg, function (v) {
+	      return v < min || v > max;
+	    });
+	  },
+	  Exactly: function Exactly(msg, count) {
+	    return _LengthRestriction(msg, function (v) {
+	      return v === count;
+	    });
 	  }
+	};
 	
-	  _createClass(Max, [{
-	    key: 'constraint',
-	    value: function constraint(value, min) {
-	      return value > min;
-	    }
-	  }]);
-	
-	  return Max;
-	})(Constrained);
-	
-	exports['default'] = { Validator: Validator, Min: Min, Max: Max };
-	module.exports = exports['default'];
+	exports["default"] = { Value: Value, Length: Length };
+	module.exports = exports["default"];
 
 /***/ }
 /******/ ])));

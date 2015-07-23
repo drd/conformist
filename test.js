@@ -3,7 +3,7 @@ import sinon from 'sinon';
 
 import {Schema, Validation} from './build/index';
 let {Int, Str, Bool, Enum, Map, List} = Schema;
-let {Validator, Min, Max} = Validation;
+let {Value, Length} = Validation;
 
 
 var MyString = Str.named('string').using({default: 'default', optional: false});
@@ -86,12 +86,11 @@ abMap.set({a: null, b: null});
 expect(spy.callCount).to.equal(1);
 
 
-class IsPositive extends Validator {
-  nonPositive = 'Element value must be greater than or equal to zero'
-
-  validate(element, state) {
+function IsPositive(msg) {
+  return (element, context) => {
     if (element.value < 0) {
-      return this.noteError(element, state, {key: 'nonPositive'})
+      element.addError(msg);
+      return false;
     }
     return true;
   }
@@ -99,7 +98,7 @@ class IsPositive extends Validator {
 
 // VALIDATION
 class PositiveInt extends Int {
-  validators = [new IsPositive()]
+  validators = [IsPositive('You must enter a positive integer')]
 }
 
 let pos = new PositiveInt();
@@ -109,25 +108,23 @@ expect(pos.valid).to.equal(true);
 pos.set(-3);
 pos.validate();
 expect(pos.valid).to.equal(false);
-expect(pos.errors[0]).to.equal(pos.validators[0].nonPositive);
+expect(pos.errors[0]).to.equal('You must enter a positive integer');
 
 
-class ConfirmationMatch extends Validator {
-  mustMatch = 'Password and confirmation do not match'
-
-  validate(element, state) {
-    if (element.members['pass'].value !== element.members['conf'].value) {
-      return this.noteError(element, state, {key: 'mustMatch'});
-    }
-    return true;
+let ConfirmationMatch = (msg) => (element, context) => {
+  if (element.members['pass'].value !== element.members['conf'].value) {
+    element.addError(msg);
+    return false;
   }
+  return true;
 }
 
-let PasswordConfirmation = Map.of(Str.named('pass'), Str.named('conf')).validatedBy(new ConfirmationMatch())
+let PasswordConfirmation = Map.of(Str.named('pass'), Str.named('conf'))
+  .validatedBy(ConfirmationMatch('Password and confirmation do not match'))
 let pc = new PasswordConfirmation();
 pc.set({pass: '12345', conf: '12346'});
 expect(pc.validate()).to.equal(false);
-expect(pc.errors[0]).to.equal(pc.validators[0].mustMatch);
+expect(pc.errors[0]).to.equal('Password and confirmation do not match');
 
 
 let Yadda = Map.of(
@@ -154,17 +151,17 @@ expect(yadda.allErrors).to.eql({self: [], children: {a: ['Truthy'], b: ['Not 3']
 let ListOfAtLeastThree = List
   .of(Str
     .named('string')
-    .validatedBy(new Min(3)))
+    .validatedBy(Length.AtLeast('You must enter at least 3 characters', 3)))
   .named('LOALT')
-  .validatedBy(new Min(3));
+  .validatedBy(Length.AtLeast('You must enter at least 3 strings', 3));
 let loalt = new ListOfAtLeastThree();
 expect(loalt.set(['ab', 'cd'])).to.be.true;
 expect(loalt.validate()).to.be.false;
 expect(loalt.allErrors).to.eql({
-  self: ['LOALT must contain 3 or more elements'],
+  self: ['You must enter at least 3 strings'],
   children: [
-    ['string must be at least 3 characters long'],
-    ['string must be at least 3 characters long']
+    ['You must enter at least 3 characters'],
+    ['You must enter at least 3 characters']
   ]
 });
 
@@ -271,16 +268,22 @@ const CAPITALIZED_TYPES = {
 
 
 let Org = Map.of(
-  Enum.of(Str).named('type').valued(Object.keys(CAPITALIZED_TYPES)).using({default: 'nonprofit'}),
-  List.of(Location).named('addresses').validatedBy(new Min(1)),
+  Enum.of(Str)
+    .named('type')
+    .valued(Object.keys(CAPITALIZED_TYPES))
+    .using({default: 'nonprofit'}),
+  List.of(Location)
+    .named('addresses')
+    .validatedBy(Length.AtLeast('You must enter at least 1 address', 1)),
   Str.named('fullName'),
-  Str.named('shortName').validatedBy(new Max(25)),
+  Str.named('shortName')
+    .validatedBy(Length.AtMost('Short name must be at most 25 characters', 25)),
   Str.named('streetAddress').using({optional: true}),
   Str.named('deliveryDetails').using({optional: true}),
   Str.named('ein').using({optional: true}),
   Str.named('website').using({optional: true}),
   Str.named('description').using({default: ''}),
-  List.named('keywords').of(Str).validatedBy(new Min(1)),
+  List.named('keywords').of(Str).validatedBy(Length.AtLeast('You must choose at least 1 keyword', 1)),
   Str.named('image').using({optional: true})
 );
 
@@ -291,7 +294,7 @@ expect(org.validate()).to.be.false;
 expect(org.members.addresses.errors.length).to.eql(1);
 expect(org.members.keywords.errors.length).to.eql(1);
 
-org.set({shortName: 'The floppiness is hard to control.... but...'});
+org.set({shortName: 'Marx sometimes types really inappropriate test data, but....'});
 expect(org.validate()).to.be.false;
 expect(org.members.shortName.errors.length).to.eql(1);
 
