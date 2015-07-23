@@ -14,7 +14,7 @@ function _Restriction(valueTransformer) {
 let _ValueRestriction = _Restriction(e => e.value);
 
 let Value = {
-  Present: (msg) => _ValueRestriction(msg, v => v !== null),
+  Present: (msg) => _ValueRestriction(msg, v => v === null),
   AtLeast: (min, msg) => _ValueRestriction(msg, v => v < min),
   AtMost: (max, msg) => _ValueRestriction(msg, v => v > max),
   Between: (min, max, msg) => _ValueRestriction(msg, v => v < min || v > max)
