@@ -151,9 +151,9 @@ expect(yadda.allErrors).to.eql({self: [], children: {a: ['Truthy'], b: ['Not 3']
 let ListOfAtLeastThree = List
   .of(Str
     .named('string')
-    .validatedBy(Length.AtLeast('You must enter at least 3 characters', 3)))
+    .validatedBy(Length.AtLeast(3, 'You must enter at least 3 characters')))
   .named('LOALT')
-  .validatedBy(Length.AtLeast('You must enter at least 3 strings', 3));
+  .validatedBy(Length.AtLeast(3, 'You must enter at least 3 strings'));
 let loalt = new ListOfAtLeastThree();
 expect(loalt.set(['ab', 'cd'])).to.be.true;
 expect(loalt.validate()).to.be.false;
@@ -274,16 +274,16 @@ let Org = Map.of(
     .using({default: 'nonprofit'}),
   List.of(Location)
     .named('addresses')
-    .validatedBy(Length.AtLeast('You must enter at least 1 address', 1)),
+    .validatedBy(Length.AtLeast(1, 'You must enter at least 1 address')),
   Str.named('fullName'),
   Str.named('shortName')
-    .validatedBy(Length.AtMost('Short name must be at most 25 characters', 25)),
+    .validatedBy(Length.AtMost(25, 'Short name must be at most 25 characters')),
   Str.named('streetAddress').using({optional: true}),
   Str.named('deliveryDetails').using({optional: true}),
   Str.named('ein').using({optional: true}),
   Str.named('website').using({optional: true}),
   Str.named('description').using({default: ''}),
-  List.named('keywords').of(Str).validatedBy(Length.AtLeast('You must choose at least 1 keyword', 1)),
+  List.named('keywords').of(Str).validatedBy(Length.AtLeast(1, 'You must choose at least 1 keyword')),
   Str.named('image').using({optional: true})
 );
 

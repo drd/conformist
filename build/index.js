@@ -1621,17 +1621,22 @@
 	});
 	
 	var Value = {
-	  AtLeast: function AtLeast(msg, min) {
+	  Present: function Present(msg) {
+	    return _ValueRestriction(msg, function (v) {
+	      return v !== null;
+	    });
+	  },
+	  AtLeast: function AtLeast(min, msg) {
 	    return _ValueRestriction(msg, function (v) {
 	      return v < min;
 	    });
 	  },
-	  AtMost: function AtMost(msg, max) {
+	  AtMost: function AtMost(max, msg) {
 	    return _ValueRestriction(msg, function (v) {
 	      return v > max;
 	    });
 	  },
-	  Between: function Between(msg, min, max) {
+	  Between: function Between(min, max, msg) {
 	    return _ValueRestriction(msg, function (v) {
 	      return v < min || v > max;
 	    });
@@ -1644,22 +1649,22 @@
 	});
 	
 	var Length = {
-	  AtLeast: function AtLeast(msg, min) {
+	  AtLeast: function AtLeast(min, msg) {
 	    return _LengthRestriction(msg, function (v) {
 	      return v < min;
 	    });
 	  },
-	  AtMost: function AtMost(msg, max) {
+	  AtMost: function AtMost(max, msg) {
 	    return _LengthRestriction(msg, function (v) {
 	      return v > max;
 	    });
 	  },
-	  Between: function Between(msg, min, max) {
+	  Between: function Between(min, max, msg) {
 	    return _LengthRestriction(msg, function (v) {
 	      return v < min || v > max;
 	    });
 	  },
-	  Exactly: function Exactly(msg, count) {
+	  Exactly: function Exactly(count, msg) {
 	    return _LengthRestriction(msg, function (v) {
 	      return v === count;
 	    });
