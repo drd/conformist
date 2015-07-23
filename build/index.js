@@ -144,6 +144,11 @@
 	    value: function setDefault() {
 	      this.set(this['default']);
 	    }
+	  }, {
+	    key: 'hasValidator',
+	    value: function hasValidator(name) {
+	      return this.validatorNames.indexOf(name) !== -1;
+	    }
 	  }], [{
 	    key: 'clone',
 	    value: function clone(overrides) {
@@ -181,7 +186,10 @@
 	        validators[_key2] = arguments[_key2];
 	      }
 	
-	      return this.clone({ validators: validators });
+	      var validatorNames = validators.map(function (v) {
+	        return v._name;
+	      });
+	      return this.clone({ validators: validators, validatorNames: validatorNames });
 	    }
 	  }, {
 	    key: 'fromDefaults',
@@ -1625,14 +1633,16 @@
 	  value: true
 	});
 	function _Restriction(valueTransformer) {
-	  return function (msg, isFailure) {
-	    return function (element, context) {
+	  return function (name, msg, isFailure) {
+	    var validator = function validator(element, context) {
 	      if (isFailure(valueTransformer(element))) {
 	        element.addError(msg);
 	        return false;
 	      }
 	      return true;
 	    };
+	    validator._name = name;
+	    return validator;
 	  };
 	}
 	
@@ -1645,25 +1655,26 @@
 	});
 	
 	var Value = {
+	  // TODO: a nicer way for handling names?
 	  // Ok, Present *is* in terms of the serialized property but it's really
 	  // all about the value. You got me.
 	  Present: function Present(msg) {
-	    return _SerializedRestriction(msg, function (v) {
+	    return _SerializedRestriction('Present', msg, function (v) {
 	      return v === '';
 	    });
 	  },
 	  AtLeast: function AtLeast(min, msg) {
-	    return _ValueRestriction(msg, function (v) {
+	    return _ValueRestriction('AtLeast', msg, function (v) {
 	      return v < min;
 	    });
 	  },
 	  AtMost: function AtMost(max, msg) {
-	    return _ValueRestriction(msg, function (v) {
+	    return _ValueRestriction('AtMost', msg, function (v) {
 	      return v > max;
 	    });
 	  },
 	  Between: function Between(min, max, msg) {
-	    return _ValueRestriction(msg, function (v) {
+	    return _ValueRestriction('Between', msg, function (v) {
 	      return v < min || v > max;
 	    });
 	  }
@@ -1676,22 +1687,22 @@
 	
 	var Length = {
 	  AtLeast: function AtLeast(min, msg) {
-	    return _LengthRestriction(msg, function (v) {
+	    return _LengthRestriction('AtLeast', msg, function (v) {
 	      return v < min;
 	    });
 	  },
 	  AtMost: function AtMost(max, msg) {
-	    return _LengthRestriction(msg, function (v) {
+	    return _LengthRestriction('AtMost', msg, function (v) {
 	      return v > max;
 	    });
 	  },
 	  Between: function Between(min, max, msg) {
-	    return _LengthRestriction(msg, function (v) {
+	    return _LengthRestriction('Between', msg, function (v) {
 	      return v < min || v > max;
 	    });
 	  },
 	  Exactly: function Exactly(count, msg) {
-	    return _LengthRestriction(msg, function (v) {
+	    return _LengthRestriction('Exactly', msg, function (v) {
 	      return v === count;
 	    });
 	  }

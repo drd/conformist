@@ -26,6 +26,10 @@ class Type {
     this.set(this.default);
   }
 
+  hasValidator(name) {
+    return this.validatorNames.indexOf(name) !== -1;
+  }
+
   static clone(overrides) {
     class cloned extends this {};
     Object.assign(cloned.prototype, overrides);
@@ -42,7 +46,8 @@ class Type {
   }
 
   static validatedBy(...validators) {
-    return this.clone({validators});
+    let validatorNames = validators.map(v => v._name);
+    return this.clone({validators, validatorNames});
   }
 
   static fromDefaults() {

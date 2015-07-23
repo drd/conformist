@@ -165,7 +165,8 @@ expect(loalt.allErrors).to.eql({
     ['You must enter at least 3 characters']
   ]
 });
-
+expect(loalt.validatorNames).to.eql(['AtLeast']);
+expect(loalt.hasValidator('AtLeast')).to.be.true;
 
 // ENUMS
 let Fruit = Enum.of(Str).valued(['Apple', 'Banana', 'Carambola', 'Dragonfruit']);
