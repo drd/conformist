@@ -195,7 +195,6 @@
 	})();
 	
 	Type.prototype['default'] = null;
-	Type.prototype.optional = false;
 	Type.prototype.validators = [];
 	
 	var AdaptationError = (function (_Error) {
@@ -250,11 +249,6 @@
 	      var _this = this;
 	
 	      this.errors = [];
-	
-	      if (this.value === null) {
-	        this.valid = this.optional.call ? this.optional(this) : this.optional;
-	        return this.valid;
-	      }
 	
 	      this.valid = this.validators.reduce(function (valid, v) {
 	        return valid && v(_this, context);
@@ -1623,7 +1617,7 @@
 	var Value = {
 	  Present: function Present(msg) {
 	    return _ValueRestriction(msg, function (v) {
-	      return v !== null;
+	      return v === null;
 	    });
 	  },
 	  AtLeast: function AtLeast(min, msg) {

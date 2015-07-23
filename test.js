@@ -6,11 +6,10 @@ let {Int, Str, Bool, Enum, Map, List} = Schema;
 let {Value, Length} = Validation;
 
 
-var MyString = Str.named('string').using({default: 'default', optional: false});
+var MyString = Str.named('string').using({default: 'default'});
 var s = new MyString();
 expect(s.name).to.equal('string');
 expect(s.default).to.equal('default');
-expect(s.optional).to.equal(false);
 
 // lifecycle
 expect(s.value).to.equal(null);
@@ -19,7 +18,7 @@ expect(s.serialized).to.equal(null);
 expect(s.raw).to.equal(null);
 
 s.validate();
-expect(s.valid).to.equal(false);
+expect(s.valid).to.equal(true);
 
 s = MyString.fromDefaults();
 expect(s.value).to.equal(s.default);
@@ -165,17 +164,6 @@ expect(loalt.allErrors).to.eql({
   ]
 });
 
-// OPTION AS A FUNCTION
-let Optionally = Map.of(
-  Bool.using({name: 'isRequired'}),
-  Str.using({name: 'name', optional: x => !x.parent.members.isRequired.value})
-);
-let optionally = new Optionally();
-expect(optionally.members.name.optional(optionally.members.name)).to.be.true;
-optionally.set({isRequired: true});
-expect(optionally.members.name.optional(optionally.members.name)).to.be.false;
-
-
 
 // ENUMS
 let Fruit = Enum.of(Str).valued(['Apple', 'Banana', 'Carambola', 'Dragonfruit']);
@@ -227,16 +215,13 @@ let regionCodeValidator = (element, state) => {
   });
 }
 
-let optionalIfFallback = el => el.parent.members.fallback.value === true;
-let optionalIfAutocomplete = el => el.parent.members.fallback.value === false;
-
 let Location = Map.of(
   Bool.named('fallback').using({default: false}),
-  Str.using({optional: optionalIfFallback}).named('location').validatedBy(fallbackValidator(false, 'Please choose a location')),
-  Int.using({optional: optionalIfFallback}).named('geoid').validatedBy(fallbackValidator(false, 'Please choose a location')),
-  Str.using({optional: optionalIfAutocomplete}).named('city').validatedBy(fallbackValidator(true, 'Please provide a city name')),
-  Str.using({optional: optionalIfAutocomplete}).named('regionCode').validatedBy(fallbackValidator(true, 'Please choose a region')),
-  Str.using({optional: optionalIfAutocomplete}).named('countryCode').validatedBy(fallbackValidator(true, 'Please choose a country'))
+  Str.named('location').validatedBy(fallbackValidator(false, 'Please choose a location')),
+  Int.named('geoid').validatedBy(fallbackValidator(false, 'Please choose a location')),
+  Str.named('city').validatedBy(fallbackValidator(true, 'Please provide a city name')),
+  Str.named('regionCode').validatedBy(fallbackValidator(true, 'Please choose a region')),
+  Str.named('countryCode').validatedBy(fallbackValidator(true, 'Please choose a country'))
 )
 
 let location = new Location();
@@ -277,14 +262,17 @@ let Org = Map.of(
     .validatedBy(Length.AtLeast(1, 'You must enter at least 1 address')),
   Str.named('fullName'),
   Str.named('shortName')
-    .validatedBy(Length.AtMost(25, 'Short name must be at most 25 characters')),
-  Str.named('streetAddress').using({optional: true}),
-  Str.named('deliveryDetails').using({optional: true}),
-  Str.named('ein').using({optional: true}),
-  Str.named('website').using({optional: true}),
+    .validatedBy(
+      Value.Present('Short name needed.'),
+      Length.AtMost(25, 'Short name must be at most 25 characters')
+    ),
+  Str.named('streetAddress'),
+  Str.named('deliveryDetails'),
+  Str.named('ein'),
+  Str.named('website'),
   Str.named('description').using({default: ''}),
   List.named('keywords').of(Str).validatedBy(Length.AtLeast(1, 'You must choose at least 1 keyword')),
-  Str.named('image').using({optional: true})
+  Str.named('image')
 );
 
 let org = Org.fromDefaults();

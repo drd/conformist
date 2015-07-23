@@ -52,7 +52,6 @@ class Type {
 }
 
 Type.prototype.default = null;
-Type.prototype.optional = false;
 Type.prototype.validators = [];
 
 class AdaptationError extends Error {};
@@ -90,11 +89,6 @@ class Scalar extends Type {
 
   validate(context) {
     this.errors = [];
-
-    if (this.value === null) {
-      this.valid = this.optional.call ? this.optional(this) : this.optional;
-      return this.valid;
-    }
 
     this.valid = this.validators.reduce((valid, v) => {
       return valid && v(this, context);
