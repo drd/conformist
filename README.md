@@ -99,36 +99,27 @@ element.raw
 ```
 
 
-
-
 ## Validators
 
-If you want, you can write validators as classes:
+Validators are functions. The idiomatic definition of a validator is a function that takes a validation message and returns a validation function from (element, context) to success. If the validation fails, the error message should be added to the element's errors.
 
 ```js
-class MustBeOdd extends Validator {
-    notOdd = "You should enter an odd number"
-
-    validate(element, context) {
+function MustBeOdd(msg) {
+    return (element, context) => {
         if (element.members.mustBeOdd.value) {
             if (!(element.members.number.value % 2)) {
-                this.noteError(element, context, {key: 'notOdd'});
+                element.addError(msg);
+                return false;
             }
         }
         return true;
     }
 }
-```
 
-This is the same validator, except now we have a validation message. Fun fact: conformist was written because of validation messages.
-
-What's going on with that `noteError` call? It looks up the message present in the validator's `notOdd` key, and adds the error to the `element`.
-
-```js
 let NumberOddity = Map.of(
     Int.named('number'),
     Bool.named('mustBeOdd').using({optional: true})
-).validatedBy(new MustBeOdd());
+).validatedBy(MustBeOdd);
 
 let no = new NumberOddity();
 no.set({number: 2, mustBeOdd: true});
@@ -159,8 +150,6 @@ Each element in a schema contains a list of `errors`, which starts out as `undef
 - drastically improve the quality of this README.
 - organize code into separate files
 - organize tests into suites
-- integrate i18n with validation messages
-- handle string interpolation with error messages ('{name} must be at most {max} characters long')
 - make a decision about how to integrate with [immutable](https://github.com/facebook/immutable-js)
 - should `optional` be a thing, or should there be a Required Validator?
 -- how to get useful "this element is required" messages, essentially.
