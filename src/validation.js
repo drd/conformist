@@ -2,8 +2,17 @@ import {Str, List, Num} from './schema';
 
 
 class Validator {
+  processTemplate(template, element, context) {
+    let tokens = (template.match(/({[^}].+?)\}/gm) || [])
+      .map(t => [new RegExp(t, 'g'), t.slice(1, -1)]);
+    return tokens.reduce((processed, [token, key], i) => {
+      let substitution = this[key] || element[key];
+      return processed.replace(token, substitution);
+    }, template);
+  }
   noteError(element, context, options) {
-    let message = options.message || this[options.key];
+    let messageTemplate = options.message || this[options.key];
+    let message = this.processTemplate(messageTemplate, element, context);
     element.addError(message);
     return false;
   }
@@ -34,7 +43,7 @@ class Constrained extends Validator {
         return this.noteError(element, state, {key: 'invalidNum'});
       }
     } else {
-      throw new Error('Min cannot be used on this type', element);
+      throw new Error(`Min cannot be used on this type: ${element}`);
     }
     return true;
   }
@@ -42,9 +51,9 @@ class Constrained extends Validator {
 
 
 class Min extends Constrained {
-  invalidNum = '{name} must be greater than or equal to {min}'
-  invalidList = '{name} must contain {min} or more elements'
-  invalidString = '{name} must be at least {min} characters long'
+  invalidNum = '{name} must be greater than or equal to {extreme}'
+  invalidList = '{name} must contain {extreme} or more elements'
+  invalidString = '{name} must be at least {extreme} characters long'
 
   constraint(value, min) {
     return value < min;
@@ -53,9 +62,9 @@ class Min extends Constrained {
 
 
 class Max extends Constrained {
-  invalidNum = '{name} must be less than or equal to {max}'
-  invalidList = '{name} must contain {max} or fewer elements'
-  invalidString = '{name} must be shorter than {max} characters long'
+  invalidNum = '{name} must be less than or equal to {extreme}'
+  invalidList = '{name} must contain {extreme} or fewer elements'
+  invalidString = '{name} must be shorter than {extreme} characters long'
 
   constraint(value, min) {
     return value > min;

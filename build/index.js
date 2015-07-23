@@ -497,9 +497,12 @@
 	  }, {
 	    key: 'allErrors',
 	    get: function get() {
-	      return this.members.map(function (m) {
-	        return m.allErrors;
-	      });
+	      return {
+	        self: this.errors,
+	        children: this.members.map(function (m) {
+	          return m.allErrors;
+	        })
+	      };
 	    }
 	  }], [{
 	    key: 'of',
@@ -1608,6 +1611,8 @@
 	
 	var _inherits = __webpack_require__(20)['default'];
 	
+	var _slicedToArray = __webpack_require__(23)['default'];
+	
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
@@ -1620,9 +1625,28 @@
 	  }
 	
 	  _createClass(Validator, [{
+	    key: 'processTemplate',
+	    value: function processTemplate(template, element, context) {
+	      var _this = this;
+	
+	      var tokens = (template.match(/({[^}].+?)\}/gm) || []).map(function (t) {
+	        return [new RegExp(t, 'g'), t.slice(1, -1)];
+	      });
+	      return tokens.reduce(function (processed, _ref, i) {
+	        var _ref2 = _slicedToArray(_ref, 2);
+	
+	        var token = _ref2[0];
+	        var key = _ref2[1];
+	
+	        var substitution = _this[key] || element[key];
+	        return processed.replace(token, substitution);
+	      }, template);
+	    }
+	  }, {
 	    key: 'noteError',
 	    value: function noteError(element, context, options) {
-	      var message = options.message || this[options.key];
+	      var messageTemplate = options.message || this[options.key];
+	      var message = this.processTemplate(messageTemplate, element, context);
 	      element.addError(message);
 	      return false;
 	    }
@@ -1664,7 +1688,7 @@
 	          return this.noteError(element, state, { key: 'invalidNum' });
 	        }
 	      } else {
-	        throw new Error('Min cannot be used on this type', element);
+	        throw new Error('Min cannot be used on this type: ' + element);
 	      }
 	      return true;
 	    }
@@ -1681,9 +1705,9 @@
 	
 	    _get(Object.getPrototypeOf(Min.prototype), 'constructor', this).apply(this, arguments);
 	
-	    this.invalidNum = '{name} must be greater than or equal to {min}';
-	    this.invalidList = '{name} must contain {min} or more elements';
-	    this.invalidString = '{name} must be at least {min} characters long';
+	    this.invalidNum = '{name} must be greater than or equal to {extreme}';
+	    this.invalidList = '{name} must contain {extreme} or more elements';
+	    this.invalidString = '{name} must be at least {extreme} characters long';
 	  }
 	
 	  _createClass(Min, [{
@@ -1704,9 +1728,9 @@
 	
 	    _get(Object.getPrototypeOf(Max.prototype), 'constructor', this).apply(this, arguments);
 	
-	    this.invalidNum = '{name} must be less than or equal to {max}';
-	    this.invalidList = '{name} must contain {max} or fewer elements';
-	    this.invalidString = '{name} must be shorter than {max} characters long';
+	    this.invalidNum = '{name} must be less than or equal to {extreme}';
+	    this.invalidList = '{name} must contain {extreme} or fewer elements';
+	    this.invalidString = '{name} must be shorter than {extreme} characters long';
 	  }
 	
 	  _createClass(Max, [{

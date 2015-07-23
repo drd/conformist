@@ -216,7 +216,10 @@ class List extends Container {
   }
 
   get allErrors() {
-    return this.members.map(m => m.allErrors);
+    return {
+      self: this.errors,
+      children: this.members.map(m => m.allErrors)
+    };
   }
 
   set(raw) {

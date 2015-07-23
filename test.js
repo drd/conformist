@@ -151,6 +151,22 @@ yadda.set({a: true, b: 2});
 yadda.validate();
 expect(yadda.allErrors).to.eql({self: [], children: {a: ['Truthy'], b: ['Not 3']}});
 
+let ListOfAtLeastThree = List
+  .of(Str
+    .named('string')
+    .validatedBy(new Min(3)))
+  .named('LOALT')
+  .validatedBy(new Min(3));
+let loalt = new ListOfAtLeastThree();
+expect(loalt.set(['ab', 'cd'])).to.be.true;
+expect(loalt.validate()).to.be.false;
+expect(loalt.allErrors).to.eql({
+  self: ['LOALT must contain 3 or more elements'],
+  children: [
+    ['string must be at least 3 characters long'],
+    ['string must be at least 3 characters long']
+  ]
+});
 
 // OPTION AS A FUNCTION
 let Optionally = Map.of(
