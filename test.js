@@ -5,17 +5,27 @@ import {Schema, Validation} from './build/index';
 let {Int, Str, Bool, Enum, Map, List} = Schema;
 let {Value, Length} = Validation;
 
+describe('Type', () => {
 
-var MyString = Str.named('string').using({default: 'default'});
-var s = new MyString();
-expect(s.name).to.equal('string');
-expect(s.default).to.equal('default');
+  it('should set default and name', () => {
+    var MyString = Str.named('string').using({default: 'default'});
+    var s = new MyString();
+    expect(s.name).to.equal('string');
+    expect(s.default).to.equal('default');
+  })
+
 
 // lifecycle
-expect(s.value).to.equal(null);
-expect(s.valid).to.equal(undefined);
-expect(s.serialized).to.equal('');
-expect(s.raw).to.equal(null);
+  it.only('should set value to undefined', () => {
+    var s = new Str();
+    expect(s.value).to.be.undefined;
+    expect(s.valid).to.equal(undefined);
+  })
+
+})
+
+xdescribe('TODO', () => {
+it('should be run', () => {
 
 s.validate();
 expect(s.valid).to.equal(true);
@@ -311,3 +321,5 @@ let success = org.set({
 });
 expect(success).to.be.true;
 expect(org.validate()).to.be.true;
+})
+})

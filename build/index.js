@@ -111,8 +111,6 @@
 	  function Type(value) {
 	    _classCallCheck(this, Type);
 	
-	    this.raw = null;
-	    this.serialized = '';
 	    this.valid = undefined;
 	    value !== undefined && this.set(value);
 	    this._watchers = [];
@@ -203,7 +201,7 @@
 	  return Type;
 	})();
 	
-	Type.prototype['default'] = null;
+	Type.prototype['default'] = undefined;
 	Type.prototype.validators = [];
 	
 	var AdaptationError = (function (_Error) {
@@ -228,23 +226,19 @@
 	
 	    _get(Object.getPrototypeOf(Scalar.prototype), 'constructor', this).call(this);
 	    this._watchers = [];
-	    this.value = null;
+	    this.value = undefined;
 	  }
 	
 	  _createClass(Scalar, [{
 	    key: 'set',
 	    value: function set(raw) {
-	      this.raw = raw;
 	      try {
 	        this.value = this.adapt(raw);
 	      } catch (e) {
-	        // serialize must not throw an error!
-	        this.serialized = this.serialize(raw);
-	        this.value = null;
+	        this.value = undefined;
 	        this.notifyWatchers(false, this);
 	        return false;
 	      }
-	      this.serialized = this.serialize(this.value);
 	      this.notifyWatchers(true, this);
 	
 	      return true;
@@ -261,15 +255,6 @@
 	      }, true);
 	
 	      return this.valid;
-	    }
-	  }, {
-	    key: 'serialize',
-	    value: function serialize(value) {
-	      try {
-	        return value.toString();
-	      } catch (e) {
-	        return '';
-	      }
 	    }
 	  }, {
 	    key: 'allErrors',
@@ -332,6 +317,8 @@
 	  return Num;
 	})(Scalar);
 	
+	// ?
+	
 	var Int = (function (_Num) {
 	  _inherits(Int, _Num);
 	
@@ -381,15 +368,6 @@
 	    key: 'validValue',
 	    value: function validValue(value) {
 	      return this.validValues.indexOf(value) !== -1;
-	    }
-	  }, {
-	    key: 'serialize',
-	    value: function serialize(value) {
-	      try {
-	        return this.childSchema.prototype.serialize(value);
-	      } catch (e) {
-	        return '';
-	      }
 	    }
 	  }], [{
 	    key: 'of',
@@ -447,10 +425,16 @@
 	
 	  _createClass(List, [{
 	    key: 'set',
+	
+	    // Attempt to convert each member of raw array to the
+	    // member type of the List. Any failure will result in an
+	    // empty array for this.members.
+	
+	    // TODO: short-circuit conversion if any member fails.
 	    value: function set(raw) {
 	      var _this3 = this;
 	
-	      this.raw = raw;
+	      this.members = [];
 	      if (!(raw && raw.forEach)) {
 	        return false;
 	      }
@@ -459,25 +443,13 @@
 	      raw.forEach(function (mbr) {
 	        var member = new _this3.memberType();
 	        member.parent = _this3;
-	        success = success & member.set(mbr);
+	        success &= member.set(mbr);
 	        member.observe(_this3.notifyWatchers.bind(_this3));
 	        items.push(member);
 	      });
-	      this.serialized = this.serialize(raw);
-	      this.members = success ? items : [];
+	      this.members = success ? items : this.members;
 	      this.notifyWatchers(!!success, this);
 	      return !!success;
-	    }
-	  }, {
-	    key: 'serialize',
-	    value: function serialize() {
-	      var _this4 = this;
-	
-	      var value = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
-	
-	      return '[' + value.map(function (v) {
-	        return '"' + _this4.memberType.prototype.serialize(v) + '"';
-	      }).join(', ') + ']';
 	    }
 	  }, {
 	    key: 'value',
@@ -491,13 +463,13 @@
 	    get: function get() {
 	      return this._members;
 	    },
+	
+	    // aliased for concordance with Container.prototype.validate()
 	    set: function set(members) {
 	      this._members = members;
 	    }
 	  }, {
 	    key: 'memberValues',
-	
-	    // aliased for concordance with Container.prototype.validate()
 	    get: function get() {
 	      return this._members;
 	    }
@@ -531,7 +503,7 @@
 	
 	    _get(Object.getPrototypeOf(Map.prototype), 'constructor', this).call(this, value);
 	    // construct an empty schema
-	    if (this.value === null) {
+	    if (!this._members) {
 	      this.set({});
 	    }
 	  }
@@ -539,83 +511,64 @@
 	  _createClass(Map, [{
 	    key: 'set',
 	    value: function set(raw) {
-	      var _this5 = this;
+	      var _this4 = this;
 	
 	      var _ref2 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 	
 	      var _ref2$notify = _ref2.notify;
 	      var notify = _ref2$notify === undefined ? true : _ref2$notify;
 	
-	      this.raw = raw;
-	      if (!(raw.keys || (0, _util.isObject)(raw))) {
-	        return false;
+	      var success = true;
+	      if (raw === undefined) {
+	        raw = {};
 	      }
-	      var get = function get(o, k) {
-	        return o.keys ? o = o.get(k) : o[k];
-	      };
+	      if (!(0, _util.isObject)(raw)) {
+	        raw = {};
+	        success = false;
+	      }
 	      var keys = _Object$keys(this.memberSchema);
 	      var members = {};
-	      var success = !!keys.reduce(function (success, k) {
-	        var member = new _this5.memberSchema[k]();
+	      success = !!keys.reduce(function (success, k) {
+	        var member = new _this4.memberSchema[k]();
 	        member.name = k;
-	        member.parent = _this5;
+	        member.parent = _this4;
 	        members[k] = member;
 	        if (raw[k] !== undefined) {
 	          success &= member.set(raw[k]);
 	        }
-	        member.observe(_this5.notifyWatchers.bind(_this5));
+	        member.observe(_this4.notifyWatchers.bind(_this4));
 	        return success;
 	      }, true);
-	
-	      try {
-	        this.serialized = this.serialize(raw);
-	      } catch (e) {
-	        this.serialized = this.serialize({});
-	      }
 	
 	      if (success) {
 	        // should this.members only be defined here?
 	        // or in constructor?
 	        this.members = members;
 	      } else {
+	        // TODO: We don't need to do this if raw was not an object.
 	        this.set({}, { notify: false });
 	      }
 	      if (notify) this.notifyWatchers(success, this);
 	      return success;
 	    }
 	  }, {
-	    key: 'serialize',
-	    value: function serialize(value) {
-	      return '{' + _Object$entries(this.memberSchema).reduce(function (serialized, _ref3) {
-	        var _ref32 = _slicedToArray(_ref3, 2);
-	
-	        var key = _ref32[0];
-	        var memberSchema = _ref32[1];
-	
-	        return serialized.concat([key + ': "' + memberSchema.prototype.serialize(value[key]) + '"']);
-	      }, []).join(', ') + '}';
-	    }
-	  }, {
 	    key: 'value',
 	    get: function get() {
-	      var _this6 = this;
+	      var _this5 = this;
 	
-	      if (!this._members) {
-	        return null;
-	      }
 	      return _Object$keys(this._members).reduce(function (v, m) {
-	        v[m] = _this6._members[m].value;
+	        v[m] = _this5._members[m].value;
 	        return v;
 	      }, {});
 	    }
 	  }, {
 	    key: 'default',
 	    get: function get() {
-	      return _Object$entries(this.memberSchema).reduce(function (defaults, _ref4) {
-	        var _ref42 = _slicedToArray(_ref4, 2);
+	      return _Object$entries(this.memberSchema).reduce(function (defaults, _ref3) {
+	        var _ref32 = _slicedToArray(_ref3, 2);
 	
-	        var k = _ref42[0];
-	        var v = _ref42[1];
+	        var k = _ref32[0];
+	        var v = _ref32[1];
 	
 	        if (v.prototype['default'] !== undefined) {
 	          defaults[k] = v.prototype['default'];
@@ -623,10 +576,10 @@
 	        return defaults;
 	      }, {});
 	    }
-	  }, {
-	    key: 'memberValues',
 	
 	    // member elements as list
+	  }, {
+	    key: 'memberValues',
 	    get: function get() {
 	      return _Object$values(this._members);
 	    }
@@ -643,11 +596,11 @@
 	    get: function get() {
 	      return {
 	        self: this.errors,
-	        children: _Object$entries(this.members).reduce(function (errors, _ref5) {
-	          var _ref52 = _slicedToArray(_ref5, 2);
+	        children: _Object$entries(this.members).reduce(function (errors, _ref4) {
+	          var _ref42 = _slicedToArray(_ref4, 2);
 	
-	          var k = _ref52[0];
-	          var v = _ref52[1];
+	          var k = _ref42[0];
+	          var v = _ref42[1];
 	
 	          errors[k] = v.allErrors;
 	          return errors;
@@ -671,11 +624,11 @@
 	    key: 'fromDefaults',
 	    value: function fromDefaults() {
 	      var defaulted = new this();
-	      _Object$entries(defaulted['default']).forEach(function (_ref6) {
-	        var _ref62 = _slicedToArray(_ref6, 2);
+	      _Object$entries(defaulted['default']).forEach(function (_ref5) {
+	        var _ref52 = _slicedToArray(_ref5, 2);
 	
-	        var k = _ref62[0];
-	        var v = _ref62[1];
+	        var k = _ref52[0];
+	        var v = _ref52[1];
 	        return defaulted.members[k].set(v);
 	      });
 	      return defaulted;
@@ -687,8 +640,6 @@
 	
 	exports['default'] = { Type: Type, Scalar: Scalar, Num: Num, Int: Int, Str: Str, Bool: Bool, Enum: Enum, Container: Container, List: List, Map: Map };
 	module.exports = exports['default'];
-
-	// ?
 
 /***/ },
 /* 3 */

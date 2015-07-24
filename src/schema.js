@@ -3,8 +3,6 @@ import {isObject, consume} from './util';
 
 class Type {
   constructor(value) {
-    this.raw = null;
-    this.serialized = '';
     this.valid = undefined;
     value !== undefined && this.set(value);
     this._watchers = [];
@@ -57,7 +55,7 @@ class Type {
   }
 }
 
-Type.prototype.default = null;
+Type.prototype.default = undefined;
 Type.prototype.validators = [];
 
 class AdaptationError extends Error {};
@@ -66,7 +64,7 @@ class Scalar extends Type {
   constructor() {
     super();
     this._watchers = [];
-    this.value = null;
+    this.value = undefined;
   }
 
   get allErrors() {
@@ -74,17 +72,13 @@ class Scalar extends Type {
   }
 
   set(raw) {
-    this.raw = raw;
     try {
       this.value = this.adapt(raw);
     } catch (e) {
-      // serialize must not throw an error!
-      this.serialized = this.serialize(raw);
-      this.value = null;
+      this.value = undefined;
       this.notifyWatchers(false, this);
       return false;
     }
-    this.serialized = this.serialize(this.value);
     this.notifyWatchers(true, this);
 
     return true;
@@ -98,14 +92,6 @@ class Scalar extends Type {
     }, true);
 
     return this.valid;
-  }
-
-  serialize(value) {
-    try {
-      return value.toString();
-    } catch(e) {
-      return '';
-    }
   }
 }
 
@@ -161,14 +147,6 @@ class Enum extends Scalar {
     return this.validValues.indexOf(value) !== -1;
   }
 
-  serialize(value) {
-    try {
-      return this.childSchema.prototype.serialize(value);
-    } catch(e) {
-      return '';
-    }
-  }
-
   static of(childType) {
     return this.clone({childType});
   }
@@ -216,8 +194,13 @@ class List extends Container {
     };
   }
 
+  // Attempt to convert each member of raw array to the
+  // member type of the List. Any failure will result in an
+  // empty array for this.members.
+
+  // TODO: short-circuit conversion if any member fails.
   set(raw) {
-    this.raw = raw;
+    this.members = [];
     if (!(raw && raw.forEach)) {
       return false;
     }
@@ -226,20 +209,13 @@ class List extends Container {
     raw.forEach(mbr => {
       let member = new this.memberType();
       member.parent = this;
-      success = success & member.set(mbr);
+      success &= member.set(mbr);
       member.observe(this.notifyWatchers.bind(this));
       items.push(member);
     });
-    this.serialized = this.serialize(raw);
-    this.members = success ? items : [];
+    this.members = success ? items : this.members;
     this.notifyWatchers(!!success, this);
     return !!success;
-  }
-
-  serialize(value = []) {
-    return '[' +
-      value.map(v => `"${this.memberType.prototype.serialize(v)}"`).join(", ") +
-    ']';
   }
 
   static of(type) {
@@ -253,15 +229,12 @@ class Map extends Container {
   constructor(value) {
     super(value);
     // construct an empty schema
-    if (this.value === null) {
+    if (!this._members) {
       this.set({});
     }
   }
 
   get value() {
-    if (!this._members) {
-      return null;
-    }
     return Object.keys(this._members).reduce((v, m) => {
       v[m] = this._members[m].value;
       return v;
@@ -301,14 +274,17 @@ class Map extends Container {
   }
 
   set(raw, {notify = true} = {}) {
-    this.raw = raw;
-    if (!(raw.keys || isObject(raw))) {
-      return false;
+    let success = true;
+    if (raw === undefined) {
+      raw = {};
     }
-    let get = (o, k)  => o.keys ? o = o.get(k) : o[k];
+    if (!isObject(raw)) {
+      raw = {}
+      success = false;
+    }
     let keys = Object.keys(this.memberSchema);
     let members = {}
-    let success = !!keys.reduce((success, k) => {
+    success = !!keys.reduce((success, k) => {
       let member = new this.memberSchema[k]();
       member.name = k;
       member.parent = this;
@@ -320,27 +296,16 @@ class Map extends Container {
       return success;
     }, true);
 
-    try {
-      this.serialized = this.serialize(raw);
-    } catch(e) {
-      this.serialized = this.serialize({});
-    }
-
     if (success) {
       // should this.members only be defined here?
       // or in constructor?
       this.members = members;
     } else {
+      // TODO: We don't need to do this if raw was not an object.
       this.set({}, {notify: false})
     }
     if (notify) this.notifyWatchers(success, this);
     return success;
-  }
-
-  serialize(value) {
-    return '{' + Object.entries(this.memberSchema).reduce((serialized, [key, memberSchema]) => {
-      return serialized.concat([`${key}: "${memberSchema.prototype.serialize(value[key])}"`]);
-    }, []).join(', ') + '}';
   }
 
   static of(...members) {
