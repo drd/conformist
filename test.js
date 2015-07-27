@@ -350,8 +350,8 @@ describe('Type', () => {
 
     it('should allow introspection on the validators of an element', () => {
       let loalt = new ListOfAtLeastThree();
-      expect(loalt.validatorNames).to.eql(['AtLeast']);
-      expect(loalt.hasValidator('AtLeast')).to.be.true;
+      expect(loalt.validatorFactories[0]).to.equal(Value.AtLeast);
+      expect(loalt.hasValidator(Value.AtLeast)).to.be.true;
     })
   })
 })

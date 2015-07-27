@@ -144,8 +144,15 @@
 	    }
 	  }, {
 	    key: 'hasValidator',
-	    value: function hasValidator(name) {
-	      return this.validatorNames.indexOf(name) !== -1;
+	    value: function hasValidator(wrapped) {
+	      return this.validatorFactories.indexOf(wrapped.factory) !== -1;
+	    }
+	  }, {
+	    key: 'validatorFactories',
+	    get: function get() {
+	      return this.validators.map(function (v) {
+	        return v.factory;
+	      });
 	    }
 	  }], [{
 	    key: 'clone',
@@ -184,10 +191,7 @@
 	        validators[_key2] = arguments[_key2];
 	      }
 	
-	      var validatorNames = validators.map(function (v) {
-	        return v._name;
-	      });
-	      return this.clone({ validators: validators, validatorNames: validatorNames });
+	      return this.clone({ validators: validators });
 	    }
 	  }, {
 	    key: 'fromDefaults',
@@ -1577,15 +1581,19 @@
 
 /***/ },
 /* 50 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
-	Object.defineProperty(exports, '__esModule', {
+	var _slicedToArray = __webpack_require__(23)["default"];
+	
+	var _Object$entries = __webpack_require__(44)["default"];
+	
+	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	function _Restriction(valueTransformer) {
-	  var factory = function factory(name, msg, isFailure) {
+	  return function (msg, isFailure) {
 	    var validator = function validator(element, context) {
 	      if (isFailure(valueTransformer(element))) {
 	        element.addError(msg);
@@ -1593,8 +1601,6 @@
 	      }
 	      return true;
 	    };
-	    validator._name = name;
-	    //    validator.factory = factory;
 	    return validator;
 	  };
 	  return factory;
@@ -1604,66 +1610,80 @@
 	var _ValueRestriction = _Restriction(function (e) {
 	  return e.value;
 	});
-	var _SerializedRestriction = _Restriction(function (e) {
-	  return e.serialized;
-	});
 	
-	var Value = {
-	  // TODO: a nicer way for handling names?
+	function _factorize(validators) {
+	  return _Object$entries(validators).reduce(function (factorized, _ref) {
+	    var _ref2 = _slicedToArray(_ref, 2);
+	
+	    var name = _ref2[0];
+	    var factory = _ref2[1];
+	
+	    var wrapped = function wrapped() {
+	      var validator = factory.apply(undefined, arguments);
+	      validator.factory = factory;
+	      return validator;
+	    };
+	    wrapped.factory = factory;
+	    factorized[name] = wrapped;
+	    return factorized;
+	  }, {});
+	}
+	
+	var Value = _factorize({
 	  // Ok, Present *is* in terms of the serialized property but it's really
 	  // all about the value. You got me.
 	  Present: function Present(msg) {
-	    return _SerializedRestriction('Present', msg, function (v) {
-	      return v === '';
+	    return _ValueRestriction(msg, function (v) {
+	      return v !== undefined;
 	    });
 	  },
 	  AtLeast: function AtLeast(min, msg) {
-	    return _ValueRestriction('AtLeast', msg, function (v) {
+	    return _ValueRestriction(msg, function (v) {
 	      return v < min;
 	    });
 	  },
 	  AtMost: function AtMost(max, msg) {
-	    return _ValueRestriction('AtMost', msg, function (v) {
+	    return _ValueRestriction(msg, function (v) {
 	      return v > max;
 	    });
 	  },
 	  Between: function Between(min, max, msg) {
-	    return _ValueRestriction('Between', msg, function (v) {
+	    return _ValueRestriction(msg, function (v) {
 	      return v < min || v > max;
 	    });
 	  }
-	};
+	});
 	
 	// Strings & Lists
 	var _LengthRestriction = _Restriction(function (e) {
 	  return e.value ? e.value.length : 0;
 	});
 	
-	var Length = {
+	var Length = _factorize({
 	  AtLeast: function AtLeast(min, msg) {
-	    return _LengthRestriction('AtLeast', msg, function (v) {
+	    return _LengthRestriction(msg, function (v) {
 	      return v < min;
 	    });
 	  },
 	  AtMost: function AtMost(max, msg) {
-	    return _LengthRestriction('AtMost', msg, function (v) {
+	    return _LengthRestriction(msg, function (v) {
 	      return v > max;
 	    });
 	  },
 	  Between: function Between(min, max, msg) {
-	    return _LengthRestriction('Between', msg, function (v) {
+	    return _LengthRestriction(msg, function (v) {
 	      return v < min || v > max;
 	    });
 	  },
 	  Exactly: function Exactly(count, msg) {
-	    return _LengthRestriction('Exactly', msg, function (v) {
+	    return _LengthRestriction(msg, function (v) {
 	      return v === count;
 	    });
 	  }
-	};
+	});
 	
-	exports['default'] = { Value: Value, Length: Length };
-	module.exports = exports['default'];
+	exports["default"] = { Value: Value, Length: Length };
+	module.exports = exports["default"];
 
 /***/ }
 /******/ ])));

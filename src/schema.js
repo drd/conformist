@@ -24,8 +24,12 @@ class Type {
     this.set(this.default);
   }
 
-  hasValidator(name) {
-    return this.validatorNames.indexOf(name) !== -1;
+  hasValidator(wrapped) {
+    return this.validatorFactories.indexOf(wrapped.factory) !== -1;
+  }
+
+  get validatorFactories() {
+    return this.validators.map(v => v.factory);
   }
 
   static clone(overrides) {
@@ -44,9 +48,9 @@ class Type {
   }
 
   static validatedBy(...validators) {
-    let validatorNames = validators.map(v => v._name);
-    return this.clone({validators, validatorNames});
+    return this.clone({validators});
   }
+
 
   static fromDefaults() {
     let defaulted = new this();

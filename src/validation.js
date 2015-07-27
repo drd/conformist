@@ -1,5 +1,5 @@
 function _Restriction(valueTransformer) {
-  let factory = (name, msg, isFailure) => {
+  return (msg, isFailure) => {
     let validator = (element, context) => {
       if (isFailure(valueTransformer(element))) {
         element.addError(msg);
@@ -7,8 +7,6 @@ function _Restriction(valueTransformer) {
       }
       return true;
     }
-    validator._name = name;
-//    validator.factory = factory;
     return validator;
   }
   return factory;
@@ -16,26 +14,38 @@ function _Restriction(valueTransformer) {
 
 // Nums
 let _ValueRestriction = _Restriction(e => e.value);
-let _SerializedRestriction = _Restriction(e => e.serialized);
 
-let Value = {
-  // TODO: a nicer way for handling names?
+// this is "better"???
+function _factorize(validators) {
+  return Object.entries(validators).reduce((factorized, [name, factory]) => {
+    let wrapped = (...args) => {
+      let validator = factory(...args);
+      validator.factory = factory;
+      return validator;
+    }
+    wrapped.factory = factory;
+    factorized[name] = wrapped;
+    return factorized;
+  }, {})
+}
+
+let Value = _factorize({
   // Ok, Present *is* in terms of the serialized property but it's really
   // all about the value. You got me.
-  Present: (msg) => _SerializedRestriction('Present', msg, v => v === ''),
-  AtLeast: (min, msg) => _ValueRestriction('AtLeast', msg, v => v < min),
-  AtMost: (max, msg) => _ValueRestriction('AtMost', msg, v => v > max),
-  Between: (min, max, msg) => _ValueRestriction('Between', msg, v => v < min || v > max)
-}
+  Present: (msg) => _ValueRestriction(msg, v => v !== undefined),
+  AtLeast: (min, msg) => _ValueRestriction(msg, v => v < min),
+  AtMost: (max, msg) => _ValueRestriction(msg, v => v > max),
+  Between: (min, max, msg) => _ValueRestriction(msg, v => v < min || v > max)
+})
 
 // Strings & Lists
 let _LengthRestriction = _Restriction(e => e.value ? e.value.length : 0);
 
-let Length = {
-  AtLeast: (min, msg) => _LengthRestriction('AtLeast', msg, v => v < min),
-  AtMost: (max, msg) => _LengthRestriction('AtMost', msg, v => v > max),
-  Between: (min, max, msg) => _LengthRestriction('Between', msg, v => v < min || v > max),
-  Exactly: (count, msg) => _LengthRestriction('Exactly', msg, v => v === count)
-}
+let Length = _factorize({
+  AtLeast: (min, msg) => _LengthRestriction(msg, v => v < min),
+  AtMost: (max, msg) => _LengthRestriction(msg, v => v > max),
+  Between: (min, max, msg) => _LengthRestriction(msg, v => v < min || v > max),
+  Exactly: (count, msg) => _LengthRestriction(msg, v => v === count)
+})
 
 export default {Value, Length};
