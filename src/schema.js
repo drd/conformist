@@ -24,8 +24,8 @@ class Type {
     this.set(this.default);
   }
 
-  hasValidator(wrapped) {
-    return this.validatorFactories.indexOf(wrapped.factory) !== -1;
+  hasValidator(validator) {
+    return this.validatorFactories.indexOf(validator) !== -1;
   }
 
   get validatorFactories() {

@@ -144,8 +144,8 @@
 	    }
 	  }, {
 	    key: 'hasValidator',
-	    value: function hasValidator(wrapped) {
-	      return this.validatorFactories.indexOf(wrapped.factory) !== -1;
+	    value: function hasValidator(validator) {
+	      return this.validatorFactories.indexOf(validator) !== -1;
 	    }
 	  }, {
 	    key: 'validatorFactories',
@@ -1606,35 +1606,34 @@
 	  return factory;
 	}
 	
-	// Nums
+	// Scalars
 	var _ValueRestriction = _Restriction(function (e) {
 	  return e.value;
 	});
 	
-	function _factorize(validators) {
+	function createValidators(validators) {
 	  return _Object$entries(validators).reduce(function (factorized, _ref) {
 	    var _ref2 = _slicedToArray(_ref, 2);
 	
 	    var name = _ref2[0];
-	    var factory = _ref2[1];
+	    var original = _ref2[1];
 	
 	    var wrapped = function wrapped() {
-	      var validator = factory.apply(undefined, arguments);
-	      validator.factory = factory;
+	      var validator = original.apply(undefined, arguments);
+	      validator.factory = wrapped;
 	      return validator;
 	    };
-	    wrapped.factory = factory;
 	    factorized[name] = wrapped;
 	    return factorized;
 	  }, {});
 	}
 	
-	var Value = _factorize({
+	var Value = createValidators({
 	  // Ok, Present *is* in terms of the serialized property but it's really
 	  // all about the value. You got me.
 	  Present: function Present(msg) {
 	    return _ValueRestriction(msg, function (v) {
-	      return v !== undefined;
+	      return v === undefined;
 	    });
 	  },
 	  AtLeast: function AtLeast(min, msg) {
@@ -1659,7 +1658,7 @@
 	  return e.value ? e.value.length : 0;
 	});
 	
-	var Length = _factorize({
+	var Length = createValidators({
 	  AtLeast: function AtLeast(min, msg) {
 	    return _LengthRestriction(msg, function (v) {
 	      return v < min;
