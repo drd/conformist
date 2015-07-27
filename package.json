@@ -29,7 +29,7 @@
   "scripts": {
     "build": "webpack",
     "prepublish": "webpack",
-    "test": "mocha --compilers js:mocha-babel test.js"
+    "test": "npm run build && mocha -C --compilers js:mocha-babel test.js"
   },
   "keywords": [
     "schema",

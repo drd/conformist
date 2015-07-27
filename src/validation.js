@@ -1,5 +1,5 @@
 function _Restriction(valueTransformer) {
-  return (name, msg, isFailure) => {
+  let factory = (name, msg, isFailure) => {
     let validator = (element, context) => {
       if (isFailure(valueTransformer(element))) {
         element.addError(msg);
@@ -8,8 +8,10 @@ function _Restriction(valueTransformer) {
       return true;
     }
     validator._name = name;
+//    validator.factory = factory;
     return validator;
   }
+  return factory;
 }
 
 // Nums
@@ -27,7 +29,7 @@ let Value = {
 }
 
 // Strings & Lists
-let _LengthRestriction = _Restriction(e => e.value.length);
+let _LengthRestriction = _Restriction(e => e.value ? e.value.length : 0);
 
 let Length = {
   AtLeast: (min, msg) => _LengthRestriction('AtLeast', msg, v => v < min),

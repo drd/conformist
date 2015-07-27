@@ -436,6 +436,7 @@
 	
 	      this.members = [];
 	      if (!(raw && raw.forEach)) {
+	        this.notifyWatchers(false, this);
 	        return false;
 	      }
 	      var success = true;
@@ -1584,7 +1585,7 @@
 	  value: true
 	});
 	function _Restriction(valueTransformer) {
-	  return function (name, msg, isFailure) {
+	  var factory = function factory(name, msg, isFailure) {
 	    var validator = function validator(element, context) {
 	      if (isFailure(valueTransformer(element))) {
 	        element.addError(msg);
@@ -1593,8 +1594,10 @@
 	      return true;
 	    };
 	    validator._name = name;
+	    //    validator.factory = factory;
 	    return validator;
 	  };
+	  return factory;
 	}
 	
 	// Nums
@@ -1633,7 +1636,7 @@
 	
 	// Strings & Lists
 	var _LengthRestriction = _Restriction(function (e) {
-	  return e.value.length;
+	  return e.value ? e.value.length : 0;
 	});
 	
 	var Length = {

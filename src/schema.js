@@ -202,6 +202,7 @@ class List extends Container {
   set(raw) {
     this.members = [];
     if (!(raw && raw.forEach)) {
+      this.notifyWatchers(false, this);
       return false;
     }
     let success = true;
