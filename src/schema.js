@@ -165,11 +165,11 @@ Enum.prototype.childType = Str;
 class Container extends Type {
   validate(context) {
     this.errors = [];
-    let success = !!this.memberValues.reduce((valid, member) => {
+    this.valid = !!this.memberValues.reduce((valid, member) => {
       var result = member.validate(context);
       return valid && result;
     }, true);
-    return !!this.validators.reduce((valid, validator) => valid &= validator(this, context), success);
+    return !!this.validators.reduce((valid, validator) => valid &= validator(this, context), this.valid);
   }
 }
 
