@@ -409,9 +409,10 @@
 	        var result = member.validate(context);
 	        return valid && result;
 	      }, true);
-	      return !!this.validators.reduce(function (valid, validator) {
+	      this.valid = !!this.validators.reduce(function (valid, validator) {
 	        return valid &= validator(_this2, context);
 	      }, success);
+	      return this.valid;
 	    }
 	  }]);
 	
