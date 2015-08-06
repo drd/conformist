@@ -405,13 +405,13 @@
 	      var _this2 = this;
 	
 	      this.errors = [];
-	      var success = !!this.memberValues.reduce(function (valid, member) {
+	      this.valid = !!this.memberValues.reduce(function (valid, member) {
 	        var result = member.validate(context);
 	        return valid && result;
 	      }, true);
 	      return !!this.validators.reduce(function (valid, validator) {
 	        return valid &= validator(_this2, context);
-	      }, success);
+	      }, this.valid);
 	    }
 	  }]);
 	
