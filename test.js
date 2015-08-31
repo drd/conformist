@@ -1,10 +1,14 @@
-import {expect} from 'chai';
-import sinon from 'sinon';
+import {default as chai, expect} from 'chai';
+import chaiImmutable from 'chai-immutable';
+chai.use(chaiImmutable);
 
-//import {Schema, Validation} from './build/index';
+import sinon from 'sinon';
+import Immutable from 'immutable';
+
 import {Schema, Validation} from './src/conformist';
 let {Int, Str, Bool, Enum, Map, List} = Schema;
 let {Value, Length} = Validation;
+
 
 describe('Type', () => {
   it('should set default and name', () => {
@@ -104,19 +108,19 @@ describe('Type', () => {
       it('should set valid array', () => {
         let ss = new Strings;
         ss.set(['yoghurt', 'pops']);
-        expect(ss.value).to.eql(['yoghurt', 'pops'])
+        expect(ss.value).to.equal(Immutable.List(['yoghurt', 'pops']));
       })
 
       it('should set defaults', () => {
         var DefaultedStrings = Strings.using({default: ['foo', 'bar']});
         let ds = new DefaultedStrings;
-        expect(ds.value).to.eql([]);
+        expect(ds.value).to.equal(Immutable.List([]));
         // on an instance
         ds.setDefault();
-        expect(ds.value).to.eql(ds.default);
+        expect(ds.value).to.equal(ds.default);
         // on a class
         let dds = DefaultedStrings.fromDefaults();
-        expect(dds.value).to.eql(dds.default);
+        expect(dds.value).to.equal(dds.default);
       })
 
       describe('set()', () => {
@@ -142,26 +146,26 @@ describe('Type', () => {
           expect(abMap.set({a: 'abs', b: 6})).to.be.true;
           expect(abMap.members.a.value).to.equal('abs');
           expect(abMap.members.b.value).to.equal(6);
-          expect(abMap.value).to.eql({a: 'abs', b: 6});
+          expect(abMap.value).to.equal(Immutable.Map({a: 'abs', b: 6}));
         })
 
         it('should report failure when member set fails', () => {
           expect(abMap.set({a: 'abs', b: null})).to.be.false;
           expect(abMap.members.a.value).to.equal(undefined);
           expect(abMap.members.b.value).to.equal(undefined);
-          expect(abMap.value).to.eql({a: undefined, b: undefined});
+          expect(abMap.value).to.equal(Immutable.Map({a: undefined, b: undefined}));
         })
 
         it('should allow setting of subset of keyspace', () => {
           expect(abMap.set({b: 42})).to.be.true;
           expect(abMap.members.a.value).to.equal(undefined);
           expect(abMap.members.b.value).to.equal(42);
-          expect(abMap.value).to.eql({a: undefined, b: 42});
+          expect(abMap.value).to.equal(Immutable.Map({a: undefined, b: 42}));
 
           expect(abMap.set({a: 42})).to.be.true;
           expect(abMap.members.a.value).to.equal('42');
           expect(abMap.members.b.value).to.equal(undefined);
-          expect(abMap.value).to.eql({a: '42', b: undefined});
+          expect(abMap.value).to.equal(Immutable.Map({a: '42', b: undefined}));
         })
       })
     })
@@ -424,58 +428,117 @@ describe('Complex schema examples (from idealist.org)', () => {
     Str.named('image')
   );
 
-  it('Location', () => {
-    let location = new Location();
-    expect(location.set({fallback: false, location: 'Boston', geoid: 3})).to.eql(true);
-    expect(location.validate()).to.eql(true);
-    expect(location.set({fallback: true, city: 'Boston', regionCode: 'US_MA', countryCode: 'US'})).to.eql(true);
-    expect(location.validate()).to.eql(true);
-    expect(location.set({fallback: true, city: 'Boston', regionCode: {Geo: 'NotApplicable'}, countryCode: 'US'})).to.eql(true);
-    expect(location.validate()).to.eql(true);
+  describe('using POJSOs', () => {
+    it('Location', () => {
+      let location = new Location();
+      expect(location.set({fallback: false, location: 'Boston', geoid: 3})).to.eql(true);
+      expect(location.validate()).to.eql(true);
+      expect(location.set({fallback: true, city: 'Boston', regionCode: 'US_MA', countryCode: 'US'})).to.eql(true);
+      expect(location.validate()).to.eql(true);
+      expect(location.set({fallback: true, city: 'Boston', regionCode: {Geo: 'NotApplicable'}, countryCode: 'US'})).to.eql(true);
+      expect(location.validate()).to.eql(true);
 
-    expect(location.set({fallback: false, location: '', geoid: 3})).to.eql(true);
-    expect(location.validate()).to.eql(false);
-    expect(location.allErrors.children.location.length).to.eql(1);
-    expect(location.allErrors.children.location[0]).to.eql('Please choose a location');
-    expect(location.set({fallback: false, location: 'Boston'})).to.eql(true);
-    expect(location.validate()).to.eql(false);
-    expect(location.set({fallback: true, countryCode: 'US'})).to.eql(true);
-    expect(location.validate()).to.eql(false);
+      expect(location.set({fallback: false, location: '', geoid: 3})).to.eql(true);
+      expect(location.validate()).to.eql(false);
+      expect(location.allErrors.children.location.length).to.eql(1);
+      expect(location.allErrors.children.location[0]).to.eql('Please choose a location');
+      expect(location.set({fallback: false, location: 'Boston'})).to.eql(true);
+      expect(location.validate()).to.eql(false);
+      expect(location.set({fallback: true, countryCode: 'US'})).to.eql(true);
+      expect(location.validate()).to.eql(false);
+    })
+
+    it('Org', () => {
+      let org = Org.fromDefaults();
+      expect(org.members.type.value).to.eql('nonprofit');
+      expect(org.members.description.value).to.eql('');
+      expect(org.validate()).to.be.false;
+      expect(org.members.addresses.errors.length).to.eql(1);
+      expect(org.members.keywords.errors.length).to.eql(1);
+
+      org.set({shortName: 'Marx sometimes types really inappropriate test data, but....'});
+      expect(org.validate()).to.be.false;
+      expect(org.members.shortName.errors.length).to.eql(1);
+
+      org.set({keywords: ['arts', 'hot sauce']});
+      expect(org.members.keywords.validate()).to.be.true;
+      expect(org.members.keywords.errors.length).to.eql(0);
+
+      let success = org.set({
+        type: 'socialenterprise',
+        addresses: [{
+          location: 'Portlandio',
+          geoid: 136777374339,
+          fallback: false
+        }],
+        fullName: 'Conscious Widgets',
+        shortName: 'ConWid',
+        streetAddress: '12 SW Alder St',
+        ein: 'Data dog',
+        website: 'https://conwid.net',
+        description: 'We produce widgets, responsibly.',
+        keywords: ['Socially', 'Conscious', 'Widgets'],
+        image: 'http://socially.conscious.jpg.to'
+      });
+      expect(success).to.be.true;
+      expect(org.validate()).to.be.true;
+    })
   })
 
-  it('Org', () => {
-    let org = Org.fromDefaults();
-    expect(org.members.type.value).to.eql('nonprofit');
-    expect(org.members.description.value).to.eql('');
-    expect(org.validate()).to.be.false;
-    expect(org.members.addresses.errors.length).to.eql(1);
-    expect(org.members.keywords.errors.length).to.eql(1);
+  describe('using Immutable', () => {
+    it('Location', () => {
+      let location = new Location();
+      expect(location.set(Immutable.fromJS({fallback: false, location: 'Boston', geoid: 3}))).to.eql(true);
+      expect(location.validate()).to.eql(true);
+      expect(location.set(Immutable.fromJS({fallback: true, city: 'Boston', regionCode: 'US_MA', countryCode: 'US'}))).to.eql(true);
+      expect(location.validate()).to.eql(true);
+      expect(location.set(Immutable.fromJS({fallback: true, city: 'Boston', regionCode: {Geo: 'NotApplicable'}, countryCode: 'US'}))).to.eql(true);
+      expect(location.validate()).to.eql(true);
 
-    org.set({shortName: 'Marx sometimes types really inappropriate test data, but....'});
-    expect(org.validate()).to.be.false;
-    expect(org.members.shortName.errors.length).to.eql(1);
+      expect(location.set(Immutable.fromJS({fallback: false, location: '', geoid: 3}))).to.eql(true);
+      expect(location.validate()).to.eql(false);
+      expect(location.allErrors.children.location.length).to.eql(1);
+      expect(location.allErrors.children.location[0]).to.eql('Please choose a location');
+      expect(location.set(Immutable.fromJS({fallback: false, location: 'Boston'}))).to.eql(true);
+      expect(location.validate()).to.eql(false);
+      expect(location.set(Immutable.fromJS({fallback: true, countryCode: 'US'}))).to.eql(true);
+      expect(location.validate()).to.eql(false);
+    })
 
-    org.set({keywords: ['arts', 'hot sauce']});
-    expect(org.members.keywords.validate()).to.be.true;
-    expect(org.members.keywords.errors.length).to.eql(0);
+    it('Org', () => {
+      let org = Org.fromDefaults();
+      expect(org.members.type.value).to.eql('nonprofit');
+      expect(org.members.description.value).to.eql('');
+      expect(org.validate()).to.be.false;
+      expect(org.members.addresses.errors.length).to.eql(1);
+      expect(org.members.keywords.errors.length).to.eql(1);
 
-    let success = org.set({
-      type: 'socialenterprise',
-      addresses: [{
-        location: 'Portlandio',
-        geoid: 136777374339,
-        fallback: false
-      }],
-      fullName: 'Conscious Widgets',
-      shortName: 'ConWid',
-      streetAddress: '12 SW Alder St',
-      ein: 'Data dog',
-      website: 'https://conwid.net',
-      description: 'We produce widgets, responsibly.',
-      keywords: ['Socially', 'Conscious', 'Widgets'],
-      image: 'http://socially.conscious.jpg.to'
-    });
-    expect(success).to.be.true;
-    expect(org.validate()).to.be.true;
+      org.set(Immutable.fromJS({shortName: 'Marx sometimes types really inappropriate test data, but....'}));
+      expect(org.validate()).to.be.false;
+      expect(org.members.shortName.errors.length).to.eql(1);
+
+      org.set(Immutable.fromJS({keywords: ['arts', 'hot sauce']}));
+      expect(org.members.keywords.validate()).to.be.true;
+      expect(org.members.keywords.errors.length).to.eql(0);
+
+      let success = org.set({
+        type: 'socialenterprise',
+        addresses: [{
+          location: 'Portlandio',
+          geoid: 136777374339,
+          fallback: false
+        }],
+        fullName: 'Conscious Widgets',
+        shortName: 'ConWid',
+        streetAddress: '12 SW Alder St',
+        ein: 'Data dog',
+        website: 'https://conwid.net',
+        description: 'We produce widgets, responsibly.',
+        keywords: ['Socially', 'Conscious', 'Widgets'],
+        image: 'http://socially.conscious.jpg.to'
+      });
+      expect(success).to.be.true;
+      expect(org.validate()).to.be.true;
+    })
   })
 })

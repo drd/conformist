@@ -1,3 +1,5 @@
+import Immutable from 'immutable';
+
 function _Restriction(valueTransformer) {
   return (msg, isFailure) => {
     let validator = (element, context) => {
@@ -39,7 +41,13 @@ let Value = createValidators({
 
 
 // Strings & Lists
-let _LengthRestriction = _Restriction(e => e.value ? e.value.length : 0);
+let _LengthRestriction = _Restriction(e => {
+  if (Immutable.List.isList(e.value)) {
+    return e.value.size;
+  } else {
+    return e.value ? e.value.length : 0;
+  }
+});
 
 let Length = createValidators({
   AtLeast: (min, msg) => _LengthRestriction(msg, v => v < min),
