@@ -443,6 +443,9 @@
 	    value: function set(raw) {
 	      var _this3 = this;
 	
+	      if (raw && raw.toJS) {
+	        raw = raw.toJS();
+	      }
 	      this.members = [];
 	      if (!(raw && raw.forEach)) {
 	        this.notifyWatchers(false, this);
@@ -467,6 +470,11 @@
 	      return _immutable2['default'].List(this.members.map(function (m) {
 	        return m.value;
 	      }));
+	    }
+	  }, {
+	    key: 'default',
+	    get: function get() {
+	      return _immutable2['default'].List(Object.getPrototypeOf(this)['default']);
 	    }
 	  }, {
 	    key: 'members',
@@ -528,6 +536,9 @@
 	      var _ref2$notify = _ref2.notify;
 	      var notify = _ref2$notify === undefined ? true : _ref2$notify;
 	
+	      if (raw && raw.toJS) {
+	        raw = raw.toJS();
+	      }
 	      var success = true;
 	      if (raw === undefined) {
 	        raw = {};
@@ -574,7 +585,7 @@
 	  }, {
 	    key: 'default',
 	    get: function get() {
-	      return _Object$entries(this.memberSchema).reduce(function (defaults, _ref3) {
+	      return _immutable2['default'].Map(_Object$entries(this.memberSchema).reduce(function (defaults, _ref3) {
 	        var _ref32 = _slicedToArray(_ref3, 2);
 	
 	        var k = _ref32[0];
@@ -584,7 +595,7 @@
 	          defaults[k] = v.prototype['default'];
 	        }
 	        return defaults;
-	      }, {});
+	      }, {}));
 	    }
 	  }, {
 	    key: 'memberValues',
@@ -634,11 +645,7 @@
 	    key: 'fromDefaults',
 	    value: function fromDefaults() {
 	      var defaulted = new this();
-	      _Object$entries(defaulted['default']).forEach(function (_ref5) {
-	        var _ref52 = _slicedToArray(_ref5, 2);
-	
-	        var k = _ref52[0];
-	        var v = _ref52[1];
+	      defaulted['default'].forEach(function (v, k) {
 	        return defaulted.members[k].set(v);
 	      });
 	      return defaulted;
@@ -6522,15 +6529,22 @@
 /* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
-	var _slicedToArray = __webpack_require__(20)["default"];
+	var _slicedToArray = __webpack_require__(20)['default'];
 	
-	var _Object$entries = __webpack_require__(44)["default"];
+	var _Object$entries = __webpack_require__(44)['default'];
 	
-	Object.defineProperty(exports, "__esModule", {
+	var _interopRequireDefault = __webpack_require__(1)['default'];
+	
+	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
+	
+	var _immutable = __webpack_require__(49);
+	
+	var _immutable2 = _interopRequireDefault(_immutable);
+	
 	function _Restriction(valueTransformer) {
 	  return function (msg, isFailure) {
 	    var validator = function validator(element, context) {
@@ -6594,7 +6608,11 @@
 	
 	// Strings & Lists
 	var _LengthRestriction = _Restriction(function (e) {
-	  return e.value ? e.value.length : 0;
+	  if (_immutable2['default'].List.isList(e.value)) {
+	    return e.value.size;
+	  } else {
+	    return e.value ? e.value.length : 0;
+	  }
 	});
 	
 	var Length = createValidators({
@@ -6620,8 +6638,8 @@
 	  }
 	});
 	
-	exports["default"] = { Value: Value, Length: Length };
-	module.exports = exports["default"];
+	exports['default'] = { Value: Value, Length: Length };
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ])));
