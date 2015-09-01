@@ -97,9 +97,9 @@
 	
 	var _Object$keys = __webpack_require__(3)['default'];
 	
-	var _Object$entries = __webpack_require__(44)['default'];
+	var _Object$values = __webpack_require__(44)['default'];
 	
-	var _Object$values = __webpack_require__(47)['default'];
+	var _Object$entries = __webpack_require__(47)['default'];
 	
 	var _interopRequireDefault = __webpack_require__(1)['default'];
 	
@@ -203,7 +203,7 @@
 	    key: 'fromDefaults',
 	    value: function fromDefaults() {
 	      var defaulted = new this();
-	      defaulted.set(defaulted['default']);
+	      defaulted.setDefault();
 	      return defaulted;
 	    }
 	  }]);
@@ -472,11 +472,6 @@
 	      }));
 	    }
 	  }, {
-	    key: 'default',
-	    get: function get() {
-	      return _immutable2['default'].List(Object.getPrototypeOf(this)['default']);
-	    }
-	  }, {
 	    key: 'members',
 	    get: function get() {
 	      return this._members;
@@ -573,6 +568,17 @@
 	      return success;
 	    }
 	  }, {
+	    key: 'setDefault',
+	    value: function setDefault() {
+	      if (this['default']) {
+	        this.set(this['default']);
+	      } else {
+	        this.memberValues.forEach(function (m) {
+	          return m.setDefault();
+	        });
+	      }
+	    }
+	  }, {
 	    key: 'value',
 	    get: function get() {
 	      var _this5 = this;
@@ -580,21 +586,6 @@
 	      return _immutable2['default'].Map(_Object$keys(this._members).reduce(function (v, m) {
 	        v[m] = _this5._members[m].value;
 	        return v;
-	      }, {}));
-	    }
-	  }, {
-	    key: 'default',
-	    get: function get() {
-	      return _immutable2['default'].Map(_Object$entries(this.memberSchema).reduce(function (defaults, _ref3) {
-	        var _ref32 = _slicedToArray(_ref3, 2);
-	
-	        var k = _ref32[0];
-	        var v = _ref32[1];
-	
-	        if (v.prototype['default'] !== undefined) {
-	          defaults[k] = v.prototype['default'];
-	        }
-	        return defaults;
 	      }, {}));
 	    }
 	  }, {
@@ -617,11 +608,11 @@
 	    get: function get() {
 	      return {
 	        self: this.errors,
-	        children: _Object$entries(this.members).reduce(function (errors, _ref4) {
-	          var _ref42 = _slicedToArray(_ref4, 2);
+	        children: _Object$entries(this.members).reduce(function (errors, _ref3) {
+	          var _ref32 = _slicedToArray(_ref3, 2);
 	
-	          var k = _ref42[0];
-	          var v = _ref42[1];
+	          var k = _ref32[0];
+	          var v = _ref32[1];
 	
 	          errors[k] = v.allErrors;
 	          return errors;
@@ -640,15 +631,6 @@
 	        return ms;
 	      }, {});
 	      return this.clone({ memberSchema: memberSchema });
-	    }
-	  }, {
-	    key: 'fromDefaults',
-	    value: function fromDefaults() {
-	      var defaulted = new this();
-	      defaulted['default'].forEach(function (v, k) {
-	        return defaulted.members[k].set(v);
-	      });
-	      return defaulted;
 	    }
 	  }]);
 	
@@ -1529,7 +1511,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(46);
-	module.exports = __webpack_require__(6).core.Object.entries;
+	module.exports = __webpack_require__(6).core.Object.values;
 
 /***/ },
 /* 46 */
@@ -1567,7 +1549,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(46);
-	module.exports = __webpack_require__(6).core.Object.values;
+	module.exports = __webpack_require__(6).core.Object.entries;
 
 /***/ },
 /* 49 */
@@ -6533,7 +6515,7 @@
 	
 	var _slicedToArray = __webpack_require__(20)['default'];
 	
-	var _Object$entries = __webpack_require__(44)['default'];
+	var _Object$entries = __webpack_require__(47)['default'];
 	
 	var _interopRequireDefault = __webpack_require__(1)['default'];
 	

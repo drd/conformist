@@ -52,10 +52,9 @@ class Type {
     return this.clone({validators});
   }
 
-
   static fromDefaults() {
     let defaulted = new this();
-    defaulted.set(defaulted.default);
+    defaulted.setDefault();
     return defaulted;
   }
 }
@@ -180,10 +179,6 @@ class List extends Container {
     return Immutable.List(this.members.map(m => m.value));
   }
 
-  get default() {
-    return Immutable.List(Object.getPrototypeOf(this).default);
-  }
-
   get members() {
     return this._members;
   }
@@ -252,15 +247,6 @@ class Map extends Container {
     return Immutable.Map(Object.keys(this._members).reduce((v, m) => {
       v[m] = this._members[m].value;
       return v;
-    }, {}));
-  }
-
-  get default() {
-    return Immutable.Map(Object.entries(this.memberSchema).reduce((defaults, [k, v]) => {
-      if (v.prototype.default !== undefined) {
-        defaults[k] = v.prototype.default;
-      }
-      return defaults;
     }, {}));
   }
 
@@ -333,10 +319,12 @@ class Map extends Container {
     return this.clone({memberSchema});
   }
 
-  static fromDefaults() {
-    let defaulted = new this();
-    defaulted.default.forEach((v, k) => defaulted.members[k].set(v));
-    return defaulted;
+  setDefault() {
+    if (this.default) {
+      this.set(this.default);
+    } else {
+      this.memberValues.forEach(m => m.setDefault());
+    }
   }
 }
 
