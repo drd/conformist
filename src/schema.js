@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import {isObject, consume} from './util';
 
 
@@ -176,7 +177,11 @@ class Container extends Type {
 
 class List extends Container {
   get value() {
-    return this.members.map(m => m.value);
+    return Immutable.List(this.members.map(m => m.value));
+  }
+
+  get default() {
+    return Immutable.List(Object.getPrototypeOf(this).default);
   }
 
   get members() {
@@ -205,6 +210,9 @@ class List extends Container {
 
   // TODO: short-circuit conversion if any member fails.
   set(raw) {
+    if (raw && raw.toJS) {
+      raw = raw.toJS();
+    }
     this.members = [];
     if (!(raw && raw.forEach)) {
       this.notifyWatchers(false, this);
@@ -241,19 +249,19 @@ class Map extends Container {
   }
 
   get value() {
-    return Object.keys(this._members).reduce((v, m) => {
+    return Immutable.Map(Object.keys(this._members).reduce((v, m) => {
       v[m] = this._members[m].value;
       return v;
-    }, {});
+    }, {}));
   }
 
   get default() {
-    return Object.entries(this.memberSchema).reduce((defaults, [k, v]) => {
+    return Immutable.Map(Object.entries(this.memberSchema).reduce((defaults, [k, v]) => {
       if (v.prototype.default !== undefined) {
         defaults[k] = v.prototype.default;
       }
       return defaults;
-    }, {});
+    }, {}));
   }
 
   // member elements as list
@@ -280,6 +288,9 @@ class Map extends Container {
   }
 
   set(raw, {notify = true} = {}) {
+    if (raw && raw.toJS) {
+      raw = raw.toJS();
+    }
     let success = true;
     if (raw === undefined) {
       raw = {};
@@ -324,7 +335,7 @@ class Map extends Container {
 
   static fromDefaults() {
     let defaulted = new this();
-    Object.entries(defaulted.default).forEach(([k,v]) => defaulted.members[k].set(v));
+    defaulted.default.forEach((v, k) => defaulted.members[k].set(v));
     return defaulted;
   }
 }
