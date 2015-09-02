@@ -1,6 +1,48 @@
 import {isObject, consume} from './util';
 
 
+// Thank you IE, for making this necessary
+// Per http://babeljs.io/docs/advanced/caveats/, static methods do not
+// propagate down the inheritance chain because __proto__ is not a thing.
+// Decorate any concrete schema class with this to ensure that it and any
+// cloned versions of itself will have these static methods.
+function staticify(cls) {
+  Object.assign(cls, {
+    clone(overrides) {
+      class cloned extends this {};
+      Object.assign(cloned.prototype, overrides);
+      staticify(cloned);
+      // Also, thank you IE, for making this necessary
+      Reflect.ownKeys(this).forEach(k => {
+        if (!cloned.hasOwnProperty(k)) {
+          cloned[k] = this[k];
+        }
+      })
+      return cloned;
+    },
+
+    named(name) {
+      return this.clone({name});
+    },
+
+    using(overrides) {
+      // maybe pre-process overrides?
+      return this.clone(overrides);
+    },
+
+    validatedBy(...validators) {
+      return this.clone({validators});
+    },
+
+    fromDefaults() {
+      let defaulted = new this();
+      defaulted.setDefault();
+      return defaulted;
+    }
+  });
+}
+
+
 class Type {
   constructor(value) {
     this.valid = undefined;
@@ -30,32 +72,6 @@ class Type {
 
   get validatorFactories() {
     return this.validators.map(v => v.factory);
-  }
-
-  static clone(overrides) {
-    class cloned extends this {};
-    Object.assign(cloned.prototype, overrides);
-    return cloned;
-  }
-
-  static named(name) {
-    return this.clone({name});
-  }
-
-  static using(overrides) {
-    // maybe pre-process overrides?
-    return this.clone(overrides);
-  }
-
-  static validatedBy(...validators) {
-    return this.clone({validators});
-  }
-
-
-  static fromDefaults() {
-    let defaulted = new this();
-    defaulted.set(defaulted.default);
-    return defaulted;
   }
 }
 
@@ -100,6 +116,7 @@ class Scalar extends Type {
 }
 
 
+@staticify
 class Bool extends Scalar {
   adapt(raw) {
     // TODO: more restrictive?
@@ -108,6 +125,7 @@ class Bool extends Scalar {
 }
 
 
+@staticify
 class Str extends Scalar {
   adapt(raw) {
     return raw.toString();
@@ -120,6 +138,7 @@ class Num extends Scalar {
 }
 
 
+@staticify
 class Int extends Num {
   adapt(raw) {
     let value = parseInt(raw, 10);
@@ -130,6 +149,8 @@ class Int extends Num {
   }
 }
 
+
+@staticify
 class Enum extends Scalar {
   constructor(value) {
     super();
@@ -156,7 +177,7 @@ class Enum extends Scalar {
   }
 
   static valued(validValues) {
-    return this.clone({validValues})
+    return this.clone({validValues});
   }
 }
 
@@ -174,6 +195,8 @@ class Container extends Type {
   }
 }
 
+
+@staticify
 class List extends Container {
   get value() {
     return this.members.map(m => m.value);
@@ -231,6 +254,8 @@ class List extends Container {
 
 List.prototype.members = [];
 
+
+@staticify
 class Map extends Container {
   constructor(value) {
     super(value);
