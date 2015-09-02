@@ -1,3 +1,5 @@
+let toString = Object.prototype.toString;
+
 let isObject = o => toString.call(o) === '[object Object]'
 
 let consume = i => {
