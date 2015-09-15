@@ -1822,6 +1822,8 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
+	var toString = Object.prototype.toString;
+	
 	var isObject = function isObject(o) {
 	  return toString.call(o) === '[object Object]';
 	};
