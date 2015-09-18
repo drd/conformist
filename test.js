@@ -20,7 +20,7 @@ describe('Type', () => {
 
   it('should set value to undefined', () => {
     var s = new Str();
-    expect(s.value).to.be.undefined;
+    expect(s.value()).to.be.undefined;
     expect(s.valid).to.equal(undefined);
   })
 
@@ -35,20 +35,20 @@ describe('Type', () => {
       it('should set default', () => {
         var MyString = Str.using({default: 'hi'});
         var s = MyString.fromDefaults();
-        expect(s.value).to.equal(s.default);
-        expect(s.value).to.equal('hi');
+        expect(s.value()).to.equal(s.default);
+        expect(s.value()).to.equal('hi');
       })
 
       it('should coerce to string', () => {
         var s = new Str();
         expect(s.set(123)).to.equal(true);
-        expect(s.value).to.equal('123');
+        expect(s.value()).to.equal('123');
 
         expect(s.set(true)).to.equal(true);
-        expect(s.value).to.equal('true');
+        expect(s.value()).to.equal('true');
 
         expect(s.set(null)).to.equal(false);
-        expect(s.value).to.equal(undefined);
+        expect(s.value()).to.equal(undefined);
       })
     })
 
@@ -56,9 +56,9 @@ describe('Type', () => {
       it('should accept parseable integers', () => {
         let n = new Int();
         n.set('yoooo');
-        expect(n.value).to.equal(undefined)
+        expect(n.value()).to.equal(undefined)
         n.set('123');
-        expect(n.value).to.equal(123)
+        expect(n.value()).to.equal(123)
       })
     })
 
@@ -66,17 +66,17 @@ describe('Type', () => {
       it('should coerce to truthiness', () => {
         let George = Bool.using({default: false});
         let george = George.fromDefaults();
-        expect(george.value).to.equal(false);
+        expect(george.value()).to.equal(false);
         george.set(undefined);
-        expect(george.value).to.equal(false);
+        expect(george.value()).to.equal(false);
         george.set('');
-        expect(george.value).to.equal(false);
+        expect(george.value()).to.equal(false);
         george.set(true);
-        expect(george.value).to.equal(true);
+        expect(george.value()).to.equal(true);
         george.set('hi');
-        expect(george.value).to.equal(true);
+        expect(george.value()).to.equal(true);
         george.set([1, 2, 3]);
-        expect(george.value).to.equal(true);
+        expect(george.value()).to.equal(true);
       })
     })
 
@@ -85,9 +85,9 @@ describe('Type', () => {
         let Fruit = Enum.of(Str).valued(['Apple', 'Banana', 'Carambola', 'Dragonfruit']);
         let fruit = new Fruit();
         expect(fruit.set('Spinach')).to.equal(false);
-        expect(fruit.value).to.equal(undefined);
+        expect(fruit.value()).to.equal(undefined);
         expect(fruit.set('Banana')).to.equal(true);
-        expect(fruit.value).to.equal('Banana');
+        expect(fruit.value()).to.equal('Banana');
       })
 
       describe('of Int', () => {
@@ -95,7 +95,7 @@ describe('Type', () => {
         let prime = new Prime();
         expect(prime.set(1)).to.equal(false);
         expect(prime.set(3)).to.equal(true);
-        expect(prime.value).to.equal(3);
+        expect(prime.value()).to.equal(3);
       })
     })
   })
@@ -108,19 +108,19 @@ describe('Type', () => {
       it('should set valid array', () => {
         let ss = new Strings;
         ss.set(['yoghurt', 'pops']);
-        expect(ss.value).to.equal(Immutable.List(['yoghurt', 'pops']));
+        expect(ss.value()).to.equal(Immutable.List(['yoghurt', 'pops']));
       })
 
       it('should set defaults', () => {
         var DefaultedStrings = Strings.using({default: ['foo', 'bar']});
         let ds = new DefaultedStrings;
-        expect(ds.value).to.equal(Immutable.List([]));
+        expect(ds.value()).to.equal(Immutable.List([]));
         // on an instance
         ds.setDefault();
-        expect(ds.value).to.equal(Immutable.List(ds.default));
+        expect(ds.value()).to.equal(Immutable.List(ds.default));
         // on a class
         let dds = DefaultedStrings.fromDefaults();
-        expect(dds.value).to.equal(Immutable.List(dds.default));
+        expect(dds.value()).to.equal(Immutable.List(dds.default));
       })
 
       describe('set()', () => {
@@ -132,7 +132,7 @@ describe('Type', () => {
         it('returns empty List on failure', () => {
           let ss = new Strings;
           expect(ss.set(['cannot be', null])).to.be.false;
-          expect(ss.members.length).to.equal(0);
+          expect(ss.members().length).to.equal(0);
         })
       })
     })
@@ -144,28 +144,28 @@ describe('Type', () => {
       describe('set()', () => {
         it('should accept object values', () => {
           expect(abMap.set({a: 'abs', b: 6})).to.be.true;
-          expect(abMap.members.a.value).to.equal('abs');
-          expect(abMap.members.b.value).to.equal(6);
-          expect(abMap.value).to.equal(Immutable.Map({a: 'abs', b: 6}));
+          expect(abMap.members().a.value()).to.equal('abs');
+          expect(abMap.members().b.value()).to.equal(6);
+          expect(abMap.value()).to.equal(Immutable.Map({a: 'abs', b: 6}));
         })
 
         it('should report failure when member set fails', () => {
           expect(abMap.set({a: 'abs', b: null})).to.be.false;
-          expect(abMap.members.a.value).to.equal(undefined);
-          expect(abMap.members.b.value).to.equal(undefined);
-          expect(abMap.value).to.equal(Immutable.Map({a: undefined, b: undefined}));
+          expect(abMap.members().a.value()).to.equal(undefined);
+          expect(abMap.members().b.value()).to.equal(undefined);
+          expect(abMap.value()).to.equal(Immutable.Map({a: undefined, b: undefined}));
         })
 
         it('should allow setting of subset of keyspace', () => {
           expect(abMap.set({b: 42})).to.be.true;
-          expect(abMap.members.a.value).to.equal(undefined);
-          expect(abMap.members.b.value).to.equal(42);
-          expect(abMap.value).to.equal(Immutable.Map({a: undefined, b: 42}));
+          expect(abMap.members().a.value()).to.equal(undefined);
+          expect(abMap.members().b.value()).to.equal(42);
+          expect(abMap.value()).to.equal(Immutable.Map({a: undefined, b: 42}));
 
           expect(abMap.set({a: 42})).to.be.true;
-          expect(abMap.members.a.value).to.equal('42');
-          expect(abMap.members.b.value).to.equal(undefined);
-          expect(abMap.value).to.equal(Immutable.Map({a: '42', b: undefined}));
+          expect(abMap.members().a.value()).to.equal('42');
+          expect(abMap.members().b.value()).to.equal(undefined);
+          expect(abMap.value()).to.equal(Immutable.Map({a: '42', b: undefined}));
         })
       })
     })
@@ -225,10 +225,10 @@ describe('Type', () => {
 
       it('calls observers of container when child is set', () => {
         ss.set(['uno', 'dos'])
-        ss.members[0].set('tres')
+        ss.members()[0].set('tres')
         expect(spy.callCount).to.equal(2);
         expect(spy.secondCall.args[0]).to.be.true;
-        expect(spy.secondCall.args[1]).to.equal(ss.members[0]);
+        expect(spy.secondCall.args[1]).to.equal(ss.members()[0]);
       })
     })
 
@@ -251,10 +251,10 @@ describe('Type', () => {
       })
 
       it('calls observer when child is set', () => {
-        abMap.members.b.set(42);
+        abMap.members().b.set(42);
         expect(spy.callCount).to.equal(1);
         expect(spy.firstCall.args[0]).to.be.true;
-        expect(spy.firstCall.args[1]).to.equal(abMap.members.b);
+        expect(spy.firstCall.args[1]).to.equal(abMap.members().b);
       })
 
       it('calls observer with the result of the set', () => {
@@ -277,7 +277,7 @@ describe('Type', () => {
     it('should evaluate validators on calls to validate()', () => {
       function IsPositive(msg) {
         return (element, context) => {
-          if (element.value < 0) {
+          if (element.value() < 0) {
             element.addError(msg);
             return false;
           }
@@ -301,7 +301,7 @@ describe('Type', () => {
 
     it('should allow validators access to the entire schema', () => {
       let ConfirmationMatch = (msg) => (element, context) => {
-        if (element.members['pass'].value !== element.members['conf'].value) {
+        if (element.members()['pass'].value() !== element.members()['conf'].value()) {
           element.addError(msg);
           return false;
         }
@@ -326,7 +326,7 @@ describe('Type', () => {
           return true;
         }),
         Str.named('b').validatedBy(x => {
-          if (x.value !== '3') {
+          if (x.value() !== '3') {
             x.addError('Not 3');
             return false;
           }
@@ -336,14 +336,14 @@ describe('Type', () => {
       let yadda = new Yadda();
       yadda.set({a: true, b: 2});
       yadda.validate();
-      expect(yadda.allErrors).to.eql({self: [], children: {a: ['Truthy'], b: ['Not 3']}});
+      expect(yadda.allErrors()).to.eql({self: [], children: {a: ['Truthy'], b: ['Not 3']}});
     })
 
     it('should report all errors for a List', () => {
       let loalt = new ListOfAtLeastThree();
       expect(loalt.set(['ab', 'cd'])).to.be.true;
       expect(loalt.validate()).to.be.false;
-      expect(loalt.allErrors).to.eql({
+      expect(loalt.allErrors()).to.eql({
         self: ['You must enter at least 3 strings'],
         children: [
           ['You must enter at least 3 characters'],
@@ -354,7 +354,7 @@ describe('Type', () => {
 
     it('should allow introspection on the validators of an element', () => {
       let loalt = new ListOfAtLeastThree();
-      expect(loalt.validatorFactories[0]).to.equal(Length.AtLeast);
+      expect(loalt.validatorFactories()[0]).to.equal(Length.AtLeast);
       expect(loalt.hasValidator(Length.AtLeast)).to.be.true;
     })
 
@@ -370,8 +370,8 @@ describe('Type', () => {
 describe('Complex schema examples (from idealist.org)', () => {
   function fallbackValidator(fallbackValue, message, test = (v) => v) {
     return function (element, state) {
-      if (element.parent.members.fallback.value === fallbackValue) {
-        if (!test(element.value)) {
+      if (element.parent.members().fallback.value() === fallbackValue) {
+        if (!test(element.value())) {
           element.addError(message);
           return false;
         }
@@ -441,8 +441,8 @@ describe('Complex schema examples (from idealist.org)', () => {
 
       expect(location.set({fallback: false, location: '', geoid: 3})).to.eql(true);
       expect(location.validate()).to.eql(false);
-      expect(location.allErrors.children.location.length).to.eql(1);
-      expect(location.allErrors.children.location[0]).to.eql('Please choose a location');
+      expect(location.allErrors().children.location.length).to.eql(1);
+      expect(location.allErrors().children.location[0]).to.eql('Please choose a location');
       expect(location.set({fallback: false, location: 'Boston'})).to.eql(true);
       expect(location.validate()).to.eql(false);
       expect(location.set({fallback: true, countryCode: 'US'})).to.eql(true);
@@ -451,21 +451,21 @@ describe('Complex schema examples (from idealist.org)', () => {
 
     it('Org', () => {
       let org = Org.fromDefaults();
-      expect(org.members.addresses.value).to.have.size(1);
-      expect(org.members.type.value).to.eql('nonprofit');
-      expect(org.members.description.value).to.eql('');
+      expect(org.members().addresses.value()).to.have.size(1);
+      expect(org.members().type.value()).to.eql('nonprofit');
+      expect(org.members().description.value()).to.eql('');
       expect(org.validate()).to.be.false;
-      expect(org.members.addresses.errors.length).to.eql(0);
-      expect(org.members.addresses.members[0].members.location.errors.length).to.eql(1);
-      expect(org.members.keywords.errors.length).to.eql(1);
+      expect(org.members().addresses.errors.length).to.eql(0);
+      expect(org.members().addresses.members()[0].members().location.errors.length).to.eql(1);
+      expect(org.members().keywords.errors.length).to.eql(1);
 
       org.set({shortName: 'Marx sometimes types really inappropriate test data, but....'});
       expect(org.validate()).to.be.false;
-      expect(org.members.shortName.errors.length).to.eql(1);
+      expect(org.members().shortName.errors.length).to.eql(1);
 
       org.set({keywords: ['arts', 'hot sauce']});
-      expect(org.members.keywords.validate()).to.be.true;
-      expect(org.members.keywords.errors.length).to.eql(0);
+      expect(org.members().keywords.validate()).to.be.true;
+      expect(org.members().keywords.errors.length).to.eql(0);
 
       let success = org.set({
         type: 'socialenterprise',
@@ -500,8 +500,8 @@ describe('Complex schema examples (from idealist.org)', () => {
 
       expect(location.set(Immutable.fromJS({fallback: false, location: '', geoid: 3}))).to.eql(true);
       expect(location.validate()).to.eql(false);
-      expect(location.allErrors.children.location.length).to.eql(1);
-      expect(location.allErrors.children.location[0]).to.eql('Please choose a location');
+      expect(location.allErrors().children.location.length).to.eql(1);
+      expect(location.allErrors().children.location[0]).to.eql('Please choose a location');
       expect(location.set(Immutable.fromJS({fallback: false, location: 'Boston'}))).to.eql(true);
       expect(location.validate()).to.eql(false);
       expect(location.set(Immutable.fromJS({fallback: true, countryCode: 'US'}))).to.eql(true);
@@ -510,20 +510,20 @@ describe('Complex schema examples (from idealist.org)', () => {
 
     it('Org', () => {
       let org = Org.fromDefaults();
-      expect(org.members.type.value).to.eql('nonprofit');
-      expect(org.members.description.value).to.eql('');
+      expect(org.members().type.value()).to.eql('nonprofit');
+      expect(org.members().description.value()).to.eql('');
       expect(org.validate()).to.be.false;
-      expect(org.members.addresses.errors.length).to.eql(0);
-      expect(org.members.addresses.members[0].members.location.errors.length).to.eql(1);
-      expect(org.members.keywords.errors.length).to.eql(1);
+      expect(org.members().addresses.errors.length).to.eql(0);
+      expect(org.members().addresses.members()[0].members().location.errors.length).to.eql(1);
+      expect(org.members().keywords.errors.length).to.eql(1);
 
       org.set(Immutable.fromJS({shortName: 'Marx sometimes types really inappropriate test data, but....'}));
       expect(org.validate()).to.be.false;
-      expect(org.members.shortName.errors.length).to.eql(1);
+      expect(org.members().shortName.errors.length).to.eql(1);
 
       org.set(Immutable.fromJS({keywords: ['arts', 'hot sauce']}));
-      expect(org.members.keywords.validate()).to.be.true;
-      expect(org.members.keywords.errors.length).to.eql(0);
+      expect(org.members().keywords.validate()).to.be.true;
+      expect(org.members().keywords.errors.length).to.eql(0);
 
       let success = org.set({
         type: 'socialenterprise',

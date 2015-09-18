@@ -58,8 +58,8 @@ You compose types into schema. For example, if you want a number and a checkbox 
 let NumberOddity = Map.of(
     Int.named('number'),
     Bool.named('mustBeOdd').using({optional: true})
-).validatedBy(x => x.members.mustBeOdd.value
-    ? x.members.number % 2 == 1
+).validatedBy(x => x.members().mustBeOdd.value()
+    ? x.members().number % 2 == 1
     : true)
 ```
 
@@ -88,11 +88,11 @@ Elements are just instances of Schema types. `let element = new Schema()`. Eleme
 
 ```js
 let element = new Str();
-element.value
+element.value()
 // undefined
 element.set(3)
 // true
-element.value
+element.value()
 // '3'
 element.raw
 // 3
@@ -106,8 +106,8 @@ Validators are functions. The idiomatic definition of a validator is a function 
 ```js
 function MustBeOdd(msg) {
     return (element, context) => {
-        if (element.members.mustBeOdd.value) {
-            if (!(element.members.number.value % 2)) {
+        if (element.members().mustBeOdd.value()) {
+            if (!(element.members().number.value() % 2)) {
                 element.addError(msg);
                 return false;
             }
@@ -128,18 +128,18 @@ no.validate();
 // false
 no.errors
 // ['You should enter an odd number']
-no.allErrors
+no.allErrors()
 // {self: ['You should enter an odd number'], children: [number: [], mustBeOdd: []]}
 ```
 
-Each element in a schema contains a list of `errors`, which starts out as `undefined`, but after validation is an array. Elements also have an `allErrors` property, which for `Scalar` elements is identical to the `errors`, but for `Container`s it will include errors for all children as well. For a `List`, `allErrors` returns a list of lists. For a `Map`, the errors are returned in the format:
+Each element in a schema contains a list of `errors`, which starts out as `undefined`, but after validation is an array. Elements also have an `allErrors()` method, which for `Scalar` elements simply returns the `errors` property, but for `Container`s it will include errors for all children as well. For a `List`, `allErrors()` returns a list of lists. For a `Map`, the errors are returned in the format:
 
 ```js
 {
     self: this.errors,
     children: {
-        child1: this.members.child1.allErrors,
-        child2: this.members.child2.allErrors,
+        child1: this.members().child1.allErrors(),
+        child2: this.members().child2.allErrors(),
         ...
     }
 }

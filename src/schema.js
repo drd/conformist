@@ -68,10 +68,10 @@ class Type {
   }
 
   hasValidator(validator) {
-    return this.validatorFactories.indexOf(validator) !== -1;
+    return this.validatorFactories().indexOf(validator) !== -1;
   }
 
-  get validatorFactories() {
+  validatorFactories() {
     return this.validators.map(v => v.factory);
   }
 }
@@ -85,18 +85,22 @@ class Scalar extends Type {
   constructor() {
     super();
     this._watchers = [];
-    this.value = undefined;
+    this._value = undefined;
   }
 
-  get allErrors() {
+  value() {
+    return this._value;
+  }
+
+  allErrors() {
     return this.errors;
   }
 
   set(raw) {
     try {
-      this.value = this.adapt(raw);
+      this._value = this.adapt(raw);
     } catch (e) {
-      this.value = undefined;
+      this._value = undefined;
       this.notifyWatchers(false, this);
       return false;
     }
@@ -187,7 +191,7 @@ Enum.prototype.childType = Str;
 class Container extends Type {
   validate(context) {
     this.errors = [];
-    var success = !!this.memberValues.reduce((valid, member) => {
+    var success = !!this.memberValues().reduce((valid, member) => {
       var result = member.validate(context);
       return valid && result;
     }, true);
@@ -199,27 +203,23 @@ class Container extends Type {
 
 @staticify
 class List extends Container {
-  get value() {
-    return Immutable.List(this.members.map(m => m.value));
+  value() {
+    return Immutable.List(this.members().map(m => m.value()));
   }
 
-  get members() {
+  members() {
     return this._members;
   }
 
   // aliased for concordance with Container.prototype.validate()
-  get memberValues() {
+  memberValues() {
     return this._members;
   }
 
-  set members(members) {
-    this._members = members;
-  }
-
-  get allErrors() {
+  allErrors() {
     return {
       self: this.errors,
-      children: this.members.map(m => m.allErrors)
+      children: this.members().map(m => m.allErrors())
     };
   }
 
@@ -232,7 +232,7 @@ class List extends Container {
     if (raw && raw.toJS) {
       raw = raw.toJS();
     }
-    this.members = [];
+    this._members = [];
     if (!(raw && raw.forEach)) {
       this.notifyWatchers(false, this);
       return false;
@@ -246,7 +246,7 @@ class List extends Container {
       member.observe(this.notifyWatchers.bind(this));
       items.push(member);
     });
-    this.members = success ? items : this.members;
+    this._members = success ? items : this.members();
     this.notifyWatchers(!!success, this);
     return !!success;
   }
@@ -256,7 +256,7 @@ class List extends Container {
   }
 }
 
-List.prototype.members = [];
+List.prototype._members = [];
 
 
 @staticify
@@ -269,31 +269,27 @@ class Map extends Container {
     }
   }
 
-  get value() {
+  value() {
     return Immutable.Map(Object.keys(this._members).reduce((v, m) => {
-      v[m] = this._members[m].value;
+      v[m] = this._members[m].value();
       return v;
     }, {}));
   }
 
   // member elements as list
-  get memberValues() {
+  memberValues() {
     return Object.values(this._members);
   }
 
-  get members() {
+  members() {
     return this._members;
   }
 
-  set members(members) {
-    this._members = members;
-  }
-
-  get allErrors() {
+  allErrors() {
     return {
       self: this.errors,
-      children: Object.entries(this.members).reduce((errors, [k, v]) => {
-        errors[k] = v.allErrors;
+      children: Object.entries(this._members).reduce((errors, [k, v]) => {
+        errors[k] = v.allErrors();
         return errors;
       }, {})
     };
@@ -328,7 +324,7 @@ class Map extends Container {
     if (success) {
       // should this.members only be defined here?
       // or in constructor?
-      this.members = members;
+      this._members = members;
     } else {
       // TODO: We don't need to do this if raw was not an object.
       this.set({}, {notify: false})
@@ -349,7 +345,7 @@ class Map extends Container {
     if (this.default) {
       this.set(this.default);
     } else {
-      this.memberValues.forEach(m => m.setDefault());
+      this.memberValues().forEach(m => m.setDefault());
     }
   }
 }

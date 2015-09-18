@@ -15,7 +15,7 @@ function _Restriction(valueTransformer) {
 }
 
 // Scalars
-let _ValueRestriction = _Restriction(e => e.value);
+let _ValueRestriction = _Restriction(e => e.value());
 
 
 function createValidators(validators) {
@@ -42,10 +42,10 @@ let Value = createValidators({
 
 // Strings & Lists
 let _LengthRestriction = _Restriction(e => {
-  if (Immutable.List.isList(e.value)) {
-    return e.value.size;
+  if (Immutable.List.isList(e.value())) {
+    return e.value().size;
   } else {
-    return e.value ? e.value.length : 0;
+    return e.value() ? e.value().length : 0;
   }
 });
 
