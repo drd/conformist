@@ -132,7 +132,7 @@ no.allErrors()
 // {self: ['You should enter an odd number'], children: [number: [], mustBeOdd: []]}
 ```
 
-Each element in a schema contains a list of `errors`, which starts out as `undefined`, but after validation is an array. Elements also have an `allErrors()` method, which for `Scalar` elements is simply returns the `errors` property, but for `Container`s it will include errors for all children as well. For a `List`, `allErrors()` returns a list of lists. For a `Map`, the errors are returned in the format:
+Each element in a schema contains a list of `errors`, which starts out as `undefined`, but after validation is an array. Elements also have an `allErrors()` method, which for `Scalar` elements simply returns the `errors` property, but for `Container`s it will include errors for all children as well. For a `List`, `allErrors()` returns a list of lists. For a `Map`, the errors are returned in the format:
 
 ```js
 {
