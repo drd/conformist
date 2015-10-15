@@ -117,10 +117,10 @@ describe('Type', () => {
         expect(ds.value).to.equal(Immutable.List([]));
         // on an instance
         ds.setDefault();
-        expect(ds.value).to.equal(ds.default);
+        expect(ds.value).to.equal(Immutable.List(ds.default));
         // on a class
         let dds = DefaultedStrings.fromDefaults();
-        expect(dds.value).to.equal(dds.default);
+        expect(dds.value).to.equal(Immutable.List(dds.default));
       })
 
       describe('set()', () => {
@@ -411,6 +411,7 @@ describe('Complex schema examples (from idealist.org)', () => {
       .using({default: 'nonprofit'}),
     List.of(Location)
       .named('addresses')
+      .using({default: [{fallback: false}]})
       .validatedBy(Length.AtLeast(1, 'You must enter at least 1 address')),
     Str.named('fullName'),
     Str.named('shortName')
@@ -450,10 +451,12 @@ describe('Complex schema examples (from idealist.org)', () => {
 
     it('Org', () => {
       let org = Org.fromDefaults();
+      expect(org.members.addresses.value).to.have.size(1);
       expect(org.members.type.value).to.eql('nonprofit');
       expect(org.members.description.value).to.eql('');
       expect(org.validate()).to.be.false;
-      expect(org.members.addresses.errors.length).to.eql(1);
+      expect(org.members.addresses.errors.length).to.eql(0);
+      expect(org.members.addresses.members[0].members.location.errors.length).to.eql(1);
       expect(org.members.keywords.errors.length).to.eql(1);
 
       org.set({shortName: 'Marx sometimes types really inappropriate test data, but....'});
@@ -510,7 +513,8 @@ describe('Complex schema examples (from idealist.org)', () => {
       expect(org.members.type.value).to.eql('nonprofit');
       expect(org.members.description.value).to.eql('');
       expect(org.validate()).to.be.false;
-      expect(org.members.addresses.errors.length).to.eql(1);
+      expect(org.members.addresses.errors.length).to.eql(0);
+      expect(org.members.addresses.members[0].members.location.errors.length).to.eql(1);
       expect(org.members.keywords.errors.length).to.eql(1);
 
       org.set(Immutable.fromJS({shortName: 'Marx sometimes types really inappropriate test data, but....'}));
