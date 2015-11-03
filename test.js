@@ -230,6 +230,13 @@ describe('Type', () => {
         expect(spy.secondCall.args[0]).to.be.true;
         expect(spy.secondCall.args[1]).to.equal(ss.members[0]);
       })
+
+      it('preserves watchers of children across sets', () => {
+        ss.set(['dos', 'cuatro']);
+        ss.members[0].observe(spy);
+        ss.set(['cuatro', 'ocho']);
+        expect(ss.members[0]._watchers).to.contain(spy);
+      })
     })
 
     describe('on Map', () => {
@@ -262,6 +269,13 @@ describe('Type', () => {
         expect(spy.callCount).to.equal(1);
         expect(spy.firstCall.args[0]).to.be.false;
         expect(spy.firstCall.args[1]).to.equal(abMap);
+      })
+
+      it('preserves watchers of children across sets', () => {
+        abMap.set({a: 'aaa', b: 3});
+        abMap.members.a.observe(spy);
+        abMap.set({a: 'AAA', b: 33});
+        expect(abMap.members.a._watchers).to.contain(spy);
       })
     })
   })

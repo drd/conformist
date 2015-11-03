@@ -232,6 +232,7 @@ class List extends Container {
     if (raw && raw.toJS) {
       raw = raw.toJS();
     }
+    let previousMembers = this.members || [];
     this.members = [];
     if (!(raw && raw.forEach)) {
       this.notifyWatchers(false, this);
@@ -239,11 +240,16 @@ class List extends Container {
     }
     let success = true;
     let items = [];
-    raw.forEach(mbr => {
+    raw.forEach((mbr, i) => {
       let member = new this.memberType();
       member.parent = this;
       success &= member.set(mbr);
-      member.observe(this.notifyWatchers.bind(this));
+      // keep around any watchers that were present on the previous member
+      if (previousMembers[i] && previousMembers[i]._watchers) {
+        member._watchers = previousMembers[i]._watchers;
+      } else {
+        member.observe(this.notifyWatchers.bind(this));
+      }
       items.push(member);
     });
     this.members = success ? items : this.members;
@@ -321,7 +327,12 @@ class Map extends Container {
       if (raw[k] !== undefined) {
         success &= member.set(raw[k]);
       }
-      member.observe(this.notifyWatchers.bind(this));
+      // keep around any watchers that were present on the previous member
+      if (this.members && this.members[k]) {
+        members[k]._watchers = this.members[k]._watchers;
+      } else {
+        member.observe(this.notifyWatchers.bind(this));
+      }
       return success;
     }, true);
 
