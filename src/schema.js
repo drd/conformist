@@ -55,6 +55,10 @@ class Type {
     this._watchers.push(watcher);
   }
 
+  unobserve(watcher) {
+    this._watchers = this._watchers.filter(w => w !== watcher);
+  }
+
   notifyWatchers(...args) {
     this._watchers.forEach(watcher => watcher(...args));
   }

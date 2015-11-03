@@ -196,6 +196,12 @@ describe('Type', () => {
         expect(spy.firstCall.args[0]).to.be.false;
         expect(spy.firstCall.args[1]).to.equal(s);
       })
+
+      it('can stop watching', () => {
+        s.unobserve(spy);
+        s.set('heyo');
+        expect(spy.callCount).to.equal(0);
+      })
     })
 
     describe('on List', () => {

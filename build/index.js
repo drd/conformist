@@ -56,13 +56,7 @@
 	
 	var _schema2 = _interopRequireDefault(_schema);
 	
-<<<<<<< HEAD
-	var _validation = __webpack_require__(51);
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _validation = __webpack_require__(56);
-=======
-	var _validation = __webpack_require__(82);
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
+	var _validation = __webpack_require__(83);
 	
 	var _validation2 = _interopRequireDefault(_validation);
 	
@@ -89,191 +83,96 @@
 
 	'use strict';
 	
-	var _createClass = __webpack_require__(10)['default'];
+	var _get = __webpack_require__(3)['default'];
 	
-<<<<<<< HEAD
-	var _classCallCheck = __webpack_require__(13)['default'];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _inherits = __webpack_require__(11)['default'];
-=======
 	var _inherits = __webpack_require__(17)['default'];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
-<<<<<<< HEAD
-	var _get = __webpack_require__(14)['default'];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _classCallCheck = __webpack_require__(14)['default'];
-=======
 	var _classCallCheck = __webpack_require__(28)['default'];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
-<<<<<<< HEAD
-	var _inherits = __webpack_require__(17)['default'];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _createClass = __webpack_require__(15)['default'];
-=======
 	var _createClass = __webpack_require__(29)['default'];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
-<<<<<<< HEAD
-	var _slicedToArray = __webpack_require__(20)['default'];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _slicedToArray = __webpack_require__(18)['default'];
-=======
 	var _slicedToArray = __webpack_require__(32)['default'];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
-<<<<<<< HEAD
-	var _Object$assign = __webpack_require__(39)['default'];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _Object$assign = __webpack_require__(37)['default'];
-=======
 	var _Object$assign = __webpack_require__(61)['default'];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
-<<<<<<< HEAD
-	var _Object$keys = __webpack_require__(3)['default'];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _Reflect$ownKeys = __webpack_require__(42)['default'];
-=======
 	var _Reflect$ownKeys = __webpack_require__(67)['default'];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
-<<<<<<< HEAD
-	var _Object$values = __webpack_require__(44)['default'];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _Object$keys = __webpack_require__(48)['default'];
-=======
 	var _Object$keys = __webpack_require__(71)['default'];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
-<<<<<<< HEAD
-	var _Object$entries = __webpack_require__(47)['default'];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _Object$entries = __webpack_require__(50)['default'];
-=======
-	var _Object$entries = __webpack_require__(74)['default'];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
+	var _Object$values = __webpack_require__(74)['default'];
 	
-<<<<<<< HEAD
+	var _Object$entries = __webpack_require__(78)['default'];
+	
 	var _interopRequireDefault = __webpack_require__(1)['default'];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _Object$values = __webpack_require__(53)['default'];
-=======
-	var _Object$values = __webpack_require__(78)['default'];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 	
-<<<<<<< HEAD
-	var _immutable = __webpack_require__(49);
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _util = __webpack_require__(55);
-	
-	// Thank you IE, for making this necessary
-	// Per http://babeljs.io/docs/advanced/caveats/, static methods do not
-	// propagate down the inheritance chain because __proto__ is not a thing.
-	// Decorate any concrete schema class with this to ensure that it and any
-	// cloned versions of itself will have these static methods.
-	function staticify(cls) {
-	  _Object$assign(cls, {
-	    clone: function clone(overrides) {
-	      var _this = this;
-	
-	      var cloned = (function (_ref) {
-	        _inherits(cloned, _ref);
-	
-	        function cloned() {
-	          _classCallCheck(this, cloned);
-	
-	          _get(Object.getPrototypeOf(cloned.prototype), 'constructor', this).apply(this, arguments);
-	        }
-	
-	        return cloned;
-	      })(this);
-	
-	      ;
-	      _Object$assign(cloned.prototype, overrides);
-	      staticify(cloned);
-	      // Also, thank you IE, for making this necessary
-	      _Reflect$ownKeys(this).forEach(function (k) {
-	        if (!cloned.hasOwnProperty(k)) {
-	          cloned[k] = _this[k];
-	        }
-	      });
-	      return cloned;
-	    },
-	
-	    named: function named(name) {
-	      return this.clone({ name: name });
-	    },
-	
-	    using: function using(overrides) {
-	      // maybe pre-process overrides?
-	      return this.clone(overrides);
-	    },
-	
-	    validatedBy: function validatedBy() {
-	      for (var _len = arguments.length, validators = Array(_len), _key = 0; _key < _len; _key++) {
-	        validators[_key] = arguments[_key];
-	      }
-=======
-	var _util = __webpack_require__(81);
-	
-	// Thank you IE, for making this necessary
-	// Per http://babeljs.io/docs/advanced/caveats/, static methods do not
-	// propagate down the inheritance chain because __proto__ is not a thing.
-	// Decorate any concrete schema class with this to ensure that it and any
-	// cloned versions of itself will have these static methods.
-	function staticify(cls) {
-	  _Object$assign(cls, {
-	    clone: function clone(overrides) {
-	      var _this = this;
-	
-	      var cloned = (function (_ref) {
-	        _inherits(cloned, _ref);
-	
-	        function cloned() {
-	          _classCallCheck(this, cloned);
-	
-	          _get(Object.getPrototypeOf(cloned.prototype), 'constructor', this).apply(this, arguments);
-	        }
-	
-	        return cloned;
-	      })(this);
-	
-	      ;
-	      _Object$assign(cloned.prototype, overrides);
-	      staticify(cloned);
-	      // Also, thank you IE, for making this necessary
-	      _Reflect$ownKeys(this).forEach(function (k) {
-	        if (!cloned.hasOwnProperty(k)) {
-	          cloned[k] = _this[k];
-	        }
-	      });
-	      return cloned;
-	    },
-	
-	    named: function named(name) {
-	      return this.clone({ name: name });
-	    },
-	
-	    using: function using(overrides) {
-	      // maybe pre-process overrides?
-	      return this.clone(overrides);
-	    },
-	
-	    validatedBy: function validatedBy() {
-	      for (var _len = arguments.length, validators = Array(_len), _key = 0; _key < _len; _key++) {
-	        validators[_key] = arguments[_key];
-	      }
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
+	var _immutable = __webpack_require__(81);
 	
 	var _immutable2 = _interopRequireDefault(_immutable);
 	
-	var _util = __webpack_require__(50);
+	var _util = __webpack_require__(82);
+	
+	// Thank you IE, for making this necessary
+	// Per http://babeljs.io/docs/advanced/caveats/, static methods do not
+	// propagate down the inheritance chain because __proto__ is not a thing.
+	// Decorate any concrete schema class with this to ensure that it and any
+	// cloned versions of itself will have these static methods.
+	function staticify(cls) {
+	  _Object$assign(cls, {
+	    clone: function clone(overrides) {
+	      var _this = this;
+	
+	      var cloned = (function (_ref) {
+	        _inherits(cloned, _ref);
+	
+	        function cloned() {
+	          _classCallCheck(this, cloned);
+	
+	          _get(Object.getPrototypeOf(cloned.prototype), 'constructor', this).apply(this, arguments);
+	        }
+	
+	        return cloned;
+	      })(this);
+	
+	      ;
+	      _Object$assign(cloned.prototype, overrides);
+	      staticify(cloned);
+	      // Also, thank you IE, for making this necessary
+	      _Reflect$ownKeys(this).forEach(function (k) {
+	        if (!cloned.hasOwnProperty(k)) {
+	          cloned[k] = _this[k];
+	        }
+	      });
+	      return cloned;
+	    },
+	
+	    named: function named(name) {
+	      return this.clone({ name: name });
+	    },
+	
+	    using: function using(overrides) {
+	      // maybe pre-process overrides?
+	      return this.clone(overrides);
+	    },
+	
+	    validatedBy: function validatedBy() {
+	      for (var _len = arguments.length, validators = Array(_len), _key = 0; _key < _len; _key++) {
+	        validators[_key] = arguments[_key];
+	      }
+	
+	      return this.clone({ validators: validators });
+	    },
+	
+	    fromDefaults: function fromDefaults() {
+	      var defaulted = new this();
+	      defaulted.setDefault();
+	      return defaulted;
+	    }
+	  });
+	}
 	
 	var Type = (function () {
 	  function Type(value) {
@@ -290,10 +189,17 @@
 	      this._watchers.push(watcher);
 	    }
 	  }, {
+	    key: 'unobserve',
+	    value: function unobserve(watcher) {
+	      this._watchers = this._watchers.filter(function (w) {
+	        return w !== watcher;
+	      });
+	    }
+	  }, {
 	    key: 'notifyWatchers',
 	    value: function notifyWatchers() {
-	      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	        args[_key] = arguments[_key];
+	      for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	        args[_key2] = arguments[_key2];
 	      }
 	
 	      this._watchers.forEach(function (watcher) {
@@ -321,52 +227,6 @@
 	      return this.validators.map(function (v) {
 	        return v.factory;
 	      });
-	    }
-	  }], [{
-	    key: 'clone',
-	    value: function clone(overrides) {
-	      var cloned = (function (_ref) {
-	        _inherits(cloned, _ref);
-	
-	        function cloned() {
-	          _classCallCheck(this, cloned);
-	
-	          _get(Object.getPrototypeOf(cloned.prototype), 'constructor', this).apply(this, arguments);
-	        }
-	
-	        return cloned;
-	      })(this);
-	
-	      ;
-	      _Object$assign(cloned.prototype, overrides);
-	      return cloned;
-	    }
-	  }, {
-	    key: 'named',
-	    value: function named(name) {
-	      return this.clone({ name: name });
-	    }
-	  }, {
-	    key: 'using',
-	    value: function using(overrides) {
-	      // maybe pre-process overrides?
-	      return this.clone(overrides);
-	    }
-	  }, {
-	    key: 'validatedBy',
-	    value: function validatedBy() {
-	      for (var _len2 = arguments.length, validators = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	        validators[_key2] = arguments[_key2];
-	      }
-	
-	      return this.clone({ validators: validators });
-	    }
-	  }, {
-	    key: 'fromDefaults',
-	    value: function fromDefaults() {
-	      var defaulted = new this();
-	      defaulted.setDefault();
-	      return defaulted;
 	    }
 	  }]);
 	
@@ -418,12 +278,12 @@
 	  }, {
 	    key: 'validate',
 	    value: function validate(context) {
-	      var _this = this;
+	      var _this2 = this;
 	
 	      this.errors = [];
 	
 	      this.valid = this.validators.reduce(function (valid, v) {
-	        return valid && v(_this, context);
+	        return valid && v(_this2, context);
 	      }, true);
 	
 	      return this.valid;
@@ -442,9 +302,9 @@
 	  _inherits(Bool, _Scalar);
 	
 	  function Bool() {
-	    _classCallCheck(this, Bool);
+	    _classCallCheck(this, _Bool);
 	
-	    _get(Object.getPrototypeOf(Bool.prototype), 'constructor', this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(_Bool.prototype), 'constructor', this).apply(this, arguments);
 	  }
 	
 	  _createClass(Bool, [{
@@ -455,6 +315,8 @@
 	    }
 	  }]);
 	
+	  var _Bool = Bool;
+	  Bool = staticify(Bool) || Bool;
 	  return Bool;
 	})(Scalar);
 	
@@ -462,9 +324,9 @@
 	  _inherits(Str, _Scalar2);
 	
 	  function Str() {
-	    _classCallCheck(this, Str);
+	    _classCallCheck(this, _Str);
 	
-	    _get(Object.getPrototypeOf(Str.prototype), 'constructor', this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(_Str.prototype), 'constructor', this).apply(this, arguments);
 	  }
 	
 	  _createClass(Str, [{
@@ -474,6 +336,8 @@
 	    }
 	  }]);
 	
+	  var _Str = Str;
+	  Str = staticify(Str) || Str;
 	  return Str;
 	})(Scalar);
 	
@@ -493,9 +357,9 @@
 	  _inherits(Int, _Num);
 	
 	  function Int() {
-	    _classCallCheck(this, Int);
+	    _classCallCheck(this, _Int);
 	
-	    _get(Object.getPrototypeOf(Int.prototype), 'constructor', this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(_Int.prototype), 'constructor', this).apply(this, arguments);
 	  }
 	
 	  _createClass(Int, [{
@@ -509,6 +373,8 @@
 	    }
 	  }]);
 	
+	  var _Int = Int;
+	  Int = staticify(Int) || Int;
 	  return Int;
 	})(Num);
 	
@@ -516,9 +382,9 @@
 	  _inherits(Enum, _Scalar4);
 	
 	  function Enum(value) {
-	    _classCallCheck(this, Enum);
+	    _classCallCheck(this, _Enum);
 	
-	    _get(Object.getPrototypeOf(Enum.prototype), 'constructor', this).call(this);
+	    _get(Object.getPrototypeOf(_Enum.prototype), 'constructor', this).call(this);
 	    this.childSchema = new this.childType();
 	    if (value !== undefined) {
 	      this.set(value);
@@ -551,6 +417,8 @@
 	    }
 	  }]);
 	
+	  var _Enum = Enum;
+	  Enum = staticify(Enum) || Enum;
 	  return Enum;
 	})(Scalar);
 	
@@ -568,7 +436,7 @@
 	  _createClass(Container, [{
 	    key: 'validate',
 	    value: function validate(context) {
-	      var _this2 = this;
+	      var _this3 = this;
 	
 	      this.errors = [];
 	      var success = !!this.memberValues.reduce(function (valid, member) {
@@ -576,7 +444,7 @@
 	        return valid && result;
 	      }, true);
 	      this.valid = !!this.validators.reduce(function (valid, validator) {
-	        return valid &= validator(_this2, context);
+	        return valid &= validator(_this3, context);
 	      }, success);
 	      return this.valid;
 	    }
@@ -589,9 +457,9 @@
 	  _inherits(List, _Container);
 	
 	  function List() {
-	    _classCallCheck(this, List);
+	    _classCallCheck(this, _List);
 	
-	    _get(Object.getPrototypeOf(List.prototype), 'constructor', this).apply(this, arguments);
+	    _get(Object.getPrototypeOf(_List.prototype), 'constructor', this).apply(this, arguments);
 	  }
 	
 	  _createClass(List, [{
@@ -603,16 +471,12 @@
 	
 	    // TODO: short-circuit conversion if any member fails.
 	    value: function set(raw) {
-	      var _this3 = this;
+	      var _this4 = this;
 	
-<<<<<<< HEAD
 	      if (raw && raw.toJS) {
 	        raw = raw.toJS();
 	      }
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-=======
 	      var previousMembers = this.members || [];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	      this.members = [];
 	      if (!(raw && raw.forEach)) {
 	        this.notifyWatchers(false, this);
@@ -620,32 +484,16 @@
 	      }
 	      var success = true;
 	      var items = [];
-<<<<<<< HEAD
-	      raw.forEach(function (mbr) {
-	        var member = new _this3.memberType();
-	        member.parent = _this3;
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	      raw.forEach(function (mbr) {
-	        var member = new _this4.memberType();
-	        member.parent = _this4;
-=======
 	      raw.forEach(function (mbr, i) {
 	        var member = new _this4.memberType();
 	        member.parent = _this4;
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	        success &= member.set(mbr);
-<<<<<<< HEAD
-	        member.observe(_this3.notifyWatchers.bind(_this3));
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	        member.observe(_this4.notifyWatchers.bind(_this4));
-=======
 	        // keep around any watchers that were present on the previous member
 	        if (previousMembers[i] && previousMembers[i]._watchers) {
 	          member._watchers = previousMembers[i]._watchers;
 	        } else {
 	          member.observe(_this4.notifyWatchers.bind(_this4));
 	        }
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	        items.push(member);
 	      });
 	      this.members = success ? items : this.members;
@@ -691,6 +539,8 @@
 	    }
 	  }]);
 	
+	  var _List = List;
+	  List = staticify(List) || List;
 	  return List;
 	})(Container);
 	
@@ -700,9 +550,9 @@
 	  _inherits(Map, _Container2);
 	
 	  function Map(value) {
-	    _classCallCheck(this, Map);
+	    _classCallCheck(this, _Map);
 	
-	    _get(Object.getPrototypeOf(Map.prototype), 'constructor', this).call(this, value);
+	    _get(Object.getPrototypeOf(_Map.prototype), 'constructor', this).call(this, value);
 	    // construct an empty schema
 	    if (!this._members) {
 	      this.set({});
@@ -712,7 +562,7 @@
 	  _createClass(Map, [{
 	    key: 'set',
 	    value: function set(raw) {
-	      var _this4 = this;
+	      var _this5 = this;
 	
 	      var _ref2 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 	
@@ -733,25 +583,19 @@
 	      var keys = _Object$keys(this.memberSchema);
 	      var members = {};
 	      success = !!keys.reduce(function (success, k) {
-	        var member = new _this4.memberSchema[k]();
+	        var member = new _this5.memberSchema[k]();
 	        member.name = k;
-	        member.parent = _this4;
+	        member.parent = _this5;
 	        members[k] = member;
 	        if (raw[k] !== undefined) {
 	          success &= member.set(raw[k]);
 	        }
-<<<<<<< HEAD
-	        member.observe(_this4.notifyWatchers.bind(_this4));
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	        member.observe(_this5.notifyWatchers.bind(_this5));
-=======
 	        // keep around any watchers that were present on the previous member
 	        if (_this5.members && _this5.members[k]) {
 	          members[k]._watchers = _this5.members[k]._watchers;
 	        } else {
 	          member.observe(_this5.notifyWatchers.bind(_this5));
 	        }
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	        return success;
 	      }, true);
 	
@@ -780,10 +624,10 @@
 	  }, {
 	    key: 'value',
 	    get: function get() {
-	      var _this5 = this;
+	      var _this6 = this;
 	
 	      return _immutable2['default'].Map(_Object$keys(this._members).reduce(function (v, m) {
-	        v[m] = _this5._members[m].value;
+	        v[m] = _this6._members[m].value;
 	        return v;
 	      }, {}));
 	    }
@@ -833,6 +677,8 @@
 	    }
 	  }]);
 	
+	  var _Map = Map;
+	  Map = staticify(Map) || Map;
 	  return Map;
 	})(Container);
 	
@@ -845,69 +691,66 @@
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(4), __esModule: true };
+	"use strict";
+	
+	var _Object$getOwnPropertyDescriptor = __webpack_require__(4)["default"];
+	
+	exports["default"] = function get(_x, _x2, _x3) {
+	  var _again = true;
+	
+	  _function: while (_again) {
+	    var object = _x,
+	        property = _x2,
+	        receiver = _x3;
+	    desc = parent = getter = undefined;
+	    _again = false;
+	    if (object === null) object = Function.prototype;
+	
+	    var desc = _Object$getOwnPropertyDescriptor(object, property);
+	
+	    if (desc === undefined) {
+	      var parent = Object.getPrototypeOf(object);
+	
+	      if (parent === null) {
+	        return undefined;
+	      } else {
+	        _x = parent;
+	        _x2 = property;
+	        _x3 = receiver;
+	        _again = true;
+	        continue _function;
+	      }
+	    } else if ("value" in desc) {
+	      return desc.value;
+	    } else {
+	      var getter = desc.get;
+	
+	      if (getter === undefined) {
+	        return undefined;
+	      }
+	
+	      return getter.call(receiver);
+	    }
+	  }
+	};
+	
+	exports.__esModule = true;
 
 /***/ },
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(5);
-	module.exports = __webpack_require__(6).core.Object.keys;
+	module.exports = { "default": __webpack_require__(5), __esModule: true };
 
 /***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	var $        = __webpack_require__(6)
-	  , $def     = __webpack_require__(8)
-	  , isObject = $.isObject
-	  , toObject = $.toObject;
-	$.each.call(('freeze,seal,preventExtensions,isFrozen,isSealed,isExtensible,' +
-	  'getOwnPropertyDescriptor,getPrototypeOf,keys,getOwnPropertyNames').split(',')
-	, function(KEY, ID){
-	  var fn     = ($.core.Object || {})[KEY] || Object[KEY]
-	    , forced = 0
-	    , method = {};
-	  method[KEY] = ID == 0 ? function freeze(it){
-	    return isObject(it) ? fn(it) : it;
-	  } : ID == 1 ? function seal(it){
-	    return isObject(it) ? fn(it) : it;
-	  } : ID == 2 ? function preventExtensions(it){
-	    return isObject(it) ? fn(it) : it;
-	  } : ID == 3 ? function isFrozen(it){
-	    return isObject(it) ? fn(it) : true;
-	  } : ID == 4 ? function isSealed(it){
-	    return isObject(it) ? fn(it) : true;
-	  } : ID == 5 ? function isExtensible(it){
-	    return isObject(it) ? fn(it) : false;
-	  } : ID == 6 ? function getOwnPropertyDescriptor(it, key){
-	    return fn(toObject(it), key);
-	  } : ID == 7 ? function getPrototypeOf(it){
-	    return fn(Object($.assertDefined(it)));
-	  } : ID == 8 ? function keys(it){
-	    return fn(toObject(it));
-	  } : __webpack_require__(9).get;
-	  try {
-	    fn('z');
-	  } catch(e){
-	    forced = 1;
-	  }
-	  $def($def.S + $def.F * forced, 'Object', method);
-	});
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var $ = __webpack_require__(6);
-	__webpack_require__(8);
-	module.exports = function getOwnPropertyDescriptor(it, key){
-	  return $.getDesc(it, key);
-	};
-=======
 	var $ = __webpack_require__(6);
 	__webpack_require__(7);
 	module.exports = function getOwnPropertyDescriptor(it, key){
 	  return $.getDesc(it, key);
 	};
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
 /* 6 */
@@ -985,60 +828,6 @@
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	var $          = __webpack_require__(6)
-	  , global     = $.g
-	  , core       = $.core
-	  , isFunction = $.isFunction;
-	function ctx(fn, that){
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var $        = __webpack_require__(6)
-	  , $def     = __webpack_require__(9)
-	  , isObject = $.isObject
-	  , toObject = $.toObject;
-	$.each.call(('freeze,seal,preventExtensions,isFrozen,isSealed,isExtensible,' +
-	  'getOwnPropertyDescriptor,getPrototypeOf,keys,getOwnPropertyNames').split(',')
-	, function(KEY, ID){
-	  var fn     = ($.core.Object || {})[KEY] || Object[KEY]
-	    , forced = 0
-	    , method = {};
-	  method[KEY] = ID == 0 ? function freeze(it){
-	    return isObject(it) ? fn(it) : it;
-	  } : ID == 1 ? function seal(it){
-	    return isObject(it) ? fn(it) : it;
-	  } : ID == 2 ? function preventExtensions(it){
-	    return isObject(it) ? fn(it) : it;
-	  } : ID == 3 ? function isFrozen(it){
-	    return isObject(it) ? fn(it) : true;
-	  } : ID == 4 ? function isSealed(it){
-	    return isObject(it) ? fn(it) : true;
-	  } : ID == 5 ? function isExtensible(it){
-	    return isObject(it) ? fn(it) : false;
-	  } : ID == 6 ? function getOwnPropertyDescriptor(it, key){
-	    return fn(toObject(it), key);
-	  } : ID == 7 ? function getPrototypeOf(it){
-	    return fn(Object($.assertDefined(it)));
-	  } : ID == 8 ? function keys(it){
-	    return fn(toObject(it));
-	  } : __webpack_require__(10).get;
-	  try {
-	    fn('z');
-	  } catch(e){
-	    forced = 1;
-	  }
-	  $def($def.S + $def.F * forced, 'Object', method);
-	});
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $          = __webpack_require__(6)
-	  , global     = $.g
-	  , core       = $.core
-	  , isFunction = $.isFunction;
-	function ctx(fn, that){
-=======
 	// most Object methods by ES6 should accept primitives
 	module.exports = function(KEY, exec){
 	  var $def = __webpack_require__(13)
@@ -1056,7 +845,6 @@
 	  , core      = __webpack_require__(15)
 	  , PROTOTYPE = 'prototype';
 	var ctx = function(fn, that){
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	  return function(){
 	    return fn.apply(that, arguments);
 	  };
@@ -1102,13 +890,6 @@
 	module.exports = $def;
 
 /***/ },
-<<<<<<< HEAD
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-=======
 /* 14 */
 /***/ function(module, exports) {
 
@@ -1128,7 +909,6 @@
 /***/ },
 /* 16 */
 /***/ function(module, exports) {
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 	module.exports = function(exec){
 	  try {
@@ -1139,97 +919,49 @@
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 10 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 11 */
-=======
 /* 17 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-<<<<<<< HEAD
-	var _Object$defineProperty = __webpack_require__(11)["default"];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _Object$create = __webpack_require__(12)["default"];
-=======
 	var _Object$create = __webpack_require__(18)["default"];
 	
 	var _Object$setPrototypeOf = __webpack_require__(20)["default"];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
-	exports["default"] = (function () {
-	  function defineProperties(target, props) {
-	    for (var i = 0; i < props.length; i++) {
-	      var descriptor = props[i];
-	      descriptor.enumerable = descriptor.enumerable || false;
-	      descriptor.configurable = true;
-	      if ("value" in descriptor) descriptor.writable = true;
-	
-	      _Object$defineProperty(target, descriptor.key, descriptor);
-	    }
-<<<<<<< HEAD
+	exports["default"] = function (subClass, superClass) {
+	  if (typeof superClass !== "function" && superClass !== null) {
+	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
 	  }
 	
-	  return function (Constructor, protoProps, staticProps) {
-	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-	    if (staticProps) defineProperties(Constructor, staticProps);
-	    return Constructor;
-	  };
-	})();
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	  });
-	  if (superClass) subClass.__proto__ = superClass;
-	};
-=======
+	  subClass.prototype = _Object$create(superClass && superClass.prototype, {
+	    constructor: {
+	      value: subClass,
+	      enumerable: false,
+	      writable: true,
+	      configurable: true
+	    }
 	  });
 	  if (superClass) _Object$setPrototypeOf ? _Object$setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	};
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
 	exports.__esModule = true;
 
 /***/ },
-<<<<<<< HEAD
-/* 11 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 12 */
-=======
 /* 18 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	module.exports = { "default": __webpack_require__(12), __esModule: true };
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	module.exports = { "default": __webpack_require__(13), __esModule: true };
-=======
 	module.exports = { "default": __webpack_require__(19), __esModule: true };
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
-<<<<<<< HEAD
-/* 12 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 13 */
-=======
 /* 19 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(6);
-	module.exports = function defineProperty(it, key, desc){
-	  return $.setDesc(it, key, desc);
+	module.exports = function create(P, D){
+	  return $.create(P, D);
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 13 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 14 */
-=======
 /* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1335,7 +1067,6 @@
 
 /***/ },
 /* 28 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1349,156 +1080,58 @@
 	exports.__esModule = true;
 
 /***/ },
-<<<<<<< HEAD
-/* 14 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 15 */
-=======
 /* 29 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-<<<<<<< HEAD
-	var _Object$getOwnPropertyDescriptor = __webpack_require__(15)["default"];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _Object$defineProperty = __webpack_require__(16)["default"];
-=======
 	var _Object$defineProperty = __webpack_require__(30)["default"];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
-	exports["default"] = function get(_x, _x2, _x3) {
-	  var _again = true;
+	exports["default"] = (function () {
+	  function defineProperties(target, props) {
+	    for (var i = 0; i < props.length; i++) {
+	      var descriptor = props[i];
+	      descriptor.enumerable = descriptor.enumerable || false;
+	      descriptor.configurable = true;
+	      if ("value" in descriptor) descriptor.writable = true;
 	
-	  _function: while (_again) {
-	    var object = _x,
-	        property = _x2,
-	        receiver = _x3;
-	    desc = parent = getter = undefined;
-	    _again = false;
-	    if (object === null) object = Function.prototype;
-	
-	    var desc = _Object$getOwnPropertyDescriptor(object, property);
-	
-	    if (desc === undefined) {
-	      var parent = Object.getPrototypeOf(object);
-	
-	      if (parent === null) {
-	        return undefined;
-	      } else {
-	        _x = parent;
-	        _x2 = property;
-	        _x3 = receiver;
-	        _again = true;
-	        continue _function;
-	      }
-	    } else if ("value" in desc) {
-	      return desc.value;
-	    } else {
-	      var getter = desc.get;
-	
-	      if (getter === undefined) {
-	        return undefined;
-	      }
-	
-	      return getter.call(receiver);
+	      _Object$defineProperty(target, descriptor.key, descriptor);
 	    }
 	  }
-	};
+	
+	  return function (Constructor, protoProps, staticProps) {
+	    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	    if (staticProps) defineProperties(Constructor, staticProps);
+	    return Constructor;
+	  };
+	})();
 	
 	exports.__esModule = true;
 
 /***/ },
-<<<<<<< HEAD
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(16), __esModule: true };
-
-/***/ },
-/* 16 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 16 */
-=======
 /* 30 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	var $ = __webpack_require__(6);
-	__webpack_require__(5);
-	module.exports = function getOwnPropertyDescriptor(it, key){
-	  return $.getDesc(it, key);
-	};
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	module.exports = { "default": __webpack_require__(17), __esModule: true };
-=======
 	module.exports = { "default": __webpack_require__(31), __esModule: true };
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
 /* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _Object$create = __webpack_require__(18)["default"];
-	
-	exports["default"] = function (subClass, superClass) {
-	  if (typeof superClass !== "function" && superClass !== null) {
-	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-	  }
-	
-	  subClass.prototype = _Object$create(superClass && superClass.prototype, {
-	    constructor: {
-	      value: subClass,
-	      enumerable: false,
-	      writable: true,
-	      configurable: true
-	    }
-	  });
-	  if (superClass) subClass.__proto__ = superClass;
+	var $ = __webpack_require__(6);
+	module.exports = function defineProperty(it, key, desc){
+	  return $.setDesc(it, key, desc);
 	};
-	
-	exports.__esModule = true;
 
 /***/ },
 /* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(19), __esModule: true };
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $ = __webpack_require__(6);
-	module.exports = function create(P, D){
-	  return $.create(P, D);
-	};
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
 	"use strict";
 	
-<<<<<<< HEAD
-	var _getIterator = __webpack_require__(21)["default"];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _getIterator = __webpack_require__(19)["default"];
-=======
 	var _getIterator = __webpack_require__(33)["default"];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
-<<<<<<< HEAD
-	var _isIterable = __webpack_require__(37)["default"];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _isIterable = __webpack_require__(35)["default"];
-=======
 	var _isIterable = __webpack_require__(58)["default"];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
 	exports["default"] = (function () {
 	  function sliceIterator(arr, i) {
@@ -1541,143 +1174,45 @@
 	exports.__esModule = true;
 
 /***/ },
-<<<<<<< HEAD
-/* 21 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 19 */
-=======
 /* 33 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	module.exports = { "default": __webpack_require__(22), __esModule: true };
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	module.exports = { "default": __webpack_require__(20), __esModule: true };
-=======
 	module.exports = { "default": __webpack_require__(34), __esModule: true };
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
-<<<<<<< HEAD
-/* 22 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 20 */
-=======
 /* 34 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	__webpack_require__(23);
-	__webpack_require__(34);
-	__webpack_require__(36);
-	module.exports = __webpack_require__(6).core.getIterator;
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	__webpack_require__(21);
-	__webpack_require__(32);
-	__webpack_require__(34);
-	module.exports = __webpack_require__(6).core.getIterator;
-=======
 	__webpack_require__(35);
 	__webpack_require__(52);
 	module.exports = __webpack_require__(55);
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
-<<<<<<< HEAD
-/* 23 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 21 */
-=======
 /* 35 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	__webpack_require__(24);
-	var $           = __webpack_require__(6)
-	  , Iterators   = __webpack_require__(27).Iterators
-	  , ITERATOR    = __webpack_require__(29)('iterator')
-	  , ArrayValues = Iterators.Array
-	  , NL          = $.g.NodeList
-	  , HTC         = $.g.HTMLCollection
-	  , NLProto     = NL && NL.prototype
-	  , HTCProto    = HTC && HTC.prototype;
-	if($.FW){
-	  if(NL && !(ITERATOR in NLProto))$.hide(NLProto, ITERATOR, ArrayValues);
-	  if(HTC && !(ITERATOR in HTCProto))$.hide(HTCProto, ITERATOR, ArrayValues);
-	}
-	Iterators.NodeList = Iterators.HTMLCollection = ArrayValues;
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	__webpack_require__(22);
-	var $           = __webpack_require__(6)
-	  , Iterators   = __webpack_require__(25).Iterators
-	  , ITERATOR    = __webpack_require__(27)('iterator')
-	  , ArrayValues = Iterators.Array
-	  , NL          = $.g.NodeList
-	  , HTC         = $.g.HTMLCollection
-	  , NLProto     = NL && NL.prototype
-	  , HTCProto    = HTC && HTC.prototype;
-	if($.FW){
-	  if(NL && !(ITERATOR in NLProto))$.hide(NLProto, ITERATOR, ArrayValues);
-	  if(HTC && !(ITERATOR in HTCProto))$.hide(HTCProto, ITERATOR, ArrayValues);
-	}
-	Iterators.NodeList = Iterators.HTMLCollection = ArrayValues;
-=======
 	__webpack_require__(36);
 	var Iterators = __webpack_require__(39);
 	Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
-<<<<<<< HEAD
-/* 24 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 22 */
-=======
 /* 36 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	var $          = __webpack_require__(6)
-	  , setUnscope = __webpack_require__(25)
-	  , ITER       = __webpack_require__(26).safe('iter')
-	  , $iter      = __webpack_require__(27)
-	  , step       = $iter.step
-	  , Iterators  = $iter.Iterators;
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var $          = __webpack_require__(6)
-	  , setUnscope = __webpack_require__(23)
-	  , ITER       = __webpack_require__(24).safe('iter')
-	  , $iter      = __webpack_require__(25)
-	  , step       = $iter.step
-	  , Iterators  = $iter.Iterators;
-=======
 	'use strict';
 	var setUnscope = __webpack_require__(37)
 	  , step       = __webpack_require__(38)
 	  , Iterators  = __webpack_require__(39)
 	  , toIObject  = __webpack_require__(8);
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
 	// 22.1.3.4 Array.prototype.entries()
 	// 22.1.3.13 Array.prototype.keys()
 	// 22.1.3.29 Array.prototype.values()
 	// 22.1.3.30 Array.prototype[@@iterator]()
-<<<<<<< HEAD
-	__webpack_require__(32)(Array, 'Array', function(iterated, kind){
-	  $.set(this, ITER, {o: $.toObject(iterated), i: 0, k: kind});
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	__webpack_require__(30)(Array, 'Array', function(iterated, kind){
-	  $.set(this, ITER, {o: $.toObject(iterated), i: 0, k: kind});
-=======
 	__webpack_require__(40)(Array, 'Array', function(iterated, kind){
 	  this._t = toIObject(iterated); // target
 	  this._i = 0;                   // next index
 	  this._k = kind;                // kind
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
 	}, function(){
 	  var O     = this._t
@@ -1700,39 +1235,20 @@
 	setUnscope('entries');
 
 /***/ },
-<<<<<<< HEAD
-/* 25 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 23 */
-=======
 /* 37 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports) {
 
 	module.exports = function(){ /* empty */ };
 
 /***/ },
-<<<<<<< HEAD
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-=======
 /* 38 */
 /***/ function(module, exports) {
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 	module.exports = function(done, value){
 	  return {value: value, done: !!done};
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 27 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 25 */
-=======
 /* 39 */
 /***/ function(module, exports) {
 
@@ -1740,105 +1256,9 @@
 
 /***/ },
 /* 40 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-<<<<<<< HEAD
-	var $                 = __webpack_require__(6)
-	  , cof               = __webpack_require__(28)
-	  , classof           = cof.classof
-	  , assert            = __webpack_require__(31)
-	  , assertObject      = assert.obj
-	  , SYMBOL_ITERATOR   = __webpack_require__(29)('iterator')
-	  , FF_ITERATOR       = '@@iterator'
-	  , Iterators         = __webpack_require__(30)('iterators')
-	  , IteratorPrototype = {};
-	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	setIterator(IteratorPrototype, $.that);
-	function setIterator(O, value){
-	  $.hide(O, SYMBOL_ITERATOR, value);
-	  // Add iterator for FF iterator protocol
-	  if(FF_ITERATOR in [])$.hide(O, FF_ITERATOR, value);
-	}
-	
-	module.exports = {
-	  // Safari has buggy iterators w/o `next`
-	  BUGGY: 'keys' in [] && !('next' in [].keys()),
-	  Iterators: Iterators,
-	  step: function(done, value){
-	    return {value: value, done: !!done};
-	  },
-	  is: function(it){
-	    var O      = Object(it)
-	      , Symbol = $.g.Symbol;
-	    return (Symbol && Symbol.iterator || FF_ITERATOR) in O
-	      || SYMBOL_ITERATOR in O
-	      || $.has(Iterators, classof(O));
-	  },
-	  get: function(it){
-	    var Symbol = $.g.Symbol
-	      , getIter;
-	    if(it != undefined){
-	      getIter = it[Symbol && Symbol.iterator || FF_ITERATOR]
-	        || it[SYMBOL_ITERATOR]
-	        || Iterators[classof(it)];
-	    }
-	    assert($.isFunction(getIter), it, ' is not iterable!');
-	    return assertObject(getIter.call(it));
-	  },
-	  set: setIterator,
-	  create: function(Constructor, NAME, next, proto){
-	    Constructor.prototype = $.create(proto || IteratorPrototype, {next: $.desc(1, next)});
-	    cof.set(Constructor, NAME + ' Iterator');
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var $                 = __webpack_require__(6)
-	  , cof               = __webpack_require__(26)
-	  , classof           = cof.classof
-	  , assert            = __webpack_require__(29)
-	  , assertObject      = assert.obj
-	  , SYMBOL_ITERATOR   = __webpack_require__(27)('iterator')
-	  , FF_ITERATOR       = '@@iterator'
-	  , Iterators         = __webpack_require__(28)('iterators')
-	  , IteratorPrototype = {};
-	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	setIterator(IteratorPrototype, $.that);
-	function setIterator(O, value){
-	  $.hide(O, SYMBOL_ITERATOR, value);
-	  // Add iterator for FF iterator protocol
-	  if(FF_ITERATOR in [])$.hide(O, FF_ITERATOR, value);
-	}
-	
-	module.exports = {
-	  // Safari has buggy iterators w/o `next`
-	  BUGGY: 'keys' in [] && !('next' in [].keys()),
-	  Iterators: Iterators,
-	  step: function(done, value){
-	    return {value: value, done: !!done};
-	  },
-	  is: function(it){
-	    var O      = Object(it)
-	      , Symbol = $.g.Symbol;
-	    return (Symbol && Symbol.iterator || FF_ITERATOR) in O
-	      || SYMBOL_ITERATOR in O
-	      || $.has(Iterators, classof(O));
-	  },
-	  get: function(it){
-	    var Symbol = $.g.Symbol
-	      , getIter;
-	    if(it != undefined){
-	      getIter = it[Symbol && Symbol.iterator || FF_ITERATOR]
-	        || it[SYMBOL_ITERATOR]
-	        || Iterators[classof(it)];
-	    }
-	    assert($.isFunction(getIter), it, ' is not iterable!');
-	    return assertObject(getIter.call(it));
-	  },
-	  set: setIterator,
-	  create: function(Constructor, NAME, next, proto){
-	    Constructor.prototype = $.create(proto || IteratorPrototype, {next: $.desc(1, next)});
-	    cof.set(Constructor, NAME + ' Iterator');
-=======
 	var LIBRARY         = __webpack_require__(41)
 	  , $def            = __webpack_require__(13)
 	  , $redef          = __webpack_require__(42)
@@ -1886,16 +1306,10 @@
 	    if(FORCE)for(key in methods){
 	      if(!(key in proto))$redef(proto, key, methods[key]);
 	    } else $def($def.P + $def.F * BUGGY, NAME, methods);
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	  }
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 28 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 26 */
-=======
 /* 41 */
 /***/ function(module, exports) {
 
@@ -1903,32 +1317,8 @@
 
 /***/ },
 /* 42 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	var $        = __webpack_require__(6)
-	  , TAG      = __webpack_require__(29)('toStringTag')
-	  , toString = {}.toString;
-	function cof(it){
-	  return toString.call(it).slice(8, -1);
-	}
-	cof.classof = function(it){
-	  var O, T;
-	  return it == undefined ? it === undefined ? 'Undefined' : 'Null'
-	    : typeof (T = (O = Object(it))[TAG]) == 'string' ? T : cof(O);
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var $        = __webpack_require__(6)
-	  , TAG      = __webpack_require__(27)('toStringTag')
-	  , toString = {}.toString;
-	function cof(it){
-	  return toString.call(it).slice(8, -1);
-	}
-	cof.classof = function(it){
-	  var O, T;
-	  return it == undefined ? it === undefined ? 'Undefined' : 'Null'
-	    : typeof (T = (O = Object(it))[TAG]) == 'string' ? T : cof(O);
-=======
 	module.exports = __webpack_require__(43);
 
 /***/ },
@@ -1942,7 +1332,6 @@
 	} : function(object, key, value){
 	  object[key] = value;
 	  return object;
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	};
 
 /***/ },
@@ -1959,28 +1348,9 @@
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 29 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 27 */
-=======
 /* 45 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	var global = __webpack_require__(6).g
-	  , store  = __webpack_require__(30)('wks');
-	module.exports = function(name){
-	  return store[name] || (store[name] =
-	    global.Symbol && global.Symbol[name] || __webpack_require__(26).safe('Symbol.' + name));
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var global = __webpack_require__(6).g
-	  , store  = __webpack_require__(28)('wks');
-	module.exports = function(name){
-	  return store[name] || (store[name] =
-	    global.Symbol && global.Symbol[name] || __webpack_require__(24).safe('Symbol.' + name));
-=======
 	// Thank's IE8 for his funny defineProperty
 	module.exports = !__webpack_require__(16)(function(){
 	  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
@@ -1993,17 +1363,10 @@
 	var hasOwnProperty = {}.hasOwnProperty;
 	module.exports = function(it, key){
 	  return hasOwnProperty.call(it, key);
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 30 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 28 */
-=======
 /* 47 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
 	var store  = __webpack_require__(48)('wks')
@@ -2014,13 +1377,7 @@
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 31 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 29 */
-=======
 /* 48 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
 	var global = __webpack_require__(14)
@@ -2041,116 +1398,9 @@
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 32 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 30 */
-=======
 /* 50 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	var $def            = __webpack_require__(8)
-	  , $redef          = __webpack_require__(33)
-	  , $               = __webpack_require__(6)
-	  , cof             = __webpack_require__(28)
-	  , $iter           = __webpack_require__(27)
-	  , SYMBOL_ITERATOR = __webpack_require__(29)('iterator')
-	  , FF_ITERATOR     = '@@iterator'
-	  , KEYS            = 'keys'
-	  , VALUES          = 'values'
-	  , Iterators       = $iter.Iterators;
-	module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE){
-	  $iter.create(Constructor, NAME, next);
-	  function createMethod(kind){
-	    function $$(that){
-	      return new Constructor(that, kind);
-	    }
-	    switch(kind){
-	      case KEYS: return function keys(){ return $$(this); };
-	      case VALUES: return function values(){ return $$(this); };
-	    } return function entries(){ return $$(this); };
-	  }
-	  var TAG      = NAME + ' Iterator'
-	    , proto    = Base.prototype
-	    , _native  = proto[SYMBOL_ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT]
-	    , _default = _native || createMethod(DEFAULT)
-	    , methods, key;
-	  // Fix native
-	  if(_native){
-	    var IteratorPrototype = $.getProto(_default.call(new Base));
-	    // Set @@toStringTag to native iterators
-	    cof.set(IteratorPrototype, TAG, true);
-	    // FF fix
-	    if($.FW && $.has(proto, FF_ITERATOR))$iter.set(IteratorPrototype, $.that);
-	  }
-	  // Define iterator
-	  if($.FW || FORCE)$iter.set(proto, _default);
-	  // Plug for library
-	  Iterators[NAME] = _default;
-	  Iterators[TAG]  = $.that;
-	  if(DEFAULT){
-	    methods = {
-	      keys:    IS_SET            ? _default : createMethod(KEYS),
-	      values:  DEFAULT == VALUES ? _default : createMethod(VALUES),
-	      entries: DEFAULT != VALUES ? _default : createMethod('entries')
-	    };
-	    if(FORCE)for(key in methods){
-	      if(!(key in proto))$redef(proto, key, methods[key]);
-	    } else $def($def.P + $def.F * $iter.BUGGY, NAME, methods);
-	  }
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var $def            = __webpack_require__(9)
-	  , $redef          = __webpack_require__(31)
-	  , $               = __webpack_require__(6)
-	  , cof             = __webpack_require__(26)
-	  , $iter           = __webpack_require__(25)
-	  , SYMBOL_ITERATOR = __webpack_require__(27)('iterator')
-	  , FF_ITERATOR     = '@@iterator'
-	  , KEYS            = 'keys'
-	  , VALUES          = 'values'
-	  , Iterators       = $iter.Iterators;
-	module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE){
-	  $iter.create(Constructor, NAME, next);
-	  function createMethod(kind){
-	    function $$(that){
-	      return new Constructor(that, kind);
-	    }
-	    switch(kind){
-	      case KEYS: return function keys(){ return $$(this); };
-	      case VALUES: return function values(){ return $$(this); };
-	    } return function entries(){ return $$(this); };
-	  }
-	  var TAG      = NAME + ' Iterator'
-	    , proto    = Base.prototype
-	    , _native  = proto[SYMBOL_ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT]
-	    , _default = _native || createMethod(DEFAULT)
-	    , methods, key;
-	  // Fix native
-	  if(_native){
-	    var IteratorPrototype = $.getProto(_default.call(new Base));
-	    // Set @@toStringTag to native iterators
-	    cof.set(IteratorPrototype, TAG, true);
-	    // FF fix
-	    if($.FW && $.has(proto, FF_ITERATOR))$iter.set(IteratorPrototype, $.that);
-	  }
-	  // Define iterator
-	  if($.FW || FORCE)$iter.set(proto, _default);
-	  // Plug for library
-	  Iterators[NAME] = _default;
-	  Iterators[TAG]  = $.that;
-	  if(DEFAULT){
-	    methods = {
-	      keys:    IS_SET            ? _default : createMethod(KEYS),
-	      values:  DEFAULT == VALUES ? _default : createMethod(VALUES),
-	      entries: DEFAULT != VALUES ? _default : createMethod('entries')
-	    };
-	    if(FORCE)for(key in methods){
-	      if(!(key in proto))$redef(proto, key, methods[key]);
-	    } else $def($def.P + $def.F * $iter.BUGGY, NAME, methods);
-	  }
-=======
 	'use strict';
 	var $ = __webpack_require__(6)
 	  , IteratorPrototype = {};
@@ -2161,17 +1411,10 @@
 	module.exports = function(Constructor, NAME, next){
 	  Constructor.prototype = $.create(IteratorPrototype, {next: __webpack_require__(44)(1,next)});
 	  __webpack_require__(51)(Constructor, NAME + ' Iterator');
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 33 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 31 */
-=======
 /* 51 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
 	var has  = __webpack_require__(46)
@@ -2183,44 +1426,16 @@
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 34 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 32 */
-=======
 /* 52 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	var set   = __webpack_require__(6).set
-	  , $at   = __webpack_require__(35)(true)
-	  , ITER  = __webpack_require__(26).safe('iter')
-	  , $iter = __webpack_require__(27)
-	  , step  = $iter.step;
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var set   = __webpack_require__(6).set
-	  , $at   = __webpack_require__(33)(true)
-	  , ITER  = __webpack_require__(24).safe('iter')
-	  , $iter = __webpack_require__(25)
-	  , step  = $iter.step;
-=======
 	'use strict';
 	var $at  = __webpack_require__(53)(true);
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	
 	// 21.1.3.27 String.prototype[@@iterator]()
-<<<<<<< HEAD
-	__webpack_require__(32)(String, 'String', function(iterated){
-	  set(this, ITER, {o: String(iterated), i: 0});
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	__webpack_require__(30)(String, 'String', function(iterated){
-	  set(this, ITER, {o: String(iterated), i: 0});
-=======
 	__webpack_require__(40)(String, 'String', function(iterated){
 	  this._t = String(iterated); // target
 	  this._i = 0;                // next index
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	// 21.1.5.2.1 %StringIteratorPrototype%.next()
 	}, function(){
 	  var O     = this._t
@@ -2233,13 +1448,7 @@
 	});
 
 /***/ },
-<<<<<<< HEAD
-/* 35 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 33 */
-=======
 /* 53 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
 	// true  -> String#at
@@ -2262,11 +1471,6 @@
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 36 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 34 */
-=======
 /* 54 */
 /***/ function(module, exports) {
 
@@ -2279,20 +1483,8 @@
 
 /***/ },
 /* 55 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	var core  = __webpack_require__(6).core
-	  , $iter = __webpack_require__(27);
-	core.isIterable  = $iter.is;
-	core.getIterator = $iter.get;
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var core  = __webpack_require__(6).core
-	  , $iter = __webpack_require__(25);
-	core.isIterable  = $iter.is;
-	core.getIterator = $iter.get;
-=======
 	var anObject = __webpack_require__(25)
 	  , get      = __webpack_require__(56);
 	module.exports = __webpack_require__(15).getIterator = function(it){
@@ -2300,52 +1492,22 @@
 	  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
 	  return anObject(iterFn.call(it));
 	};
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
-<<<<<<< HEAD
-/* 37 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 35 */
-=======
 /* 56 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	module.exports = { "default": __webpack_require__(38), __esModule: true };
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	module.exports = { "default": __webpack_require__(36), __esModule: true };
-=======
 	var classof   = __webpack_require__(57)
 	  , ITERATOR  = __webpack_require__(47)('iterator')
 	  , Iterators = __webpack_require__(39);
 	module.exports = __webpack_require__(15).getIteratorMethod = function(it){
 	  if(it != undefined)return it[ITERATOR] || it['@@iterator'] || Iterators[classof(it)];
 	};
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
-<<<<<<< HEAD
-/* 38 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 36 */
-=======
 /* 57 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	__webpack_require__(23);
-	__webpack_require__(34);
-	__webpack_require__(36);
-	module.exports = __webpack_require__(6).core.isIterable;
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	__webpack_require__(21);
-	__webpack_require__(32);
-	__webpack_require__(34);
-	module.exports = __webpack_require__(6).core.isIterable;
-=======
 	// getting tag from 19.1.3.6 Object.prototype.toString()
 	var cof = __webpack_require__(10)
 	  , TAG = __webpack_require__(47)('toStringTag')
@@ -2362,54 +1524,22 @@
 	    // ES3 arguments fallback
 	    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
 	};
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
-<<<<<<< HEAD
-/* 39 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 37 */
-=======
 /* 58 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	module.exports = { "default": __webpack_require__(40), __esModule: true };
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	module.exports = { "default": __webpack_require__(38), __esModule: true };
-=======
 	module.exports = { "default": __webpack_require__(59), __esModule: true };
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
-<<<<<<< HEAD
-/* 40 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 38 */
-=======
 /* 59 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	__webpack_require__(41);
-	module.exports = __webpack_require__(6).core.Object.assign;
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	__webpack_require__(39);
-	module.exports = __webpack_require__(6).core.Object.assign;
-=======
 	__webpack_require__(35);
 	__webpack_require__(52);
 	module.exports = __webpack_require__(60);
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
-<<<<<<< HEAD
-/* 41 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 39 */
-=======
 /* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2436,40 +1566,17 @@
 
 /***/ },
 /* 63 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.3.1 Object.assign(target, source)
-<<<<<<< HEAD
-	var $def = __webpack_require__(8);
-	$def($def.S, 'Object', {assign: __webpack_require__(42)});
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var $def = __webpack_require__(9);
-	$def($def.S, 'Object', {assign: __webpack_require__(40)});
-=======
 	var $def = __webpack_require__(13);
 	
 	$def($def.S + $def.F, 'Object', {assign: __webpack_require__(64)});
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
-<<<<<<< HEAD
-/* 42 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 40 */
-=======
 /* 64 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	var $        = __webpack_require__(6)
-	  , enumKeys = __webpack_require__(43);
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var $        = __webpack_require__(6)
-	  , enumKeys = __webpack_require__(41);
-=======
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 	// 19.1.2.1 Object.assign(target, source, ...)
 	var toObject = __webpack_require__(65)
 	  , IObject  = __webpack_require__(9)
@@ -2503,13 +1610,7 @@
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 43 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 41 */
-=======
 /* 66 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
 	// all enumerable object keys, includes symbols
@@ -2528,24 +1629,6 @@
 	};
 
 /***/ },
-<<<<<<< HEAD
-/* 44 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(43), __esModule: true };
-
-/***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(44);
-	module.exports = __webpack_require__(6).core.Reflect.ownKeys;
-
-/***/ },
-/* 44 */
-=======
 /* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2560,198 +1643,17 @@
 
 /***/ },
 /* 69 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	module.exports = { "default": __webpack_require__(45), __esModule: true };
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var $         = __webpack_require__(6)
-	  , $def      = __webpack_require__(9)
-	  , setProto  = __webpack_require__(45)
-	  , $iter     = __webpack_require__(25)
-	  , ITERATOR  = __webpack_require__(27)('iterator')
-	  , ITER      = __webpack_require__(24).safe('iter')
-	  , step      = $iter.step
-	  , assert    = __webpack_require__(29)
-	  , isObject  = $.isObject
-	  , getProto  = $.getProto
-	  , $Reflect  = $.g.Reflect
-	  , _apply    = Function.apply
-	  , assertObject = assert.obj
-	  , _isExtensible = Object.isExtensible || isObject
-	  , _preventExtensions = Object.preventExtensions
-	  // IE TP has broken Reflect.enumerate
-	  , buggyEnumerate = !($Reflect && $Reflect.enumerate && ITERATOR in $Reflect.enumerate({}));
-	
-	function Enumerate(iterated){
-	  $.set(this, ITER, {o: iterated, k: undefined, i: 0});
-	}
-	$iter.create(Enumerate, 'Object', function(){
-	  var iter = this[ITER]
-	    , keys = iter.k
-	    , key;
-	  if(keys == undefined){
-	    iter.k = keys = [];
-	    for(key in iter.o)keys.push(key);
-	  }
-	  do {
-	    if(iter.i >= keys.length)return step(1);
-	  } while(!((key = keys[iter.i++]) in iter.o));
-	  return step(0, key);
-	});
-	
-	var reflect = {
-	  // 26.1.1 Reflect.apply(target, thisArgument, argumentsList)
-	  apply: function apply(target, thisArgument, argumentsList){
-	    return _apply.call(target, thisArgument, argumentsList);
-	  },
-	  // 26.1.2 Reflect.construct(target, argumentsList [, newTarget])
-	  construct: function construct(target, argumentsList /*, newTarget*/){
-	    var proto    = assert.fn(arguments.length < 3 ? target : arguments[2]).prototype
-	      , instance = $.create(isObject(proto) ? proto : Object.prototype)
-	      , result   = _apply.call(target, instance, argumentsList);
-	    return isObject(result) ? result : instance;
-	  },
-	  // 26.1.3 Reflect.defineProperty(target, propertyKey, attributes)
-	  defineProperty: function defineProperty(target, propertyKey, attributes){
-	    assertObject(target);
-	    try {
-	      $.setDesc(target, propertyKey, attributes);
-	      return true;
-	    } catch(e){
-	      return false;
-	    }
-	  },
-	  // 26.1.4 Reflect.deleteProperty(target, propertyKey)
-	  deleteProperty: function deleteProperty(target, propertyKey){
-	    var desc = $.getDesc(assertObject(target), propertyKey);
-	    return desc && !desc.configurable ? false : delete target[propertyKey];
-	  },
-	  // 26.1.6 Reflect.get(target, propertyKey [, receiver])
-	  get: function get(target, propertyKey/*, receiver*/){
-	    var receiver = arguments.length < 3 ? target : arguments[2]
-	      , desc = $.getDesc(assertObject(target), propertyKey), proto;
-	    if(desc)return $.has(desc, 'value')
-	      ? desc.value
-	      : desc.get === undefined
-	        ? undefined
-	        : desc.get.call(receiver);
-	    return isObject(proto = getProto(target))
-	      ? get(proto, propertyKey, receiver)
-	      : undefined;
-	  },
-	  // 26.1.7 Reflect.getOwnPropertyDescriptor(target, propertyKey)
-	  getOwnPropertyDescriptor: function getOwnPropertyDescriptor(target, propertyKey){
-	    return $.getDesc(assertObject(target), propertyKey);
-	  },
-	  // 26.1.8 Reflect.getPrototypeOf(target)
-	  getPrototypeOf: function getPrototypeOf(target){
-	    return getProto(assertObject(target));
-	  },
-	  // 26.1.9 Reflect.has(target, propertyKey)
-	  has: function has(target, propertyKey){
-	    return propertyKey in target;
-	  },
-	  // 26.1.10 Reflect.isExtensible(target)
-	  isExtensible: function isExtensible(target){
-	    return _isExtensible(assertObject(target));
-	  },
-	  // 26.1.11 Reflect.ownKeys(target)
-	  ownKeys: __webpack_require__(47),
-	  // 26.1.12 Reflect.preventExtensions(target)
-	  preventExtensions: function preventExtensions(target){
-	    assertObject(target);
-	    try {
-	      if(_preventExtensions)_preventExtensions(target);
-	      return true;
-	    } catch(e){
-	      return false;
-	    }
-	  },
-	  // 26.1.13 Reflect.set(target, propertyKey, V [, receiver])
-	  set: function set(target, propertyKey, V/*, receiver*/){
-	    var receiver = arguments.length < 4 ? target : arguments[3]
-	      , ownDesc  = $.getDesc(assertObject(target), propertyKey)
-	      , existingDescriptor, proto;
-	    if(!ownDesc){
-	      if(isObject(proto = getProto(target))){
-	        return set(proto, propertyKey, V, receiver);
-	      }
-	      ownDesc = $.desc(0);
-	    }
-	    if($.has(ownDesc, 'value')){
-	      if(ownDesc.writable === false || !isObject(receiver))return false;
-	      existingDescriptor = $.getDesc(receiver, propertyKey) || $.desc(0);
-	      existingDescriptor.value = V;
-	      $.setDesc(receiver, propertyKey, existingDescriptor);
-	      return true;
-	    }
-	    return ownDesc.set === undefined ? false : (ownDesc.set.call(receiver, V), true);
-	  }
-	};
-	// 26.1.14 Reflect.setPrototypeOf(target, proto)
-	if(setProto)reflect.setPrototypeOf = function setPrototypeOf(target, proto){
-	  setProto.check(target, proto);
-	  try {
-	    setProto.set(target, proto);
-	    return true;
-	  } catch(e){
-	    return false;
-	  }
-	};
-	
-	$def($def.G, {Reflect: {}});
-	
-	$def($def.S + $def.F * buggyEnumerate, 'Reflect', {
-	  // 26.1.5 Reflect.enumerate(target)
-	  enumerate: function enumerate(target){
-	    return new Enumerate(assertObject(target));
-	  }
-	});
-	
-	$def($def.S, 'Reflect', reflect);
-=======
 	// 26.1.11 Reflect.ownKeys(target)
 	var $def = __webpack_require__(13);
 	
 	$def($def.S, 'Reflect', {ownKeys: __webpack_require__(70)});
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
 /* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	__webpack_require__(46);
-	module.exports = __webpack_require__(6).core.Object.values;
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	// Works with __proto__ only. Old v8 can't work with null proto objects.
-	/* eslint-disable no-proto */
-	var $      = __webpack_require__(6)
-	  , assert = __webpack_require__(29);
-	function check(O, proto){
-	  assert.obj(O);
-	  assert(proto === null || $.isObject(proto), proto, ": can't set as prototype!");
-	}
-	module.exports = {
-	  set: Object.setPrototypeOf || ('__proto__' in {} // eslint-disable-line
-	    ? function(buggy, set){
-	        try {
-	          set = __webpack_require__(46)(Function.call, $.getDesc(Object.prototype, '__proto__').set, 2);
-	          set({}, []);
-	        } catch(e){ buggy = true; }
-	        return function setPrototypeOf(O, proto){
-	          check(O, proto);
-	          if(buggy)O.__proto__ = proto;
-	          else set(O, proto);
-	          return O;
-	        };
-	      }()
-	    : undefined),
-	  check: check
-	};
-=======
 	// all object keys, includes non-enumerable and symbols
 	var $        = __webpack_require__(6)
 	  , anObject = __webpack_require__(25)
@@ -2761,90 +1663,11 @@
 	    , getSymbols = $.getSymbols;
 	  return getSymbols ? keys.concat(getSymbols(it)) : keys;
 	};
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
 /* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	// http://goo.gl/XkBrjD
-	var $    = __webpack_require__(6)
-	  , $def = __webpack_require__(8);
-	function createObjectToArray(isEntries){
-	  return function(object){
-	    var O      = $.toObject(object)
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	// Optional / simple context binding
-	var assertFunction = __webpack_require__(29).fn;
-	module.exports = function(fn, that, length){
-	  assertFunction(fn);
-	  if(~length && that === undefined)return fn;
-	  switch(length){
-	    case 1: return function(a){
-	      return fn.call(that, a);
-	    };
-	    case 2: return function(a, b){
-	      return fn.call(that, a, b);
-	    };
-	    case 3: return function(a, b, c){
-	      return fn.call(that, a, b, c);
-	    };
-	  } return function(/* ...args */){
-	      return fn.apply(that, arguments);
-	    };
-	};
-
-/***/ },
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $            = __webpack_require__(6)
-	  , assertObject = __webpack_require__(29).obj;
-	module.exports = function ownKeys(it){
-	  assertObject(it);
-	  var keys       = $.getNames(it)
-	    , getSymbols = $.getSymbols;
-	  return getSymbols ? keys.concat(getSymbols(it)) : keys;
-	};
-
-/***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(49), __esModule: true };
-
-/***/ },
-/* 49 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(8);
-	module.exports = __webpack_require__(6).core.Object.keys;
-
-/***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(51), __esModule: true };
-
-/***/ },
-/* 51 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(52);
-	module.exports = __webpack_require__(6).core.Object.entries;
-
-/***/ },
-/* 52 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// http://goo.gl/XkBrjD
-	var $    = __webpack_require__(6)
-	  , $def = __webpack_require__(9);
-	function createObjectToArray(isEntries){
-	  return function(object){
-	    var O      = $.toObject(object)
-=======
 	module.exports = { "default": __webpack_require__(72), __esModule: true };
 
 /***/ },
@@ -2878,10 +1701,57 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(76);
-	module.exports = __webpack_require__(15).Object.entries;
+	module.exports = __webpack_require__(15).Object.values;
 
 /***/ },
 /* 76 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// http://goo.gl/XkBrjD
+	var $def    = __webpack_require__(13)
+	  , $values = __webpack_require__(77)(false);
+	
+	$def($def.S, 'Object', {
+	  values: function values(it){
+	    return $values(it);
+	  }
+	});
+
+/***/ },
+/* 77 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $         = __webpack_require__(6)
+	  , toIObject = __webpack_require__(8);
+	module.exports = function(isEntries){
+	  return function(it){
+	    var O      = toIObject(it)
+	      , keys   = $.getKeys(O)
+	      , length = keys.length
+	      , i      = 0
+	      , result = Array(length)
+	      , key;
+	    if(isEntries)while(length > i)result[i] = [key = keys[i++], O[key]];
+	    else while(length > i)result[i] = O[keys[i++]];
+	    return result;
+	  };
+	};
+
+/***/ },
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(79), __esModule: true };
+
+/***/ },
+/* 79 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(80);
+	module.exports = __webpack_require__(15).Object.entries;
+
+/***/ },
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// http://goo.gl/XkBrjD
@@ -2895,60 +1765,7 @@
 	});
 
 /***/ },
-/* 77 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $         = __webpack_require__(6)
-	  , toIObject = __webpack_require__(8);
-	module.exports = function(isEntries){
-	  return function(it){
-	    var O      = toIObject(it)
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
-	      , keys   = $.getKeys(O)
-	      , length = keys.length
-	      , i      = 0
-	      , result = Array(length)
-	      , key;
-	    if(isEntries)while(length > i)result[i] = [key = keys[i++], O[key]];
-	    else while(length > i)result[i] = O[keys[i++]];
-	    return result;
-	  };
-	};
-
-/***/ },
-<<<<<<< HEAD
-/* 47 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 53 */
-=======
-/* 78 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
-/***/ function(module, exports, __webpack_require__) {
-
-<<<<<<< HEAD
-	module.exports = { "default": __webpack_require__(48), __esModule: true };
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	module.exports = { "default": __webpack_require__(54), __esModule: true };
-=======
-	module.exports = { "default": __webpack_require__(79), __esModule: true };
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
-
-/***/ },
-<<<<<<< HEAD
-/* 48 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 54 */
-=======
-/* 79 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
-/***/ function(module, exports, __webpack_require__) {
-
-<<<<<<< HEAD
-	__webpack_require__(46);
-	module.exports = __webpack_require__(6).core.Object.entries;
-
-/***/ },
-/* 49 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2960,7 +1777,7 @@
 	 *  of patent rights can be found in the PATENTS file in the same directory.
 	 */
 	(function (global, factory) {
-	  true ? module.exports = factory() :
+	   true ? module.exports = factory() :
 	  typeof define === 'function' && define.amd ? define(factory) :
 	  global.Immutable = factory()
 	}(this, function () { 'use strict';var SLICE$0 = Array.prototype.slice;
@@ -3021,7 +1838,21 @@
 	  }
 	
 	  function wrapIndex(iter, index) {
-	    return index >= 0 ? (+index) : ensureSize(iter) + (+index);
+	    // This implements "is array index" which the ECMAString spec defines as:
+	    //     A String property name P is an array index if and only if
+	    //     ToString(ToUint32(P)) is equal to P and ToUint32(P) is not equal
+	    //     to 2^32−1.
+	    // However note that we're currently calling ToNumber() instead of ToUint32()
+	    // which should be improved in the future, as floating point numbers should
+	    // not be accepted as an array index.
+	    if (typeof index !== 'number') {
+	      var numIndex = +index;
+	      if ('' + numIndex !== index) {
+	        return NaN;
+	      }
+	      index = numIndex;
+	    }
+	    return index < 0 ? ensureSize(iter) + index : index;
 	  }
 	
 	  function returnTrue() {
@@ -3691,7 +2522,7 @@
 	  var src_Math__imul =
 	    typeof Math.imul === 'function' && Math.imul(0xffffffff, 2) === -2 ?
 	    Math.imul :
-	    function src_Math__imul(a, b) {
+	    function imul(a, b) {
 	      a = a | 0; // int
 	      b = b | 0; // int
 	      var c = a & 0xffff;
@@ -4242,6 +3073,15 @@
 	  function sliceFactory(iterable, begin, end, useKeys) {
 	    var originalSize = iterable.size;
 	
+	    // Sanitize begin & end using this shorthand for ToInt32(argument)
+	    // http://www.ecma-international.org/ecma-262/6.0/#sec-toint32
+	    if (begin !== undefined) {
+	      begin = begin | 0;
+	    }
+	    if (end !== undefined) {
+	      end = end | 0;
+	    }
+	
 	    if (wholeSlice(begin, end, originalSize)) {
 	      return iterable;
 	    }
@@ -4268,7 +3108,9 @@
 	
 	    var sliceSeq = makeSequence(iterable);
 	
-	    sliceSeq.size = sliceSize;
+	    // If iterable.size is undefined, the size of the realized sliceSeq is
+	    // unknown at this point unless the number of items to slice is 0
+	    sliceSeq.size = sliceSize === 0 ? sliceSize : iterable.size && sliceSize || undefined;
 	
 	    if (!useKeys && isSeq(iterable) && sliceSize >= 0) {
 	      sliceSeq.get = function (index, notSetValue) {
@@ -4717,7 +3559,7 @@
 	
 	    function src_Map__Map(value) {
 	      return value === null || value === undefined ? emptyMap() :
-	        isMap(value) ? value :
+	        isMap(value) && !isOrdered(value) ? value :
 	        emptyMap().withMutations(function(map ) {
 	          var iter = KeyedIterable(value);
 	          assertNotInfinite(iter.size);
@@ -5564,12 +4406,12 @@
 	
 	    List.prototype.get = function(index, notSetValue) {
 	      index = wrapIndex(this, index);
-	      if (index < 0 || index >= this.size) {
-	        return notSetValue;
+	      if (index >= 0 && index < this.size) {
+	        index += this._origin;
+	        var node = listNodeFor(this, index);
+	        return node && node.array[index & MASK];
 	      }
-	      index += this._origin;
-	      var node = listNodeFor(this, index);
-	      return node && node.array[index & MASK];
+	      return notSetValue;
 	    };
 	
 	    // @pragma Modification
@@ -5765,29 +4607,25 @@
 	    };
 	
 	    VNode.prototype.removeAfter = function(ownerID, level, index) {
-	      if (index === level ? 1 << level : 0 || this.array.length === 0) {
+	      if (index === (level ? 1 << level : 0) || this.array.length === 0) {
 	        return this;
 	      }
 	      var sizeIndex = ((index - 1) >>> level) & MASK;
 	      if (sizeIndex >= this.array.length) {
 	        return this;
 	      }
-	      var removingLast = sizeIndex === this.array.length - 1;
+	
 	      var newChild;
 	      if (level > 0) {
 	        var oldChild = this.array[sizeIndex];
 	        newChild = oldChild && oldChild.removeAfter(ownerID, level - SHIFT, index);
-	        if (newChild === oldChild && removingLast) {
+	        if (newChild === oldChild && sizeIndex === this.array.length - 1) {
 	          return this;
 	        }
 	      }
-	      if (removingLast && !newChild) {
-	        return this;
-	      }
+	
 	      var editable = editableVNode(this, ownerID);
-	      if (!removingLast) {
-	        editable.array.pop();
-	      }
+	      editable.array.splice(sizeIndex + 1);
 	      if (newChild) {
 	        editable.array[sizeIndex] = newChild;
 	      }
@@ -5878,6 +4716,10 @@
 	
 	  function updateList(list, index, value) {
 	    index = wrapIndex(list, index);
+	
+	    if (index !== index) {
+	      return list;
+	    }
 	
 	    if (index >= list.size || index < 0) {
 	      return list.withMutations(function(list ) {
@@ -5970,6 +4812,14 @@
 	  }
 	
 	  function setListBounds(list, begin, end) {
+	    // Sanitize begin & end using this shorthand for ToInt32(argument)
+	    // http://www.ecma-international.org/ecma-262/6.0/#sec-toint32
+	    if (begin !== undefined) {
+	      begin = begin | 0;
+	    }
+	    if (end !== undefined) {
+	      end = end | 0;
+	    }
 	    var owner = list.__ownerID || new OwnerID();
 	    var oldOrigin = list._origin;
 	    var oldCapacity = list._capacity;
@@ -6482,7 +5332,7 @@
 	
 	    function src_Set__Set(value) {
 	      return value === null || value === undefined ? emptySet() :
-	        isSet(value) ? value :
+	        isSet(value) && !isOrdered(value) ? value :
 	        emptySet().withMutations(function(set ) {
 	          var iter = SetIterable(value);
 	          assertNotInfinite(iter.size);
@@ -7227,10 +6077,6 @@
 	      return reify(this, concatFactory(this, values));
 	    },
 	
-	    contains: function(searchValue) {
-	      return this.includes(searchValue);
-	    },
-	
 	    includes: function(searchValue) {
 	      return this.some(function(value ) {return is(value, searchValue)});
 	    },
@@ -7520,7 +6366,7 @@
 	
 	    hashCode: function() {
 	      return this.__hash || (this.__hash = hashIterable(this));
-	    },
+	    }
 	
 	
 	    // ### Internal
@@ -7543,6 +6389,7 @@
 	  IterablePrototype.inspect =
 	  IterablePrototype.toSource = function() { return this.toString(); };
 	  IterablePrototype.chain = IterablePrototype.flatMap;
+	  IterablePrototype.contains = IterablePrototype.includes;
 	
 	  // Temporary warning about using length
 	  (function () {
@@ -7613,7 +6460,7 @@
 	          function(k, v)  {return mapper.call(context, k, v, this$0)}
 	        ).flip()
 	      );
-	    },
+	    }
 	
 	  });
 	
@@ -7668,7 +6515,10 @@
 	      if (numArgs === 0 || (numArgs === 2 && !removeNum)) {
 	        return this;
 	      }
-	      index = resolveBegin(index, this.size);
+	      // If index is negative, it should resolve relative to the size of the
+	      // collection. However size may be expensive to compute if not cached, so
+	      // only call count() if the number is in fact negative.
+	      index = resolveBegin(index, index < 0 ? this.count() : this.size);
 	      var spliced = this.slice(0, index);
 	      return reify(
 	        this,
@@ -7741,7 +6591,7 @@
 	      var iterables = arrCopy(arguments);
 	      iterables[0] = this;
 	      return reify(this, zipWithFactory(this, zipper, iterables));
-	    },
+	    }
 	
 	  });
 	
@@ -7767,7 +6617,7 @@
 	
 	    keySeq: function() {
 	      return this.valueSeq();
-	    },
+	    }
 	
 	  });
 	
@@ -7871,43 +6721,16 @@
 	    Repeat: Repeat,
 	
 	    is: is,
-	    fromJS: fromJS,
+	    fromJS: fromJS
 	
 	  };
 	
 	  return Immutable;
 	
 	}));
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	__webpack_require__(52);
-	module.exports = __webpack_require__(6).core.Object.values;
-=======
-	__webpack_require__(80);
-	module.exports = __webpack_require__(15).Object.values;
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
 
 /***/ },
-<<<<<<< HEAD
-/* 50 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 55 */
-=======
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// http://goo.gl/XkBrjD
-	var $def    = __webpack_require__(13)
-	  , $values = __webpack_require__(77)(false);
-	
-	$def($def.S, 'Object', {
-	  values: function values(it){
-	    return $values(it);
-	  }
-	});
-
-/***/ },
-/* 81 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
+/* 82 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7915,6 +6738,8 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
+	var toString = Object.prototype.toString;
+	
 	var isObject = function isObject(o) {
 	  return toString.call(o) === '[object Object]';
 	};
@@ -7931,32 +6756,14 @@
 	module.exports = exports['default'];
 
 /***/ },
-<<<<<<< HEAD
-/* 51 */
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-/* 56 */
-=======
-/* 82 */
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-<<<<<<< HEAD
-	var _slicedToArray = __webpack_require__(20)['default'];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _slicedToArray = __webpack_require__(18)["default"];
-=======
-	var _slicedToArray = __webpack_require__(32)["default"];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
+	var _slicedToArray = __webpack_require__(32)['default'];
 	
-<<<<<<< HEAD
-	var _Object$entries = __webpack_require__(47)['default'];
-||||||| parent of fa4a47d... Don't drop watchers of children across .set()s of containers
-	var _Object$entries = __webpack_require__(50)["default"];
-=======
-	var _Object$entries = __webpack_require__(74)["default"];
->>>>>>> fa4a47d... Don't drop watchers of children across .set()s of containers
+	var _Object$entries = __webpack_require__(78)['default'];
 	
 	var _interopRequireDefault = __webpack_require__(1)['default'];
 	
@@ -7964,7 +6771,7 @@
 	  value: true
 	});
 	
-	var _immutable = __webpack_require__(49);
+	var _immutable = __webpack_require__(81);
 	
 	var _immutable2 = _interopRequireDefault(_immutable);
 	
