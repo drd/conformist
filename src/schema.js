@@ -128,7 +128,7 @@ class Scalar extends Type {
   }
 
   get allValid() {
-    if (this.errors.self.length) return false;
+    return this.valid;
   }
 
   set(raw) {
@@ -263,8 +263,8 @@ class List extends Container {
   }
 
   get allValid() {
-    if (this.errors.length) return false;
-    for (let m in this.members) {
+    if (!this.valid) return false;
+    for (let m of this.members) {
       if (!m.allValid) return false;
     }
     return true;
@@ -353,8 +353,8 @@ class Map extends Container {
   }
 
   get allValid() {
-    if (this.errors.length) return false;
-    for (let m in this.memberValues) {
+    if (!this.valid) return false;
+    for (let m of this.memberValues) {
       if (!m.allValid) return false;
     }
     return true;

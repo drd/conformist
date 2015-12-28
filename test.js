@@ -470,6 +470,7 @@ describe('Complex schema examples (from idealist.org)', () => {
       let location = new Location();
       expect(location.set({fallback: false, location: 'Boston', geoid: 3})).to.eql(true);
       expect(location.validate()).to.eql(true);
+      expect(location.allValid).to.eql(true);
       expect(location.set({fallback: true, city: 'Boston', regionCode: 'US_MA', countryCode: 'US'})).to.eql(true);
       expect(location.validate()).to.eql(true);
       expect(location.set({fallback: true, city: 'Boston', regionCode: {Geo: 'NotApplicable'}, countryCode: 'US'})).to.eql(true);
@@ -477,6 +478,7 @@ describe('Complex schema examples (from idealist.org)', () => {
 
       expect(location.set({fallback: false, location: '', geoid: 3})).to.eql(true);
       expect(location.validate()).to.eql(false);
+      expect(location.allValid).to.eql(false);
       expect(location.allErrors.children.location.self.length).to.eql(1);
       expect(location.allErrors.children.location.self[0]).to.eql('Please choose a location');
       expect(location.set({fallback: false, location: 'Boston'})).to.eql(true);
