@@ -97,6 +97,8 @@
 	
 	var _Reflect$ownKeys = __webpack_require__(67)['default'];
 	
+	var _getIterator = __webpack_require__(33)['default'];
+	
 	var _Object$keys = __webpack_require__(71)['default'];
 	
 	var _Object$values = __webpack_require__(74)['default'];
@@ -331,7 +333,7 @@
 	  }, {
 	    key: 'allValid',
 	    get: function get() {
-	      if (this.errors.self.length) return false;
+	      return this.valid;
 	    }
 	  }]);
 	
@@ -577,10 +579,32 @@
 	  }, {
 	    key: 'allValid',
 	    get: function get() {
-	      if (this.errors.length) return false;
-	      for (var m in this.members) {
-	        if (!m.allValid) return false;
+	      if (!this.valid) return false;
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+	
+	      try {
+	        for (var _iterator = _getIterator(this.members), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var m = _step.value;
+	
+	          if (!m.allValid) return false;
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator['return']) {
+	            _iterator['return']();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
 	      }
+	
 	      return true;
 	    }
 	  }], [{
@@ -716,10 +740,32 @@
 	  }, {
 	    key: 'allValid',
 	    get: function get() {
-	      if (this.errors.length) return false;
-	      for (var m in this.memberValues) {
-	        if (!m.allValid) return false;
+	      if (!this.valid) return false;
+	      var _iteratorNormalCompletion2 = true;
+	      var _didIteratorError2 = false;
+	      var _iteratorError2 = undefined;
+	
+	      try {
+	        for (var _iterator2 = _getIterator(this.memberValues), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	          var m = _step2.value;
+	
+	          if (!m.allValid) return false;
+	        }
+	      } catch (err) {
+	        _didIteratorError2 = true;
+	        _iteratorError2 = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+	            _iterator2['return']();
+	          }
+	        } finally {
+	          if (_didIteratorError2) {
+	            throw _iteratorError2;
+	          }
+	        }
 	      }
+	
 	      return true;
 	    }
 	  }], [{
