@@ -75,6 +75,35 @@ class Type {
     return this.validatorFactories.indexOf(validator) !== -1;
   }
 
+  get root() {
+    let iteree = this;
+    while (iteree.parent) {
+      iteree = iteree.parent;
+    }
+    return iteree;
+  }
+
+  find(path) {
+    const pathSegments = path.split('/');
+    let root = this;
+    if (pathSegments[0] === '') {
+      root = this.root;
+    }
+    return pathSegments.reduce((el, segment) => {
+      if (segment === '') {
+        return el;
+      } else if (segment === '..') {
+        el = el.parent;
+      } else {
+        el = el.members[segment];
+      }
+      if (!el) {
+        throw new Error(`Could not find path "${path}" from ${this}`);
+      }
+      return el;
+    }, root);
+  }
+
   get validatorFactories() {
     return this.validators.map(v => v.factory);
   }

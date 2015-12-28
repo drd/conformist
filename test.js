@@ -449,6 +449,22 @@ describe('Complex schema examples (from idealist.org)', () => {
     Str.named('image')
   );
 
+  it('Traversal', () => {
+    const location = new Location();
+    const org = Org.fromDefaults();
+    expect(location.find('/')).to.eql(location);
+    expect(location.members.city.find('/')).to.eql(location);
+    expect(location.find('city')).to.eql(location.members.city);
+    expect(location.find('city').find('..')).to.eql(location);
+    expect(location.find('city').find('../regionCode')).to.eql(location.members.regionCode);
+    expect(org.find('addresses/0/fallback')).to.eql(org.members.addresses.members[0].members.fallback);
+    expect(org.find('/addresses/0/fallback')).to.eql(org.members.addresses.members[0].members.fallback);
+    expect(org.find('/addresses/0/fallback/')).to.eql(org.members.addresses.members[0].members.fallback);
+    expect(org.members.addresses.members[0].members.fallback.find('/')).to.eql(org);
+    expect(org.members.addresses.members[0].members.fallback.root).to.eql(org);
+    expect(org.members.addresses.members[0].members.fallback.parent).to.eql(org.members.addresses.members[0]);
+  })
+
   describe('using POJSOs', () => {
     it('Location', () => {
       let location = new Location();
