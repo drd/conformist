@@ -222,6 +222,39 @@
 	      return this.validatorFactories.indexOf(validator) !== -1;
 	    }
 	  }, {
+	    key: 'find',
+	    value: function find(path) {
+	      var _this2 = this;
+	
+	      var pathSegments = path.split('/');
+	      var root = this;
+	      if (pathSegments[0] === '') {
+	        root = this.root;
+	      }
+	      return pathSegments.reduce(function (el, segment) {
+	        if (segment === '') {
+	          return el;
+	        } else if (segment === '..') {
+	          el = el.parent;
+	        } else {
+	          el = el.members[segment];
+	        }
+	        if (!el) {
+	          throw new Error('Could not find path "' + path + '" from ' + _this2);
+	        }
+	        return el;
+	      }, root);
+	    }
+	  }, {
+	    key: 'root',
+	    get: function get() {
+	      var iteree = this;
+	      while (iteree.parent) {
+	        iteree = iteree.parent;
+	      }
+	      return iteree;
+	    }
+	  }, {
 	    key: 'validatorFactories',
 	    get: function get() {
 	      return this.validators.map(function (v) {
@@ -278,12 +311,12 @@
 	  }, {
 	    key: 'validate',
 	    value: function validate(context) {
-	      var _this2 = this;
+	      var _this3 = this;
 	
 	      this.errors = [];
 	
 	      this.valid = this.validators.reduce(function (valid, v) {
-	        return valid && v(_this2, context);
+	        return valid && v(_this3, context);
 	      }, true);
 	
 	      return this.valid;
@@ -294,6 +327,11 @@
 	      return {
 	        self: this.errors
 	      };
+	    }
+	  }, {
+	    key: 'allValid',
+	    get: function get() {
+	      if (this.errors.self.length) return false;
 	    }
 	  }]);
 	
@@ -363,6 +401,8 @@
 	
 	    _get(Object.getPrototypeOf(_Int.prototype), 'constructor', this).apply(this, arguments);
 	  }
+	
+	  // TODO: This currently ignores any validators on the child schema
 	
 	  _createClass(Int, [{
 	    key: 'adapt',
@@ -438,7 +478,7 @@
 	  _createClass(Container, [{
 	    key: 'validate',
 	    value: function validate(context) {
-	      var _this3 = this;
+	      var _this4 = this;
 	
 	      this.errors = [];
 	      var success = !!this.memberValues.reduce(function (valid, member) {
@@ -446,7 +486,7 @@
 	        return valid && result;
 	      }, true);
 	      this.valid = !!this.validators.reduce(function (valid, validator) {
-	        return valid &= validator(_this3, context);
+	        return valid &= validator(_this4, context);
 	      }, success);
 	      return this.valid;
 	    }
@@ -473,7 +513,7 @@
 	
 	    // TODO: short-circuit conversion if any member fails.
 	    value: function set(raw) {
-	      var _this4 = this;
+	      var _this5 = this;
 	
 	      if (raw && raw.toJS) {
 	        raw = raw.toJS();
@@ -487,14 +527,14 @@
 	      var success = true;
 	      var items = [];
 	      raw.forEach(function (mbr, i) {
-	        var member = new _this4.memberType();
-	        member.parent = _this4;
+	        var member = new _this5.memberType();
+	        member.parent = _this5;
 	        success &= member.set(mbr);
 	        // keep around any watchers that were present on the previous member
 	        if (previousMembers[i] && previousMembers[i]._watchers) {
 	          member._watchers = previousMembers[i]._watchers;
 	        } else {
-	          member.observe(_this4.notifyWatchers.bind(_this4));
+	          member.observe(_this5.notifyWatchers.bind(_this5));
 	        }
 	        items.push(member);
 	      });
@@ -534,6 +574,15 @@
 	        })
 	      };
 	    }
+	  }, {
+	    key: 'allValid',
+	    get: function get() {
+	      if (this.errors.length) return false;
+	      for (var m in this.members) {
+	        if (!m.allValid) return false;
+	      }
+	      return true;
+	    }
 	  }], [{
 	    key: 'of',
 	    value: function of(type) {
@@ -564,7 +613,7 @@
 	  _createClass(Map, [{
 	    key: 'set',
 	    value: function set(raw) {
-	      var _this5 = this;
+	      var _this6 = this;
 	
 	      var _ref2 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 	
@@ -585,18 +634,18 @@
 	      var keys = _Object$keys(this.memberSchema);
 	      var members = {};
 	      success = !!keys.reduce(function (success, k) {
-	        var member = new _this5.memberSchema[k]();
+	        var member = new _this6.memberSchema[k]();
 	        member.name = k;
-	        member.parent = _this5;
+	        member.parent = _this6;
 	        members[k] = member;
 	        if (raw[k] !== undefined) {
 	          success &= member.set(raw[k]);
 	        }
 	        // keep around any watchers that were present on the previous member
-	        if (_this5.members && _this5.members[k]) {
-	          members[k]._watchers = _this5.members[k]._watchers;
+	        if (_this6.members && _this6.members[k]) {
+	          members[k]._watchers = _this6.members[k]._watchers;
 	        } else {
-	          member.observe(_this5.notifyWatchers.bind(_this5));
+	          member.observe(_this6.notifyWatchers.bind(_this6));
 	        }
 	        return success;
 	      }, true);
@@ -626,10 +675,10 @@
 	  }, {
 	    key: 'value',
 	    get: function get() {
-	      var _this6 = this;
+	      var _this7 = this;
 	
 	      return _immutable2['default'].Map(_Object$keys(this._members).reduce(function (v, m) {
-	        v[m] = _this6._members[m].value;
+	        v[m] = _this7._members[m].value;
 	        return v;
 	      }, {}));
 	    }
@@ -663,6 +712,15 @@
 	          return errors;
 	        }, {})
 	      };
+	    }
+	  }, {
+	    key: 'allValid',
+	    get: function get() {
+	      if (this.errors.length) return false;
+	      for (var m in this.memberValues) {
+	        if (!m.allValid) return false;
+	      }
+	      return true;
 	    }
 	  }], [{
 	    key: 'of',
