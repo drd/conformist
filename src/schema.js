@@ -93,7 +93,13 @@ class Scalar extends Type {
   }
 
   get allErrors() {
-    return this.errors;
+    return {
+      self: this.errors
+    };
+  }
+
+  get allValid() {
+    if (this.errors.self.length) return false;
   }
 
   set(raw) {
@@ -154,7 +160,7 @@ class Int extends Num {
   }
 }
 
-
+// TODO: This currently ignores any validators on the child schema
 @staticify
 class Enum extends Scalar {
   constructor(value) {
@@ -225,6 +231,14 @@ class List extends Container {
       self: this.errors,
       children: this.members.map(m => m.allErrors)
     };
+  }
+
+  get allValid() {
+    if (this.errors.length) return false;
+    for (let m in this.members) {
+      if (!m.allValid) return false;
+    }
+    return true;
   }
 
   // Attempt to convert each member of raw array to the
@@ -307,6 +321,14 @@ class Map extends Container {
         return errors;
       }, {})
     };
+  }
+
+  get allValid() {
+    if (this.errors.length) return false;
+    for (let m in this.memberValues) {
+      if (!m.allValid) return false;
+    }
+    return true;
   }
 
   set(raw, {notify = true} = {}) {

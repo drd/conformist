@@ -291,7 +291,9 @@
 	  }, {
 	    key: 'allErrors',
 	    get: function get() {
-	      return this.errors;
+	      return {
+	        self: this.errors
+	      };
 	    }
 	  }]);
 	
