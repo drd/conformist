@@ -9,6 +9,9 @@
   "license": "BSD",
   "author": "Eric O'Connell <eric.oconnell@idealist.org>",
   "repository": "drd/conformist",
+  "files": [
+    "build"
+  ],
   "main": "build/index.js",
   "dependencies": {
     "babel": "^5.6.1",
