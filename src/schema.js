@@ -3,7 +3,7 @@ import {isObject, consume} from './util';
 
 
 // Thank you IE, for making this necessary
-// Per http://babeljs.io/docs/advanced/caveats/, static methods do not
+// Per https://babeljs.algolia.com/docs/advanced/caveats/, static methods do not
 // propagate down the inheritance chain because __proto__ is not a thing.
 // Decorate any concrete schema class with this to ensure that it and any
 // cloned versions of itself will have these static methods.
