@@ -299,13 +299,16 @@ class App extends React.Component {
         this.state = {};
     }
 
+    exampleFromHref(href) {
+        return href.replace('#', '');
+    }
+
     changeExample = (event) => {
-        event.preventDefault();
-        this.setState({example: event.target.getAttribute('href').replace('#', '')});
+        this.setState({example: this.exampleFromHref(event.target.getAttribute('href'))});
     }
 
     currentExample() {
-        const example = this.state.example || 'live';
+        const example = this.state.example || this.exampleFromHref(document.location.hash) || 'live';
         return {
             live: LiveValidation,
             blur: BlurValidation,
