@@ -129,7 +129,7 @@ export default function formConnector(Form, options = {}) {
         },
 
         render() {
-            let {element, onSubmit, onChange, ...otherProps} = this.props;
+            let {onSubmit, onChange, ...otherProps} = this.props;
             return <Form {...otherProps} onSubmit={this.onSubmit} />;
         }
     };

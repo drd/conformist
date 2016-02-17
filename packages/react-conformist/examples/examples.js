@@ -23,6 +23,18 @@ class ValueInput extends React.Component {
 }
 
 
+@inputConnector
+class ValueCheckbox extends React.Component {
+    onChange = (event) => {
+        this.props.onChange(event.target.checked);
+    }
+
+    render() {
+        return <input type="checkbox" {...this.props} onChange={this.onChange} />
+    }
+}
+
+
 @fieldConnector
 class Field extends React.Component {
     static propTypes = {
@@ -89,7 +101,11 @@ class LiveValidation extends React.Component {
         return <div>
             <h2>Live Validation</h2>
 
-            <Form schema={NameSchema} formState={this.state.value} formErrors={this.state.errors} onChange={this.onChange} onSubmit={this.onSubmit}>
+            <Form schema={NameSchema}
+                  formState={this.state.value}
+                  formErrors={this.state.errors}
+                  onChange={this.onChange}
+                  onSubmit={this.onSubmit}>
                 <Field showErrors={true} name="first" label="First name">
                     <ValueInput />
                 </Field>
@@ -134,7 +150,11 @@ class BlurValidation extends React.Component {
         return <div>
             <h2>Live Validation</h2>
 
-            <Form schema={NameSchema} formState={this.state.value} formErrors={this.state.errors} onChange={this.onChange} onSubmit={this.onSubmit}>
+            <Form schema={NameSchema}
+                  formState={this.state.value}
+                  formErrors={this.state.errors}
+                  onChange={this.onChange}
+                  onSubmit={this.onSubmit}>
                 <Field name="first" label="First name" showErrors={this.state.blurred['first']}>
                     <ValueInput onBlur={this.onBlur('first')} />
                 </Field>
@@ -176,7 +196,11 @@ class SubmitValidation extends React.Component {
         return <div>
             <h2>On-Submit Validation</h2>
 
-            <Form schema={NameSchema} formState={this.state.value} formErrors={this.state.errors} onChange={this.onChange} onSubmit={this.onSubmit}>
+            <Form schema={NameSchema}
+                  formState={this.state.value}
+                  formErrors={this.state.errors}
+                  onChange={this.onChange}
+                  onSubmit={this.onSubmit}>
                 <Field name="first" label="First name" showErrors={this.state.submitted}>
                     <ValueInput />
                 </Field>
@@ -187,6 +211,82 @@ class SubmitValidation extends React.Component {
                 <button>Submit</button>
             </Form>
 
+            <Repr value={this.state}/>
+        </div>;
+    }
+}
+
+
+@fieldConnector
+class NameField extends React.Component {
+    render() {
+        return <div>
+            <Field name="first" label="First name" showErrors={this.props.showErrors}>
+                <ValueInput />
+            </Field>
+            <Field name="last" label="Last name" showErrors={this.props.showErrors}>
+                <ValueInput />
+            </Field>
+        </div>
+    }
+}
+
+
+class ComplexExample extends React.Component {
+    constructor() {
+        super();
+
+        const schema = ComplexSchema.fromDefaults();
+        schema.validate();
+        this.state = {
+            value: schema.value,
+            errors: schema.allErrors,
+            blurred: {},
+        };
+    }
+
+    onChange = (value, errors) => {
+        this.setState({value, errors});
+    }
+
+    onSubmit = (event, value, errors) => {
+        event.preventDefault();
+        this.setState({submitted: true});
+    }
+
+    addName = (event) => {
+        event.preventDefault();
+        const element = new ComplexSchema();
+        element.set(this.state.value);
+        const namesValue = element.members.names.value;
+        element.members.names.set(namesValue.concat(NameSchema.fromDefaults()));
+        element.validate();
+        this.setState({
+            value: element.value,
+            errors: element.allErrors,
+        })
+    }
+
+    render() {
+        return <div>
+            <Form schema={ComplexSchema}
+                  formState={this.state.value}
+                  formErrors={this.state.errors}
+                  onChange={this.onChange}
+                  onSubmit={this.onSubmit}>
+                <Field name="groupName" label="The name of your group">
+                    <ValueInput />
+                </Field>
+                <Field name="special" label="Is your group special?">
+                    <ValueCheckbox />
+                </Field>
+                <fieldset>
+                    <legend>Names in your group</legend>
+                    {this.state.value.get('names').map((_, i) => <NameField path={['names', i]}/>)}
+                    <button onClick={this.addName}>Add a name</button>
+                </fieldset>
+                <button>Submit!</button>
+            </Form>
             <Repr value={this.state}/>
         </div>;
     }
@@ -210,6 +310,7 @@ class App extends React.Component {
             live: LiveValidation,
             blur: BlurValidation,
             submit: SubmitValidation,
+            complex: ComplexExample,
         }[example];
     }
 
@@ -223,6 +324,7 @@ class App extends React.Component {
                     <li><a href="#live" onClick={this.changeExample}>Live Validation</a></li>
                     <li><a href="#blur" onClick={this.changeExample}>On Blur Validation</a></li>
                     <li><a href="#submit" onClick={this.changeExample}>On Submit Validation</a></li>
+                    <li><a href="#complex" onClick={this.changeExample}>Complex Schema</a></li>
                 </ul>
             </nav>
             <div id="example">
