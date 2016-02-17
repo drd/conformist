@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
     devtool: 'sourcemap',
 
-    entry: './src/conformist.js',
+    entry: './index.js',
 
     output: {
         filename: 'index.js',

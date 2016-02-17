@@ -1,0 +1,27 @@
+{
+  "name": "conformist-schema",
+  "version": "1.0.0",
+  "description": "A library for defining schema and validation, intended for use by UI elements.",
+  "main": "build/index.js",
+  "files": ["build"],
+  "scripts": {
+    "prepublish": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/drd/conformist"
+  },
+  "keywords": [
+    "form",
+    "schema",
+    "validation",
+    "definition"
+  ],
+  "author": "Eric O'Connell <eric.oconnell@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/drd/conformist/issues"
+  },
+  "homepage": "https://github.com/drd/conformist"
+}

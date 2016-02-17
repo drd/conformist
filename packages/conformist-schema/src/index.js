@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import {isObject, consume} from './util';
+import {isObject} from './util';
 
 
 // Thank you IE, for making this necessary
@@ -122,9 +122,9 @@ class Scalar extends Type {
   }
 
   get allErrors() {
-    return {
+    return Immutable.fromJS({
       self: this.errors
-    };
+    });
   }
 
   get allValid() {
@@ -256,10 +256,10 @@ class List extends Container {
   }
 
   get allErrors() {
-    return {
+    return Immutable.fromJS({
       self: this.errors,
       children: this.members.map(m => m.allErrors)
-    };
+    });
   }
 
   get allValid() {
@@ -343,13 +343,13 @@ class Map extends Container {
   }
 
   get allErrors() {
-    return {
+    return Immutable.fromJS({
       self: this.errors,
       children: Object.entries(this.members).reduce((errors, [k, v]) => {
         errors[k] = v.allErrors;
         return errors;
       }, {})
-    };
+    });
   }
 
   get allValid() {
