@@ -33,8 +33,6 @@
     "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
-    "build": "webpack",
-    "prepublish": "webpack",
     "test": "mocha -C --compilers js:mocha-babel test.js"
   },
   "keywords": [
