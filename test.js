@@ -356,20 +356,20 @@ describe('Type', () => {
       let yadda = new Yadda();
       yadda.set({a: true, b: 2});
       yadda.validate();
-      expect(yadda.allErrors).to.eql({self: [], children: {a: {self: ['Truthy']}, b: {self: ['Not 3']}}});
+      expect(yadda.allErrors).to.eql(Immutable.fromJS({self: [], children: {a: {self: ['Truthy']}, b: {self: ['Not 3']}}}));
     })
 
     it('should report all errors for a List', () => {
       let loalt = new ListOfAtLeastThree();
       expect(loalt.set(['ab', 'cd'])).to.be.true;
       expect(loalt.validate()).to.be.false;
-      expect(loalt.allErrors).to.eql({
+      expect(loalt.allErrors).to.eql(Immutable.fromJS({
         self: ['You must enter at least 3 strings'],
         children: [
           {self: ['You must enter at least 3 characters']},
           {self: ['You must enter at least 3 characters']}
         ]
-      });
+      }));
     });
 
     it('should allow introspection on the validators of an element', () => {
@@ -479,8 +479,8 @@ describe('Complex schema examples (from idealist.org)', () => {
       expect(location.set({fallback: false, location: '', geoid: 3})).to.eql(true);
       expect(location.validate()).to.eql(false);
       expect(location.allValid).to.eql(false);
-      expect(location.allErrors.children.location.self.length).to.eql(1);
-      expect(location.allErrors.children.location.self[0]).to.eql('Please choose a location');
+      expect(location.allErrors.getIn(['children', 'location', 'self']).size).to.eql(1);
+      expect(location.allErrors.getIn(['children', 'location', 'self', 0])).to.eql('Please choose a location');
       expect(location.set({fallback: false, location: 'Boston'})).to.eql(true);
       expect(location.validate()).to.eql(false);
       expect(location.set({fallback: true, countryCode: 'US'})).to.eql(true);
@@ -538,8 +538,8 @@ describe('Complex schema examples (from idealist.org)', () => {
 
       expect(location.set(Immutable.fromJS({fallback: false, location: '', geoid: 3}))).to.eql(true);
       expect(location.validate()).to.eql(false);
-      expect(location.allErrors.children.location.self.length).to.eql(1);
-      expect(location.allErrors.children.location.self[0]).to.eql('Please choose a location');
+      expect(location.allErrors.getIn(['children', 'location', 'self']).size).to.eql(1);
+      expect(location.allErrors.getIn(['children', 'location', 'self', 0])).to.eql('Please choose a location');
       expect(location.set(Immutable.fromJS({fallback: false, location: 'Boston'}))).to.eql(true);
       expect(location.validate()).to.eql(false);
       expect(location.set(Immutable.fromJS({fallback: true, countryCode: 'US'}))).to.eql(true);
