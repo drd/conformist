@@ -73,7 +73,8 @@ const ComplexSchema = schema.Map.of(
     schema.Str.named('groupName').validatedBy(validation.Length.Between(4, 25, "Please enter a group name between 4 and 25 characters")),
     schema.Bool.named('special'),
     schema.List.named('names').of(NameSchema).validatedBy(validation.Length.Between(1, 10)),
-)
+);
+
 
 
 class LiveValidation extends React.Component {
@@ -122,6 +123,8 @@ class LiveValidation extends React.Component {
 }
 
 
+
+
 class BlurValidation extends React.Component {
     constructor() {
         super();
@@ -148,7 +151,7 @@ class BlurValidation extends React.Component {
 
     render() {
         return <div>
-            <h2>Live Validation</h2>
+            <h2>On-Blur Validation</h2>
 
             <Form schema={NameSchema}
                   formState={this.state.value}
@@ -169,6 +172,9 @@ class BlurValidation extends React.Component {
         </div>;
     }
 }
+
+
+
 
 class SubmitValidation extends React.Component {
     constructor() {
@@ -215,6 +221,9 @@ class SubmitValidation extends React.Component {
         </div>;
     }
 }
+
+
+
 
 
 @fieldConnector
@@ -269,6 +278,7 @@ class ComplexExample extends React.Component {
 
     render() {
         return <div>
+            <h2>Complex Schema Example</h2>
             <Form schema={ComplexSchema}
                   formState={this.state.value}
                   formErrors={this.state.errors}
@@ -291,6 +301,8 @@ class ComplexExample extends React.Component {
         </div>;
     }
 }
+
+
 
 
 class App extends React.Component {
