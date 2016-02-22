@@ -10,4 +10,4 @@ let {Value, Length} = Validation;
 describe('Validation', () => {
   it('will test Value');
   it('will test Length');
-})
+});

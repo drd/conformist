@@ -10,7 +10,7 @@ let {Int, Str, Bool, Enum, Map, List} = Schema;
 let {Value, Length} = Validation;
 
 
-describe('Type', () => {
+describe('Package/Mix', () => {
   describe('validation', () => {
     let ListOfAtLeastThree = List
       .of(Str
