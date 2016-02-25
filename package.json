@@ -33,7 +33,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
-    "test": "mocha -C --compilers js:mocha-babel test.js"
+    "test": "$(npm bin)/babel-node test/suite.js"
   },
   "keywords": [
     "schema",
