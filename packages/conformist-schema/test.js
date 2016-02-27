@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import Immutable from 'immutable';
 
 import Schema from './src/index';
-let {Int, Str, Bool, Enum, Map, List} = Schema;
+let {Int, Str, Bool, Enum, Map, List, Set} = Schema;
 
 
 describe('Type', () => {
@@ -100,6 +100,26 @@ describe('Type', () => {
   })
 
   describe('Containers', () => {
+    describe('Set', () => {
+      var Ints = Set.of(Int);
+      it('should "set" a valid Set', () => {
+        let ints = new Ints;
+        ints.set([1, 2, 2, 3]);
+        expect(ints.value).to.equal(Immutable.Set([1, 2, 3]));
+      })
+
+      it('should "set" defaults', () => {
+        var DefaultedInts = Ints.using({default: [1, 2, 3, 3]});
+        let dints = new DefaultedInts;
+        expect(dints.value).to.equal(Immutable.Set([]));
+        // on an instance
+        dints.setDefault();
+        expect(dints.value).to.equal(Immutable.Set(dints.default));
+        // on a class
+        let ddints = DefaultedInts.fromDefaults();
+        expect(ddints.value).to.equal(Immutable.Set(ddints.default));
+      })
+    })
 
     describe('List', () => {
       var Strings = List.of(Str);
