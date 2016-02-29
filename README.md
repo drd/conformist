@@ -14,9 +14,9 @@ Type
  |           |
 Scalar      Container
  |           |
- |           +------+
- |           |      |
- |          List   Map
+ |           +------+------+
+ |           |      |      |
+ |          List   Map    Set
  |
  +-----+------+------+
  |     |      |      |
@@ -48,6 +48,8 @@ Containers have multiple children.
 List represents an array.
 
 Map represents an object.
+
+Set represents a set.
 
 
 ## Schema
