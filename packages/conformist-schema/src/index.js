@@ -1,9 +1,9 @@
 import Immutable from 'immutable';
-import {isObject, consume} from './util';
+import {isObject} from './util';
 
 
 // Thank you IE, for making this necessary
-// Per http://babeljs.io/docs/advanced/caveats/, static methods do not
+// Per https://babeljs.algolia.com/docs/advanced/caveats/, static methods do not
 // propagate down the inheritance chain because __proto__ is not a thing.
 // Decorate any concrete schema class with this to ensure that it and any
 // cloned versions of itself will have these static methods.
@@ -122,9 +122,9 @@ class Scalar extends Type {
   }
 
   get allErrors() {
-    return {
+    return Immutable.fromJS({
       self: this.errors
-    };
+    });
   }
 
   get allValid() {
@@ -256,10 +256,10 @@ class List extends Container {
   }
 
   get allErrors() {
-    return {
+    return Immutable.fromJS({
       self: this.errors,
       children: this.members.map(m => m.allErrors)
-    };
+    });
   }
 
   get allValid() {
@@ -311,6 +311,14 @@ class List extends Container {
 
 List.prototype.members = [];
 
+@staticify
+class Set extends List {
+  get value() {
+    return Immutable.Set(this.members.map(m => m.value));
+  }
+}
+
+Set.prototype.members = [];
 
 @staticify
 class Map extends Container {
@@ -343,13 +351,13 @@ class Map extends Container {
   }
 
   get allErrors() {
-    return {
+    return Immutable.fromJS({
       self: this.errors,
       children: Object.entries(this.members).reduce((errors, [k, v]) => {
         errors[k] = v.allErrors;
         return errors;
       }, {})
-    };
+    });
   }
 
   get allValid() {
@@ -421,4 +429,4 @@ class Map extends Container {
 }
 
 
-export default {Type, Scalar, Num, Int, Str, Bool, Enum, Container, List, Map};
+export default {Type, Scalar, Num, Int, Str, Bool, Enum, Container, List, Set, Map};

@@ -1,0 +1,39 @@
+{
+  "name": "react-conformist",
+  "version": "1.0.0",
+  "description": "A set of decorators for creating conformist-aware React form UI",
+  "main": "build/index.js",
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "prepublish": "../../node_modules/.bin/webpack",
+    "examples": "cd examples && node ./server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/drd/conformist"
+  },
+  "keywords": [
+    "react",
+    "conformist",
+    "form",
+    "ui"
+  ],
+  "author": "Eric O'Connell <eric.oconnell@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/drd/conformist/issues"
+  },
+  "homepage": "https://github.com/drd/conformist",
+  "devDependencies": {
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7"
+  },
+  "dependencies": {
+    "hoist-non-react-statics": "^1.0.5",
+    "immutable": "^3.7.6",
+    "react-immutable-proptypes": "^1.6.0"
+  }
+}

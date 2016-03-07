@@ -34,6 +34,7 @@ let Value = createValidators({
   // Ok, Present *is* in terms of the serialized property but it's really
   // all about the value. You got me.
   Present: (msg) => _ValueRestriction(msg, v => v === undefined),
+  NonEmpty: (msg) => _ValueRestriction(msg, v => v === undefined || (v.trim && v.trim() === '')),
   AtLeast: (min, msg) => _ValueRestriction(msg, v => v < min),
   AtMost: (max, msg) => _ValueRestriction(msg, v => v > max),
   Between: (min, max, msg) => _ValueRestriction(msg, v => v < min || v > max)
