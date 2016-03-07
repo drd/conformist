@@ -311,6 +311,14 @@ class List extends Container {
 
 List.prototype.members = [];
 
+@staticify
+class Set extends List {
+  get value() {
+    return Immutable.Set(this.members.map(m => m.value));
+  }
+}
+
+Set.prototype.members = [];
 
 @staticify
 class Map extends Container {
@@ -421,4 +429,4 @@ class Map extends Container {
 }
 
 
-export default {Type, Scalar, Num, Int, Str, Bool, Enum, Container, List, Map};
+export default {Type, Scalar, Num, Int, Str, Bool, Enum, Container, List, Set, Map};
