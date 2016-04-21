@@ -10,4 +10,4 @@ let consume = i => {
   return res;
 }
 
-export default {isObject, consume};
+export {isObject, consume};

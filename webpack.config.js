@@ -16,7 +16,7 @@ module.exports = {
         loaders: [
             {
                 test: /\.js$/,
-                loaders: ['babel?optional=runtime'],
+                loaders: ['babel'],
                 include: path.resolve('./src')
             }
         ]

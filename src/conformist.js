@@ -1,4 +1,4 @@
-import Schema from './schema';
-import Validation from './validation';
+import * as Schema from './schema';
+import * as Validation from './validation';
 
-export default {Schema, Validation};
+export {Schema, Validation};

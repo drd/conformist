@@ -56,4 +56,4 @@ let Length = createValidators({
   Exactly: (count, msg) => _LengthRestriction(msg, v => v === count)
 });
 
-export default {Value, Length};
+export {Value, Length};
