@@ -421,4 +421,4 @@ class Map extends Container {
 }
 
 
-export default {Type, Scalar, Num, Int, Str, Bool, Enum, Container, List, Map};
+export {Type, Scalar, Num, Int, Str, Bool, Enum, Container, List, Map};
